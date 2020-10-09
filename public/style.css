@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  background: #4cb8c4;
+  background: -webkit-linear-gradient(
+    to bottom,
+    #3cd3ad,
+    #4cb8c4,
+    #3cd3ad
+  );
+  background: linear-gradient(
+    to bottom,
+    #3cd3ad,
+    #4cb8c4,
+    #3cd3ad
+  );
+  height: 100vh;
+}
+
+header h1 {
+  text-align: center;
+  padding: 20px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 2px #36868f;
+}
+
+.container {
+  text-align: center;
+  margin-top: 200px;
+}
