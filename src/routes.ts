@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', controllers.redirectToUrl);
 
-router.post('/url', controllers.redirectToUrl);
+router.post('/url', controllers.toShortUrl);
 
 router.get('/url/:id', controllers.redirectToUrl);
 

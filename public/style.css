@@ -7,30 +7,65 @@
 body {
   font-family: 'Orbitron', sans-serif;
   font-size: 1rem;
-  background: #4cb8c4;
-  background: -webkit-linear-gradient(
-    to bottom,
-    #3cd3ad,
-    #4cb8c4,
-    #3cd3ad
-  );
-  background: linear-gradient(
-    to bottom,
-    #3cd3ad,
-    #4cb8c4,
-    #3cd3ad
-  );
+  background: #880A1f;
   height: 100vh;
+  color: #fdc566;
 }
 
 header h1 {
   text-align: center;
   padding: 20px;
+  position: relative;
   text-transform: uppercase;
-  text-shadow: 0 2px 2px #36868f;
+  margin-top: 20vh;
+  width: 500px;
+  left: calc(50% - 250px)
 }
 
 .container {
   text-align: center;
-  margin-top: 200px;
+  margin-top: 2rem;
+}
+
+.container-form-input {
+  position: relative;
+  text-align: center;
+}
+
+.container-form-input input {
+  line-height: 28px;
+  border: 0;
+  outline: 0;
+  padding: 0 .5rem 0;
+  border: 1px solid #fd921e;
+  background: rgb(168, 164, 164);
+  box-shadow: none;
+}
+
+.container-form-input label {
+  margin: 1rem;
+  cursor: text;
+}
+
+.form-button {
+  background: #e7284a;
+  color: inherit;
+  text-shadow: 0 0 1px #000;
+  border: none;
+  padding: 1rem;
+  margin: 2rem auto 5rem;
+  transition: all .2s ease;
+}
+
+.form-button:hover {
+  background: #a10b24;
+  cursor: pointer;
+  transform: translate(-1px, -1px);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.507);
+}
+
+.form-button:active {
+  background: #000;
+  transform: none;
+  box-shadow: 0 0 3px #000;
 }

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2017",
     "module": "commonjs",
     "moduleResolution": "node",
     "allowJs": true,
@@ -15,5 +15,5 @@
     "suppressImplicitAnyIndexErrors": true
   },
   "include": ["./src/**/*.ts"],
-  "exclude": ["./src/database/migrations", "./src/database/seeders", "./src/**/*.spec.ts"]
+  "exclude": ["./src/**/*.spec.ts"]
 }

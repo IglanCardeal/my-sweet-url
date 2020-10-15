@@ -22,16 +22,21 @@
 
     <div class="container">
       <div class="container-form">
-        <div class="container-form-input">
-          <input type="text" name="url" id="url" />
-        </div>
-        <div class="container-form-button">
-          <button type="button">Encurtar</button>
-        </div>
+        <form>
+          <div class="container-form-input">
+            <label for="url">Sua URL:</label>
+            <input type="text" name="url" id="url" autofocus required />
+          </div>
+          <div class="container-form-button">
+            <button class="form-button" type="button">
+              <img src="./favicon.ico" alt="url icon">
+              Encurtar</button>
+          </div>
+        </form>
       </div>
 
       <div class="container-content">
-        <ul>
+        <ul class="container-content-list">
           <li>UQLAUQERHNSDJHAHD</li>
         </ul>
       </div>
