@@ -1,11 +1,10 @@
 import { Router } from 'express';
-import controllers from './controllers';
+import controllers from '../controllers/controllers';
 import path from 'path';
 
 const router = Router();
 
 router.get('/', (req, res) => {
-  // res.status(200).json({ message: "Working!" });
   res.sendFile(path.resolve(__dirname, '../public/index.html'));
 });
 

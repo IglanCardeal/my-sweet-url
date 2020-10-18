@@ -1,23 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
-import monk from 'monk';
+import { nanoid } from 'nanoid';
 import * as yup from 'yup';
 
-import dotenv from 'dotenv';
-import { nanoid } from 'nanoid';
-
-dotenv.config();
-
-const DB_URL = String(process.env.DB_URI);
-
-const db = monk(DB_URL);
+import { db } from '../database/connection';
 
 const urls = db.get('urls');
+const users = db.get('users');
 
-urls.createIndex('name'); // criando uma indexe para melhor performance nas queries
+urls.createIndex('alias');
 
 // definindo o formato dos parametros antes
 // de salvar no banco
-const schema = yup.object().shape({
+const urlSchema = yup.object().shape({
   alias: yup
     .string()
     .trim()
@@ -26,8 +20,26 @@ const schema = yup.object().shape({
 });
 
 export default {
-  redirectToUrl(req: Request, res: Response) {
-    const id = req.params.id;
+  async redirectToUrl(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+
+    try {
+      const url = await urls.findOne({ alias: id });
+
+      if (url?.url) {
+        return res.redirect(url);
+      }
+
+      const error = {
+        message: 'Nenhuma URL encontrada com este apelido.',
+        statusCode: 404,
+      };
+
+      throw error;
+    } catch (error) {
+      console.log(error);
+      return next(error);
+    }
   },
 
   async toShortUrl(req: Request, res: Response, next: NextFunction) {
@@ -38,9 +50,9 @@ export default {
     }
 
     try {
-      await schema.validate({ alias, url });
-
       if (!alias) alias = nanoid(7);
+
+      await urlSchema.validate({ alias, url });
 
       const aliasExist = await urls.findOne({ alias });
 
@@ -49,9 +61,9 @@ export default {
           message: 'Apelido informado ja existe! Tente outro nome.',
           statusCode: 403,
         };
+
         throw error;
       }
-
       alias = alias.toLowerCase();
 
       const newUrl = {
@@ -65,6 +77,17 @@ export default {
         .status(200)
         .json({ message: 'Nova URL adicionada com sucesso.', shortUrlCreated });
     } catch (error) {
+      if (error.errors?.length > 0) {
+        error = {
+          message:
+            'Formato do apelido invalido. Use somente letras, numeros, "_" ou "-".',
+          statusCode: 403,
+        };
+
+        return next(error);
+      }
+
+      console.log(error);
       return next(error);
     }
   },
