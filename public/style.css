@@ -5,21 +5,27 @@
 }
 
 body {
-  font-family: 'Orbitron', sans-serif;
+  font-family: sans-serif;
   font-size: 1rem;
-  background: #880A1f;
+  background: #880a1f;
   height: 100vh;
   color: #fdc566;
 }
 
-header h1 {
+#public-status {
+  font-size: 1rem;
+}
+
+#title {
+  font-family: 'Orbitron', sans-serif;
   text-align: center;
   padding: 20px;
   position: relative;
-  text-transform: uppercase;
-  margin-top: 20vh;
+  text-transform: capitalize;
+  margin-top: 10vh;
+  letter-spacing: 1.1rem;
   width: 500px;
-  left: calc(50% - 250px)
+  left: calc(50% - 250px);
 }
 
 .container {
@@ -30,31 +36,40 @@ header h1 {
 .container-form-input {
   position: relative;
   text-align: center;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .container-form-input input {
   line-height: 28px;
-  border: 0;
   outline: 0;
-  padding: 0 .5rem 0;
+  padding: 0 0.5rem 0;
   border: 1px solid #fd921e;
   background: rgb(168, 164, 164);
   box-shadow: none;
+  color: #000;
+  width: 400px;
+  border-radius: 5px;
 }
 
 .container-form-input label {
   margin: 1rem;
   cursor: text;
+  font-size: 1.2rem;
 }
 
 .form-button {
-  background: #e7284a;
-  color: inherit;
-  text-shadow: 0 0 1px #000;
+  background: #fdc566;
+  color: #000;
+  text-shadow: 1px 0 1px #000;
   border: none;
   padding: 1rem;
+  border-radius: 10px;
   margin: 2rem auto 5rem;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .form-button:hover {
@@ -67,5 +82,53 @@ header h1 {
 .form-button:active {
   background: #000;
   transform: none;
+  color: inherit;
   box-shadow: 0 0 3px #000;
+}
+
+.container-content-table {
+  position: relative;
+  width: 900px;
+  left: calc(50% - 450px);
+  box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.493);
+}
+
+.container-content-table thead {
+  height: 3rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: rgba(83, 6, 19, 0.808);
+  position: sticky;
+  top: 0;
+}
+
+.container-content-table tbody td {
+  padding: 2rem 0;
+}
+
+.container-content-table tbody td:nth-of-type(1) {
+  background: rgba(83, 6, 19, 0.753);
+}
+
+@media screen and (max-width: 420px) {
+  #title {
+    width: 400px;
+    margin-top: 5vh;
+    left: calc(50% - 200px);
+  }
+
+  .container-form-input input {
+    width: 80vw;
+  }
+}
+
+@media screen and (max-width: 886px) {
+  .container-content-table {
+    width: 800px;
+    position: relative;
+    left: 0;
+  }
+  .container-content-table tbody {
+    overflow-x: scroll;
+  }
 }

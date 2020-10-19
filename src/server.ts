@@ -29,4 +29,6 @@ startDatabaseConnectionAndServer(app);
  * []4 - pagina de usuario mostrando todas as suas url e um `input type radio` para o
  *       o usuario alterar se a url sera publica ou privada
  * []5 - logoff
+ * []6 - API RATE LIMITING
+ * []7 - Front end em next.js
  */

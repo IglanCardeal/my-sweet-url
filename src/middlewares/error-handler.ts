@@ -12,5 +12,12 @@ export default (
   next: NextFunction
 ) => {
   console.log(error);
-  res.status(error.statusCode).json({ message: error.message });
+
+  if (error.statusCode) {
+    res.status(error.statusCode).json({ message: error.message });
+  } else {
+    res.status(500).json({
+      message: '500 - Erro interno de servidor. Desculpe pelo o ocorrido :/',
+    });
+  }
 };

@@ -1,25 +1,32 @@
 import { Request, Response, NextFunction } from 'express';
 import { nanoid } from 'nanoid';
-import * as yup from 'yup';
 
 import { db } from '../database/connection';
+import { urlSchema } from '../utils/schemas';
 
 const urls = db.get('urls');
-const users = db.get('users');
 
 urls.createIndex('alias');
+urls.createIndex('date');
 
 // definindo o formato dos parametros antes
 // de salvar no banco
-const urlSchema = yup.object().shape({
-  alias: yup
-    .string()
-    .trim()
-    .matches(/[\w\-]/i),
-  url: yup.string().trim().url().required(),
-});
 
 export default {
+  async showPublicUrls(req: Request, res: Response, next: NextFunction) {
+    try {
+      const publicUrls = await urls.find({}, '-userId -_id');
+
+      console.log(publicUrls);
+      res.status(200).json({
+        message: 'Todas as URLs publicas.',
+      });
+    } catch (error) {
+      console.log(error);
+      return next(error);
+    }
+  },
+
   async redirectToUrl(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
@@ -42,17 +49,17 @@ export default {
     }
   },
 
-  async toShortUrl(req: Request, res: Response, next: NextFunction) {
+  async toShortUrlAnonymous(req: Request, res: Response, next: NextFunction) {
     let { alias, url } = req.body;
 
-    if (url === '') {
-      res.status(400).json({ message: 'URL nao pode ser vazia!' });
-    }
+    // valores padrao para cadastro anonimo
+    let publicStatus = true;
+    let userId = '0';
 
     try {
       if (!alias) alias = nanoid(7);
 
-      await urlSchema.validate({ alias, url });
+      await urlSchema.validate({ alias, url, publicStatus, userId });
 
       const aliasExist = await urls.findOne({ alias });
 
@@ -64,23 +71,32 @@ export default {
 
         throw error;
       }
+
       alias = alias.toLowerCase();
+
+      const date = new Date();
 
       const newUrl = {
         alias,
         url,
+        publicStatus,
+        userId,
+        date,
+        number_access: 0,
       };
 
       const shortUrlCreated = await urls.insert(newUrl);
 
       res
         .status(200)
-        .json({ message: 'Nova URL adicionada com sucesso.', shortUrlCreated });
+        .json({ message: 'Nova URL adicionada com sucesso.', newUrl });
     } catch (error) {
       if (error.errors?.length > 0) {
+        console.log(error);
+        const message = error.errors[0];
+
         error = {
-          message:
-            'Formato do apelido invalido. Use somente letras, numeros, "_" ou "-".',
+          message,
           statusCode: 403,
         };
 
