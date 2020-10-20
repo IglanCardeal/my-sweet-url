@@ -12,12 +12,12 @@ urls.createIndex('date');
 export default {
   async showPublicUrls(req: Request, res: Response, next: NextFunction) {
     try {
-      const publicUrls = await urls.find({}, '-userId -_id');// ignorar erro TS
+      const publicUrls = await urls.find({}, '-userId -_id'); // ignorar erro TS
 
       console.log(publicUrls);
       res.status(200).json({
         message: 'Todas as URLs publicas.',
-        publicUrls,
+        publicurls: publicUrls,
       });
     } catch (error) {
       console.log(error);
@@ -40,7 +40,7 @@ export default {
             $set: {
               number_access: number_access,
             },
-          }
+          },
         );
 
         return res.status(308).redirect(url.url);
