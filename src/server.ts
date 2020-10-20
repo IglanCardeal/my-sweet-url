@@ -12,7 +12,7 @@ const app = express();
 app.use(helmet());
 app.use(express.json());
 app.use(cors(corsOptions));
-app.use(express.static('./public'));
+// app.use(express.static('./public'));
 
 app.use(routes);
 app.use(errorHandler);
@@ -30,5 +30,6 @@ startDatabaseConnectionAndServer(app);
  *       o usuario alterar se a url sera publica ou privada
  * []5 - logoff
  * []6 - API RATE LIMITING
- * []7 - Front end em next.js
+ * []7 - Pagina 404 caso alias nao encontrado no banco
+ * []X - Front end em next.js
  */

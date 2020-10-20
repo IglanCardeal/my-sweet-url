@@ -1,5 +1,9 @@
 import * as yup from 'yup';
 
+// definindo o formato dos parametros antes
+// de salvar no banco
+
+// Schema para URLs
 const urlSchema = yup.object().shape({
   alias: yup
     .string()
@@ -8,7 +12,7 @@ const urlSchema = yup.object().shape({
     .max(14, 'Apelido tem que ter tamanho maximo de 14 caracteres')
     .matches(
       /^[\w\-]+$/gi,
-      'Formato do apelido invalido. Use somente letras, numeros, "_" ou "-".'
+      'Formato do apelido invalido. Use somente letras, numeros, "_" ou "-".',
     ),
   url: yup
     .string()
@@ -19,14 +23,12 @@ const urlSchema = yup.object().shape({
     .boolean()
     .required()
     .typeError(
-      'O estatus(publicStatus) da URL tem que ser um Boolean "true" ou "false"'
+      'O estatus(publicStatus) da URL tem que ser um Boolean "true" ou "false"',
     ),
   userId: yup.string(),
 });
 
-const userSchema = {}
+// Schema para cadastro de usuario e edicao de usuario
+const userSchema = {};
 
-export {
-  urlSchema,
-  userSchema
-}
+export { urlSchema, userSchema };

@@ -8,7 +8,7 @@ const router = Router();
 
 router.get('/showurls', urlControllers.showPublicUrls);
 
-router.get('/url/:id', urlControllers.redirectToUrl);
+router.get('/url/:alias', urlControllers.redirectToUrl);
 
 router.post('/shorturl', urlControllers.toShortUrlAnonymous);
 

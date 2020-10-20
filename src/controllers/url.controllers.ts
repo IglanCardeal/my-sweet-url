@@ -9,17 +9,15 @@ const urls = db.get('urls');
 urls.createIndex('alias');
 urls.createIndex('date');
 
-// definindo o formato dos parametros antes
-// de salvar no banco
-
 export default {
   async showPublicUrls(req: Request, res: Response, next: NextFunction) {
     try {
-      const publicUrls = await urls.find({}, '-userId -_id');
+      const publicUrls = await urls.find({}, '-userId -_id');// ignorar erro TS
 
       console.log(publicUrls);
       res.status(200).json({
         message: 'Todas as URLs publicas.',
+        publicUrls,
       });
     } catch (error) {
       console.log(error);
@@ -28,13 +26,24 @@ export default {
   },
 
   async redirectToUrl(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params;
+    const { alias } = req.params;
 
     try {
-      const url = await urls.findOne({ alias: id });
+      const url = await urls.findOne({ alias });
 
       if (url?.url) {
-        return res.redirect(url);
+        const number_access = url.number_access + 1;
+
+        urls.findOneAndUpdate(
+          { alias },
+          {
+            $set: {
+              number_access: number_access,
+            },
+          }
+        );
+
+        return res.status(308).redirect(url.url);
       }
 
       const error = {
@@ -74,7 +83,7 @@ export default {
 
       alias = alias.toLowerCase();
 
-      const date = new Date();
+      const date = Date.now();
 
       const newUrl = {
         alias,
@@ -85,11 +94,17 @@ export default {
         number_access: 0,
       };
 
-      const shortUrlCreated = await urls.insert(newUrl);
+      await urls.insert(newUrl);
 
-      res
-        .status(200)
-        .json({ message: 'Nova URL adicionada com sucesso.', newUrl });
+      res.status(201).json({
+        message: 'Nova URL adicionada com sucesso.',
+        urlCreated: {
+          alias,
+          url,
+          publicStatus,
+          date,
+        },
+      });
     } catch (error) {
       if (error.errors?.length > 0) {
         console.log(error);

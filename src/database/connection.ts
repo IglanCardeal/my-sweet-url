@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 
 config();
 
-const APP_PORT = process.env.PORT || 3000;
+const APP_PORT = process.env.APP_PORT || 3000;
 const { DB_HOST, DB_PORT, DB_NAME } = process.env;
 const DB_URL = `${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 
@@ -24,7 +24,7 @@ const startDatabaseConnectionAndServer = (app: any): void => {
         console.log = () => {}; // para nao exibirmos nenhum log em producao
       }
     });
-  }).catch((error) => {
+  }).catch(error => {
     console.log(`\nUnable to start the server duo:\n`, error);
   });
 };
