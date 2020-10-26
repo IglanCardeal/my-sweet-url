@@ -21,7 +21,7 @@ e visualizar todas as url publicas.
   ```json
   {
     "message": "Todas as URLs publicas.",
-    "publicurls": [
+    "public_urls": [
       {
         "alias": "seu-tubo",
         "url": "https://www.youtube.com/"
@@ -32,7 +32,7 @@ e visualizar todas as url publicas.
 
   - message: `string`,
 
-  - publicurls: `array[{}]`
+  - public_urls: `array[{}]`
 
   - alias: `string`
 

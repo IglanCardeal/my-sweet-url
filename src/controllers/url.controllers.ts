@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { nanoid } from 'nanoid';
+import { config } from 'dotenv';
 
 import { db } from '../database/connection';
-import { urlSchema } from '../utils/schemas';
+import { urlSchema, urlToFilter } from '../utils/schemas';
+import catchErrorFunction from '../utils/catch-error-function';
+
+config();
+
+const { APP_HOST } = process.env;
 
 const urls = db.get('urls');
 
@@ -11,17 +17,69 @@ urls.createIndex('date');
 
 export default {
   async showPublicUrls(req: Request, res: Response, next: NextFunction) {
-    try {
-      const publicUrls = await urls.find({}, '-userId -_id'); // ignorar erro TS
+    const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
+    const paginateToFloor = Math.floor(paginate);
 
-      console.log(publicUrls);
+    try {
+      // ignorar erro TS no array ['-userId','-_id']
+      const publicUrls = await urls.find(
+        { publicStatus: true },
+        ['-userId', '-_id'],
+        {
+          limit: 10,
+          skip: paginateToFloor,
+        },
+      );
+
+      const urlsWithShortenedUrls = publicUrls.map(url => {
+        return { ...url, shorteredUrl: `${APP_HOST}/url/${url.alias}` };
+      });
+
       res.status(200).json({
         message: 'Todas as URLs publicas.',
-        publicurls: publicUrls,
+        ['public_urls']: urlsWithShortenedUrls,
       });
     } catch (error) {
-      console.log(error);
-      return next(error);
+      catchErrorFunction(error, next);
+    }
+  },
+
+  async showFilteredPublicUrls(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const alias = req.body.alias || '1',
+      url = req.body.url;
+    let urlsFiltereds;
+
+    try {
+      if (url) {
+        await urlToFilter.validate({ url });
+
+        urlsFiltereds = await urls.find({
+          url: url.trim(),
+          publicStatus: true,
+        });
+      } else {
+        await urlToFilter.validate({ alias });
+
+        urlsFiltereds = await urls.find({
+          alias: alias.trim(),
+          publicStatus: true,
+        });
+      }
+
+      const urlsFilteredsWithShortenedUrls = urlsFiltereds.map(url => {
+        return { ...url, shorteredUrl: `${APP_HOST}/url/${url.alias}` };
+      });
+
+      res.status(200).json({
+        message: 'Todas as URLs publicas filtradas.',
+        ['filtered_public_urls']: urlsFilteredsWithShortenedUrls,
+      });
+    } catch (error) {
+      catchErrorFunction(error, next);
     }
   },
 
@@ -31,30 +89,29 @@ export default {
     try {
       const url = await urls.findOne({ alias });
 
-      if (url?.url) {
-        const number_access = url.number_access + 1;
+      if (!url?.url) {
+        const error = {
+          message: 'Nenhuma URL encontrada com este apelido.',
+          statusCode: 404,
+        };
 
-        urls.findOneAndUpdate(
-          { alias },
-          {
-            $set: {
-              number_access: number_access,
-            },
-          },
-        );
-
-        return res.status(308).redirect(url.url);
+        throw error;
       }
 
-      const error = {
-        message: 'Nenhuma URL encontrada com este apelido.',
-        statusCode: 404,
-      };
+      const number_access = url.number_access + 1;
 
-      throw error;
+      urls.findOneAndUpdate(
+        { alias },
+        {
+          $set: {
+            number_access: number_access,
+          },
+        },
+      );
+
+      return res.status(308).redirect(url.url);
     } catch (error) {
-      console.log(error);
-      return next(error);
+      catchErrorFunction(error, next);
     }
   },
 
@@ -101,25 +158,13 @@ export default {
         urlCreated: {
           alias,
           url,
-          publicStatus,
+          shortenedUrl: `${APP_HOST}/url/${alias}`,
+          ['public_status']: publicStatus,
           date,
         },
       });
     } catch (error) {
-      if (error.errors?.length > 0) {
-        console.log(error);
-        const message = error.errors[0];
-
-        error = {
-          message,
-          statusCode: 403,
-        };
-
-        return next(error);
-      }
-
-      console.log(error);
-      return next(error);
+      catchErrorFunction(error, next);
     }
   },
 };

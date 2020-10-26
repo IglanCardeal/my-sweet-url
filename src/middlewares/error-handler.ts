@@ -9,7 +9,7 @@ export default (
   error: HttpException,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.log(error);
 

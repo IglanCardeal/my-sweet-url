@@ -89,6 +89,7 @@ header {
   color: var(--text-color);
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.322);
   border: 1px solid #ffffff;
+  margin-top: 15px;
 }
 
 .container__form--inputs input:focus {
@@ -96,8 +97,8 @@ header {
   border: 1px solid #ffa051;
 }
 
-.container__form--inputs label {
-  margin-top: 15px;
+.container__form--inputs input::placeholder {
+  color: rgb(0, 0, 0)
 }
 
 .container__form--button {
@@ -106,19 +107,18 @@ header {
 
 .container__form--button button {
   background: var(--btn-color);
-  border: none;
+  border: 1px solid var(--btn-color);
   padding: 1rem;
   border-radius: 8px;
   color: #000;
   cursor: pointer;
-  transform: translateY(0px);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.322);
   transition: 0.2s;
 }
 
 .container__form--button button:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 3px rgba(0, 0, 0, 0.322);
+  color: inherit;
+  background: rgba(0, 0, 0, 0);
   transition: 0.2s;
 }
 

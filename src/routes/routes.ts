@@ -6,10 +6,18 @@ import userControllers from '../controllers/user.controller';
 
 const router = Router();
 
-router.get('/showurls', urlControllers.showPublicUrls);
+router.get('/show-urls', urlControllers.showPublicUrls);
+
+router.post(
+  '/show-filtered-public-urls',
+  urlControllers.showFilteredPublicUrls,
+);
 
 router.get('/url/:alias', urlControllers.redirectToUrl);
 
-router.post('/shorturl', urlControllers.toShortUrlAnonymous);
+router.post('/short-url', urlControllers.toShortUrlAnonymous);
+
+// USERS routes
+router.post('/login', userControllers.login)
 
 export default router;
