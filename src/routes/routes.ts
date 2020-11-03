@@ -1,23 +1,24 @@
 import { Router } from 'express';
-import path from 'path';
 
 import urlControllers from '../controllers/url.controllers';
 import userControllers from '../controllers/user.controller';
 
+import checkAuthentication from '../middlewares/check-authentication';
+
 const router = Router();
 
-router.get('/show-urls', urlControllers.showPublicUrls);
-
+// PUBLIC routes
+router.get('/show-urls', urlControllers.publicShowUrls);
 router.post(
   '/show-filtered-public-urls',
-  urlControllers.showFilteredPublicUrls,
+  urlControllers.publicShowFilteredUrls,
 );
-
-router.get('/url/:alias', urlControllers.redirectToUrl);
-
-router.post('/short-url', urlControllers.toShortUrlAnonymous);
+router.get('/url/:alias', urlControllers.publicShowUrls);
+router.post('/short-url', urlControllers.publicToShortUrl);
 
 // USERS routes
-router.post('/login', userControllers.login)
+router.post('/login', userControllers.login);
+router.post('/signup', userControllers.signup);
+router.get('/user/urls', checkAuthentication, userControllers.userShowUrls);
 
 export default router;

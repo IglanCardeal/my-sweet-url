@@ -4,91 +4,148 @@ import bcrypt from 'bcrypt';
 import { config } from 'dotenv';
 
 import { db } from '../database/connection';
-import { userSchema } from '../utils/schemas';
+import { userLoginSchema, userSignupSchema } from '../utils/schemas';
 import catchErrorFunction from '../utils/catch-error-function';
 
 config();
 
 const users = db.get('users');
+const urls = db.get('urls');
 const SECRET = process.env.JWT_SECRET || 'chavesecretaaleatoria';
+const env = process.env.NODE_ENV;
 
 export default {
   async login(req: Request, res: Response, next: NextFunction) {
     let { username, password } = req.body;
-    let validPassword;
 
-    username = username.toString().toLowerCase();
+    username = username.trim().toLowerCase();
 
     try {
-      await userSchema.validate({ username, password });
-      const userFound = { _id: '' };
-      // const userFound = await users.findOne({ username });
+      await userLoginSchema.validate({ username, password });
 
-      // if (!userFound) {
-      //   const error = {
-      //     statusCode: 404,
-      //     message: 'Usuario nao encontrado! Tente novamente',
-      //   };
+      const userFound = await users.findOne({ username });
 
-      //   throw error;
-      // }
+      if (!userFound) {
+        const error = {
+          statusCode: 404,
+          message: 'Usuario nao encontrado! Tente novamente',
+        };
 
-      // await bcrypt.compare(password, userFound.password, (err, result) => {
-      //   if (err) {
-      //     const error = {
-      //       statusCode: 500,
-      //       message:
-      //         'Erro interno de servidor ao tentar verificar senha de usuario.',
-      //     };
+        throw error;
+      }
 
-      //     throw error;
-      //   }
-      //   validPassword = result;
-      // });
-
-      // if (!validPassword) {
-      //   const error = {
-      //     statusCode: 401,
-      //     message: 'Senha de usuario usuario incorreta! Tente novamente.',
-      //   };
-
-      //   throw error;
-      // }
-
-      jwt.sign(
-        { userId: userFound._id },
-        SECRET,
-        {
-          expiresIn: '1h', // 1 hora
-        },
-        callback,
-      );
-
-      function callback(err: any, token: any) {
+      bcrypt.compare(password, userFound.password, (err, result) => {
         if (err) {
-          console.log(err);
           const error = {
-            message:
-              'Erro interno de servidor ao tentar gerar token de autenticacao.',
             statusCode: 500,
+            message:
+              'Erro interno de servidor ao tentar verificar senha de usuario.',
           };
 
           throw error;
         }
 
-        userFound._id = '123';
+        const isPasswordValid = result;
+
+        if (!isPasswordValid) {
+          const error = {
+            statusCode: 401,
+            message: 'Senha de usuario usuario incorreta! Tente novamente.',
+          };
+
+          throw error;
+        }
+
+        const maxAgeOfCookie =
+          env === 'development'
+            ? 60 * 60 * 1000 * 1000 // mil horas
+            : 60 * 60 * 1000; // 1 hora
+
+        const token = jwt.sign({ userId: userFound._id }, SECRET, {
+          expiresIn: maxAgeOfCookie,
+        });
+
+        res.cookie('token', token, {
+          maxAge: maxAgeOfCookie,
+          httpOnly: true,
+          secure: false,
+          sameSite: true,
+        });
 
         res.status(200).json({
           message: 'Usuario autenticado com sucesso',
-          token: token,
         });
-      }
+      });
     } catch (error) {
       catchErrorFunction(error, next);
     }
   },
 
-  async signup(req: Request, res: Response, next: NextFunction) {},
+  async signup(req: Request, res: Response, next: NextFunction) {
+    const { email, username, password } = req.body;
 
-  async toShortUrlByUser() {},
+    try {
+      await userSignupSchema.validate({ email, username, password });
+
+      const userAlreadyExist = await users.findOne({ email });
+
+      if (userAlreadyExist) {
+        const error = {
+          statusCode: 401,
+          message: 'Email informado ja cadastrado! Use outro email.',
+        };
+
+        throw error;
+      }
+
+      bcrypt.hash(password, 12, async (err, hash) => {
+        if (err) {
+          const error = {
+            statusCode: 500,
+            message: 'Error interno de servidor ao salvar senha de usuario.',
+          };
+
+          throw error;
+        }
+
+        const newUser = {
+          email,
+          username,
+          password: hash,
+        };
+
+        await users.insert(newUser);
+
+        res.status(201).json({
+          message: 'Usuario cadastrado com sucesso!',
+        });
+      });
+    } catch (error) {
+      catchErrorFunction(error, next);
+    }
+  },
+
+  async userShowUrls(req: Request, res: Response, next: NextFunction) {
+    const { userId } = res.locals;
+
+    try {
+      const userUrls = await urls.find({ userId: userId });
+
+      res.status(200).json({ message: 'Todas as urls do usuario', userUrls });
+    } catch (error) {
+      catchErrorFunction(error, next);
+    }
+  },
+
+  async userToShortUrlBy(req: Request, res: Response, next: NextFunction) {},
+
+  async userToShortUrl(req: Request, res: Response, next: NextFunction) {},
+
+  async userEditUrl(req: Request, res: Response, next: NextFunction) {},
+
+  async userDeletUrl(req: Request, res: Response, next: NextFunction) {},
+
+  async userLogout(req: Request, res: Response, next: NextFunction) {
+
+  }
 };

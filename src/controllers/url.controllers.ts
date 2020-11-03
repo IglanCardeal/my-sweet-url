@@ -16,7 +16,7 @@ urls.createIndex('alias');
 urls.createIndex('date');
 
 export default {
-  async showPublicUrls(req: Request, res: Response, next: NextFunction) {
+  async publicShowUrls(req: Request, res: Response, next: NextFunction) {
     const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
     const paginateToFloor = Math.floor(paginate);
 
@@ -44,7 +44,7 @@ export default {
     }
   },
 
-  async showFilteredPublicUrls(
+  async publicShowFilteredUrls(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -83,7 +83,7 @@ export default {
     }
   },
 
-  async redirectToUrl(req: Request, res: Response, next: NextFunction) {
+  async publicRedirectToUrl(req: Request, res: Response, next: NextFunction) {
     const { alias } = req.params;
 
     try {
@@ -115,7 +115,7 @@ export default {
     }
   },
 
-  async toShortUrlAnonymous(req: Request, res: Response, next: NextFunction) {
+  async publicToShortUrl(req: Request, res: Response, next: NextFunction) {
     let { alias, url } = req.body;
 
     // valores padrao para cadastro anonimo
