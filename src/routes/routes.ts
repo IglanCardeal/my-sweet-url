@@ -13,12 +13,19 @@ router.post(
   '/show-filtered-public-urls',
   urlControllers.publicShowFilteredUrls,
 );
-router.get('/url/:alias', urlControllers.publicShowUrls);
+router.get('/url/:alias', urlControllers.publicRedirectToUrl);
 router.post('/short-url', urlControllers.publicToShortUrl);
 
 // USERS routes
 router.post('/login', userControllers.login);
 router.post('/signup', userControllers.signup);
 router.get('/user/urls', checkAuthentication, userControllers.userShowUrls);
+router.get('/user/url/:alias', userControllers.userRedirectUrl);
+router.post(
+  '/user/short-url',
+  checkAuthentication,
+  userControllers.userToShortUrl,
+);
+router.put('/user/edit', checkAuthentication, userControllers.userEditUrl);
 
 export default router;

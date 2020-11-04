@@ -24,10 +24,12 @@ export const urlSchema = yup.object().shape({
     .string()
     .trim()
     .url('URL nao pode ser vazia ou tem que ser em um formato valido!')
-    .required(),
+    .required('URL nao pode ser vazia ou tem que ser em um formato valido!'),
   publicStatus: yup
     .boolean()
-    .required()
+    .required(
+      'O estatus(publicStatus) da URL tem que ser um Boolean "true" ou "false"',
+    )
     .typeError(
       'O estatus(publicStatus) da URL tem que ser um Boolean "true" ou "false"',
     ),
@@ -54,7 +56,9 @@ export const userLoginSchema = yup.object().shape({
   username: yup
     .string()
     .trim()
-    .required()
+    .required(
+      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+    )
     .min(
       3,
       'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
@@ -71,7 +75,9 @@ export const userLoginSchema = yup.object().shape({
   password: yup
     .string()
     .trim()
-    .required()
+    .required(
+      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+    )
     .min(
       3,
       'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
@@ -90,7 +96,9 @@ export const userSignupSchema = yup.object().shape({
   username: yup
     .string()
     .trim()
-    .required()
+    .required(
+      'Nome de usuario tem que ter tamanho minimo de 3 e maximo de 25 caracteres.',
+    )
     .min(
       3,
       'Nome de usuario tem que ter tamanho minimo de 3 e maximo de 25 caracteres.',
@@ -107,7 +115,9 @@ export const userSignupSchema = yup.object().shape({
   password: yup
     .string()
     .trim()
-    .required()
+    .required(
+      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+    )
     .min(
       3,
       'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
@@ -125,5 +135,5 @@ export const userSignupSchema = yup.object().shape({
     .string()
     .trim()
     .email('Email deve ser informado e deve ser em formato valido.')
-    .required(),
+    .required('Email deve ser informado e deve ser em formato valido.'),
 });

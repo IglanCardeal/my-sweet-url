@@ -2,9 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { config } from 'dotenv';
+import { nanoid } from 'nanoid';
 
 import { db } from '../database/connection';
-import { userLoginSchema, userSignupSchema } from '../utils/schemas';
+import { userLoginSchema, userSignupSchema, urlSchema } from '../utils/schemas';
 import catchErrorFunction from '../utils/catch-error-function';
 
 config();
@@ -13,6 +14,7 @@ const users = db.get('users');
 const urls = db.get('urls');
 const SECRET = process.env.JWT_SECRET || 'chavesecretaaleatoria';
 const env = process.env.NODE_ENV;
+const { APP_HOST } = process.env;
 
 export default {
   async login(req: Request, res: Response, next: NextFunction) {
@@ -131,21 +133,139 @@ export default {
     try {
       const userUrls = await urls.find({ userId: userId });
 
+      const userUrlsFormated = userUrls.map(url => {
+        return { ...urls, shorteredUrl: `${APP_HOST}/user/url/${url.alias}` };
+      });
+
       res.status(200).json({ message: 'Todas as urls do usuario', userUrls });
     } catch (error) {
       catchErrorFunction(error, next);
     }
   },
 
-  async userToShortUrlBy(req: Request, res: Response, next: NextFunction) {},
+  async userRedirectUrl(req: Request, res: Response, next: NextFunction) {
+    const { alias } = req.params;
 
-  async userToShortUrl(req: Request, res: Response, next: NextFunction) {},
+    try {
+      const url = await urls.findOne({ alias });
 
-  async userEditUrl(req: Request, res: Response, next: NextFunction) {},
+      if (!url?.url) {
+        const error = {
+          message: 'Nenhuma URL encontrada com este apelido.',
+          statusCode: 404,
+        };
+
+        throw error;
+      }
+
+      const number_access = url.number_access + 1;
+
+      urls.findOneAndUpdate(
+        { alias },
+        {
+          $set: {
+            number_access: number_access,
+          },
+        },
+      );
+
+      return res.status(308).redirect(url.url);
+    } catch (error) {
+      catchErrorFunction(error, next);
+    }
+  },
+
+  async userToShortUrl(req: Request, res: Response, next: NextFunction) {
+    const { userId } = res.locals;
+    let { alias, url, publicStatus } = req.body;
+
+    try {
+      if (!alias) alias = nanoid(7);
+
+      if (!(typeof publicStatus === 'boolean')) publicStatus = false;
+
+      await urlSchema.validate({ alias, url, publicStatus, userId });
+
+      alias = alias.toLowerCase();
+
+      const aliasExist = await urls.findOne({ alias });
+
+      if (aliasExist) {
+        const error = {
+          message: 'Apelido informado ja existe! Tente outro nome.',
+          statusCode: 403,
+        };
+
+        throw error;
+      }
+
+      const date = new Date().toLocaleDateString('br');
+
+      const newUrl = {
+        alias,
+        url,
+        publicStatus,
+        userId,
+        date,
+        number_access: 0,
+      };
+
+      await urls.insert(newUrl);
+
+      res.status(201).json({
+        message: 'URL salva com sucesso!',
+        urlSaved: {
+          alias,
+          url,
+          publicStatus,
+          date,
+          shorteredUrl: `${APP_HOST}/user/url/${alias}`,
+        },
+      });
+    } catch (error) {
+      catchErrorFunction(error, next);
+    }
+  },
+
+  async userEditUrl(req: Request, res: Response, next: NextFunction) {
+    const { userId } = res.locals;
+    const { alias, url, publicStatus } = req.body;
+
+    try {
+      await urlSchema.validate({ alias, url, publicStatus, userId });
+
+      const [userFounded, urlsFounded] = await Promise.all([
+        users.findOne({ _id: userId }),
+        urls.find({ userId, alias }),
+      ]);
+
+      if (!userFounded) {
+        const error = {
+          statusCode: 404,
+          message: 'Usuario nao encontrado! Faca o login novamente.',
+        };
+
+        throw error;
+      }
+
+      if (!urlsFounded) {
+        const error = {
+          statusCode: 404,
+          message: 'Url nao encontrada!',
+        };
+
+        throw error;
+      }
+
+      console.log(urlsFounded, userFounded);
+
+      res.status(200).json({ message: 'Url editada com sucesso!' });
+    } catch (error) {
+      catchErrorFunction(error, next);
+    }
+  },
 
   async userDeletUrl(req: Request, res: Response, next: NextFunction) {},
 
-  async userLogout(req: Request, res: Response, next: NextFunction) {
-
-  }
+  async userLogout(req: Request, res: Response, next: NextFunction) {},
 };

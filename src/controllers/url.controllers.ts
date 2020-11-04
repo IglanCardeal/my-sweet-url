@@ -140,7 +140,7 @@ export default {
 
       alias = alias.toLowerCase();
 
-      const date = Date.now();
+      const date = new Date().toLocaleDateString('br');
 
       const newUrl = {
         alias,
