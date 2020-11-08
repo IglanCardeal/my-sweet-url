@@ -229,10 +229,10 @@ export default {
 
   async userEditUrl(req: Request, res: Response, next: NextFunction) {
     const { userId } = res.locals;
-    const { alias, url, publicStatus } = req.body;
+    const { alias, url } = req.body;
 
     try {
-      await urlSchema.validate({ alias, url, publicStatus, userId });
+      await urlSchema.validate({ alias, url, userId });
 
       const [userFounded, urlsFounded] = await Promise.all([
         users.findOne({ _id: userId }),
@@ -259,7 +259,13 @@ export default {
 
       console.log(urlsFounded, userFounded);
 
-      res.status(200).json({ message: 'Url editada com sucesso!' });
+      res.status(200).json({
+        message: 'Url editada com sucesso!',
+        updatedUrl: {
+          alias,
+          url,
+        },
+      });
     } catch (error) {
       catchErrorFunction(error, next);
     }

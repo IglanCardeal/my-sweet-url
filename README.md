@@ -1,18 +1,30 @@
+<div align="center">
+
 # ![url-icon](/public/favicon.ico) My Sweet URL
 
-Site para encurtar URL's feito em **NodeJS**, **Express**, **TypeScript** e **MongoDB**.
+## Site para encurtar URL's.
 
-## Metodos e retornos publicos
+</div>
+
+<hr>
+
+## Status do Projeto
+
+🚧  <b>Em construção...</b>  🚧
+
+</h4>
+
+#### Metodos e retornos publicos
 
 Estes metodos estao relacionados a **usuarios anonimos** (sem cadastro no sistema)
 onde estes usuarios podem cadastrar uma nova _url_, que por padrao, esta url e publica,
 e visualizar todas as url publicas.
 
-#### ENDPOINTS
+#### Endpoints
 
-**metodo** */path*
+**metodo** _/path_
 
-- **GET** */showurls*
+- **GET** _/showurls_
 
   - Corpo de requisicao: _nenhum_
 
@@ -37,4 +49,3 @@ e visualizar todas as url publicas.
   - alias: `string`
 
   - url: `string`
-
