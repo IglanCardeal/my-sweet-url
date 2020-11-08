@@ -12,15 +12,13 @@
 
 🚧  <b>Em construção...</b>  🚧
 
-</h4>
-
-#### Metodos e retornos publicos
+### Metodos e retornos publicos
 
 Estes metodos estao relacionados a **usuarios anonimos** (sem cadastro no sistema)
 onde estes usuarios podem cadastrar uma nova _url_, que por padrao, esta url e publica,
 e visualizar todas as url publicas.
 
-#### Endpoints
+### Endpoints
 
 **metodo** _/path_
 
