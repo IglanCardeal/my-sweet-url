@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Iglan Cardeal" />
+    <meta name="keywords" content="URL, shortener, app" />
+    <meta name="description" content="Encurtador de URLS" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+    <title>Encurtador de URL</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html.transition,
+      html.transition *,
+      html.transition *:before,
+      html.transition *:after {
+        transition: all 750ms;
+        transition-delay: 0ms;
+      }
+
+      html[data-theme='dark'] {
+        --text-color: rgb(255, 255, 255);
+        --bg-color: #2c2966;
+        --nav-bg-color: #131047;
+        --btn-color: #ffa051;
+      }
+
+      body {
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.2rem;
+        background: var(--bg-color);
+        /* height: 100vh; */
+        color: var(--text-color);
+      }
+
+      header {
+        width: 100%;
+        font-size: 1.4rem;
+        background: var(--nav-bg-color);
+        padding: 18px 16px;
+        position: fixed;
+        overflow: hidden;
+        z-index: 1;
+        top: 0px;
+        text-align: center;
+      }
+
+      .title {
+        display: inline-block;
+        vertical-align: middle;
+        letter-spacing: 5px;
+        font-weight: bold;
+      }
+
+      .title--span {
+        color: #ffa051;
+      }
+
+      .container {
+        position: relative;
+        margin-top: 200px;
+        text-align: center;
+      }
+
+      button {
+        background: #ffa051;
+        border: 1px solid #ffa051;
+        padding: 1rem;
+        border-radius: 8px;
+        color: #000;
+        cursor: pointer;
+        box-shadow: 0 5px 3px rgba(0, 0, 0, 0.322);
+      }
+
+      footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: var(--nav-bg-color);
+        color: rgb(255, 255, 255);
+        text-align: center;
+        padding: 5px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="title">
+          <h1>My Sweet <span class="title--span">URL</span></h1>
+        </div>
+      </header>
+      <div class="container">
+        <h2>404</h2>
+        <h3>URL nao encontrada! 🤖</h3>
+        <br />
+        <button data="goback">Voltar</button>
+      </div>
+    </main>
+    <footer>
+      Desenvolvido e mantido por <br />
+      Iglan Cardeal <br />
+      <span data="year"></span>
+    </footer>
+    <script>
+      document.querySelector(
+        '[data="year"]',
+      ).textContent = new Date().getFullYear();
+
+      const backBtn = document.querySelector('[data="goback"]');
+
+      backBtn.addEventListener('click', () => {
+        window.history.back();
+      });
+    </script>
+  </body>
+</html>

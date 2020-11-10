@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import path from 'path';
 
 import routes from './routes/routes';
 
@@ -17,7 +18,6 @@ app.use(helmet());
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors(corsOptions));
-
 app.use(routes);
 app.use(errorHandler);
 app.use(notFoundHandler);

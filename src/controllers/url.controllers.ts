@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { nanoid } from 'nanoid';
 import { config } from 'dotenv';
+import path from 'path';
 
 import { db } from '../database/connection';
 import { urlSchema, urlToFilter } from '../utils/schemas';
@@ -21,18 +22,23 @@ export default {
     const paginateToFloor = Math.floor(paginate);
 
     try {
-      // ignorar erro TS no array ['-userId','-_id']
       const publicUrls = await urls.find(
         { publicStatus: true },
-        ['-userId', '-_id'],
         {
           limit: 10,
           skip: paginateToFloor,
         },
       );
-
+      console.log(publicUrls);
       const urlsWithShortenedUrls = publicUrls.map(url => {
-        return { ...url, shorteredUrl: `${APP_HOST}/url/${url.alias}` };
+        return {
+          alias: url.alias,
+          url: url.url,
+          date: url.date,
+          publicStatus: url.publicStatus,
+          number_access: url.number_access,
+          shorteredUrl: `${APP_HOST}/url/${url.alias}`,
+        };
       });
 
       res.status(200).json({
@@ -71,7 +77,14 @@ export default {
       }
 
       const urlsFilteredsWithShortenedUrls = urlsFiltereds.map(url => {
-        return { ...url, shorteredUrl: `${APP_HOST}/url/${url.alias}` };
+        return {
+          alias: url.alias,
+          url: url.url,
+          date: url.date,
+          publicStatus: url.publicStatus,
+          number_access: url.number_access,
+          shorteredUrl: `${APP_HOST}/url/${url.alias}`,
+        };
       });
 
       res.status(200).json({
@@ -90,12 +103,13 @@ export default {
       const url = await urls.findOne({ alias });
 
       if (!url?.url) {
-        const error = {
-          message: 'Nenhuma URL encontrada com este apelido.',
-          statusCode: 404,
-        };
+        // const error = {
+        //   message: 'Nenhuma URL encontrada com este apelido.',
+        //   statusCode: 404,
+        // };
 
-        throw error;
+        // throw error;
+        return res.sendFile(path.join(__dirname, '../../public', '404.html'));
       }
 
       const number_access = url.number_access + 1;
