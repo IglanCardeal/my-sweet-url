@@ -1,6 +1,6 @@
 <div align="center">
 
-# ![url-icon](/public/favicon.ico) My Sweet URL
+# ![url-icon](./src/public/favicon.ico) My Sweet URL
 
 ## Site para encurtar URL's
 
@@ -189,14 +189,26 @@ Uma solução alternativa é subir um container do Docker do MongoDB. Existe a [
 Na raíz do projeto temos um arquivo `docker-compose.yml` com as seguintes características:
 
 ```bash
-version: '3'
+version: "3"
+
 services:
+  # app:
+  #   container_name: my_sweet_url
+  #   build: .
+  #   ports:
+  #     - "3000:3000"
+  #   command: yarn dev
+  #   # volumes:
+  #   #   - ./data:/data/db
+  #   links:
+  #     - mongo
+
   mongo:
-    container_name: db_app-envio-email
+    container_name: my_sweet_mongo
     image: mongo
-    restart: always
     ports:
-      - ${DB_PORT}:27017
+      - "27017:27017"
+
 ```
 
 Esse arquivo é a base para gerar um container do mongodb.
@@ -236,20 +248,14 @@ Ao finalizar, execute `make logs`, para verificar se tudo ocorreu bem nos logs.
 
 Execute `make down` para desmontar o container.
 
-**_OBS_**: Para a aplicação se conectar com o container do mongodb, a varável `DB_HOST_EXTERNAL` não pode estar definida.
-
-### Quais tecnologias foram usadas? :wrench:
+### Quais tecnologias/ferrramentas foram usadas? :wrench:
 
 <p id="tecnologias"></p>
 
 - [NodeJS](https://nodejs.org/en/)
 - [Express](https://expressjs.com/pt-br/) (Framework web)
-- [Ejs](https://ejs.co/) (Template engine)
-- [SendGrid](https://sendgrid.com)
 - [MongoDB](https://www.mongodb.com/)
 - [Docker](https://www.docker.com/)
-- [PM2](https://pm2.keymetrics.io/) (Para clusterização em produção)
-- [Bootstrap](https://getbootstrap.com/) (Framework CSS)
 - [Git](https://git-scm.com)
 - [VSCode](https://code.visualstudio.com/)
 
