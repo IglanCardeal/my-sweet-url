@@ -207,7 +207,7 @@ services:
     container_name: my_sweet_mongo
     image: mongo
     ports:
-      - "27017:27017"
+      - ${DB_PORT}:27017
 
 ```
 
