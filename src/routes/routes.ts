@@ -1,31 +1,37 @@
 import { Router } from 'express';
 
-import urlControllers from '../controllers/url.controllers';
-import userControllers from '../controllers/user.controller';
-import signupLoginControllers from '../controllers/signupLogin.controllers';
+import urlControllers from '@controllers/url.controllers';
+import userControllers from '@controllers/user.controller';
+import signupLoginControllers from '@controllers/signupLogin.controllers';
 
-import checkAuthentication from '../middlewares/check-authentication';
+import checkAuthentication from '@middlewares/check-authentication';
 
 const router = Router();
 
 // PUBLIC routes
+// router.get('/urls/:alias', urlControllers.publicRedirectToUrl);
 router.get('/urls', urlControllers.publicShowUrls);
+router.get('/:alias', urlControllers.publicRedirectToUrl);
 router.post('/urls/filtered', urlControllers.publicShowFilteredUrls);
-router.get('/urls/:alias', urlControllers.publicRedirectToUrl);
 router.post('/urls/create', urlControllers.publicToShortUrl);
 
-// SIGNUP/LOGIN routes
+// SIGNUP/LOGIN/LOGOUT routes
 router.post('/login', signupLoginControllers.login);
 router.post('/signup', signupLoginControllers.signup);
+router.delete('/logout', signupLoginControllers.logout);
 
 // USERS routes
-router.get('/user/urls', checkAuthentication, userControllers.userShowUrls);
-router.get('/user/url/:alias', userControllers.userRedirectUrl);
+router.get('/users/urls', checkAuthentication, userControllers.userShowUrls);
+// router.get('/users/urls/:alias', userControllers.userRedirectUrl);
 router.post(
-  '/user/short-url',
+  '/users/urls/create',
   checkAuthentication,
   userControllers.userToShortUrl,
 );
-router.put('/user/edit', checkAuthentication, userControllers.userEditUrl);
+router.put(
+  '/users/urls/edit',
+  checkAuthentication,
+  userControllers.userEditUrl,
+);
 
 export default router;

@@ -26,11 +26,13 @@ export default {
           date: url.date,
           publicStatus: url.publicStatus,
           number_access: url.number_access,
-          shorteredUrl: `${APP_HOST}/user/url/${url.alias}`,
+          shorteredUrl: `${APP_HOST}/${url.alias}`,
         };
       });
 
-      res.status(200).json({ message: 'Todas as urls do usuario', userUrls });
+      res
+        .status(200)
+        .json({ message: 'Todas as urls do usuario', userUrlsFormated });
     } catch (error) {
       catchErrorFunction(error, next);
     }
@@ -122,14 +124,14 @@ export default {
 
   async userEditUrl(req: Request, res: Response, next: NextFunction) {
     const { userId } = res.locals;
-    const { alias, url } = req.body;
+    const { alias, url, publicStatus } = req.body;
 
     try {
-      await urlSchema.validate({ alias, url, userId });
+      await urlSchema.validate({ alias, url, userId, publicStatus });
 
       const [userFounded, urlsFounded] = await Promise.all([
         users.findOne({ _id: userId }),
-        urls.find({ userId, alias }),
+        urls.find({ userId, alias, url }),
       ]);
 
       if (!userFounded) {
@@ -152,19 +154,20 @@ export default {
 
       console.log(urlsFounded, userFounded);
 
+      const updatedUrl = await urls.findOneAndUpdate(
+        { userId: userId },
+        { $set: { alias: alias, url: url } },
+      );
+
       res.status(200).json({
         message: 'Url editada com sucesso!',
         updatedUrl: {
-          alias,
-          url,
+          alias: updatedUrl.alias,
+          url: updatedUrl.url,
         },
       });
     } catch (error) {
       catchErrorFunction(error, next);
     }
   },
-
-  async userDeletUrl(req: Request, res: Response, next: NextFunction) {},
-
-  async userLogout(req: Request, res: Response, next: NextFunction) {},
 };

@@ -2,15 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-import path from 'path';
 
 import routes from './routes/routes';
 
-import { startDatabaseConnectionAndServer } from './database/connection';
+import { startDatabaseConnectionAndServer } from '@database/connection';
 
-import corsOptions from './middlewares/cors-options';
-import errorHandler from './middlewares/error-handler';
-import notFoundHandler from './middlewares/404-handler';
+import corsOptions from '@middlewares/cors-options';
+import errorHandler from '@middlewares/error-handler';
+import notFoundHandler from '@middlewares/404-handler';
 
 const app = express();
 
@@ -31,11 +30,11 @@ startDatabaseConnectionAndServer(app);
  *
  * [X]2 - opcao de fazer login e cadastro. Por padrao, nao precisa de cadastro para usar a aplicacao, mas a URL encurtada sera sempre de visualizacao publica
  *
- * []3 - Caso tenha feito o login, opcao de quando o usuario cadastrar uma url, definir ela como publica ou privada, alem de poder exibidir todas as suas url cadastradas
+ * [x]3 - Caso tenha feito o login, opcao de quando o usuario cadastrar uma url, definir ela como publica ou privada, alem de poder exibidir todas as suas url cadastradas
  *
- * []4 - pagina de usuario mostrando todas as suas url e um `input type radio` para o usuario alterar se a url sera publica ou privada
+ * [x]4 - pagina de usuario mostrando todas as suas url e um `input type radio` para o usuario alterar se a url sera publica ou privada
  *
- * []5 - logoff
+ * [x]5 - logoff
  *
  * []6 - API RATE LIMITING
  *

@@ -3,9 +3,9 @@ import { nanoid } from 'nanoid';
 import { config } from 'dotenv';
 import path from 'path';
 
-import { db } from '../database/connection';
-import { urlSchema, urlToFilter } from '../utils/schemas';
-import catchErrorFunction from '../utils/catch-error-function';
+import { db } from '@database/connection';
+import { urlSchema, urlToFilter } from '@utils/schemas';
+import catchErrorFunction from '@utils/catch-error-function';
 
 config();
 
@@ -29,7 +29,7 @@ export default {
           skip: paginateToFloor,
         },
       );
-      console.log(publicUrls);
+
       const urlsWithShortenedUrls = publicUrls.map(url => {
         return {
           alias: url.alias,
@@ -37,7 +37,7 @@ export default {
           date: url.date,
           publicStatus: url.publicStatus,
           number_access: url.number_access,
-          shorteredUrl: `${APP_HOST}/url/${url.alias}`,
+          shorteredUrl: `${APP_HOST}/${url.alias}`,
         };
       });
 
@@ -83,7 +83,7 @@ export default {
           date: url.date,
           publicStatus: url.publicStatus,
           number_access: url.number_access,
-          shorteredUrl: `${APP_HOST}/url/${url.alias}`,
+          shorteredUrl: `${APP_HOST}/${url.alias}`,
         };
       });
 
@@ -109,7 +109,7 @@ export default {
         // };
 
         // throw error;
-        return res.sendFile(path.join(__dirname, '../../public', '404.html'));
+        return res.sendFile(path.join(__dirname, '../public', '404.html'));
       }
 
       const number_access = url.number_access + 1;
@@ -172,7 +172,7 @@ export default {
         urlCreated: {
           alias,
           url,
-          shortenedUrl: `${APP_HOST}/url/${alias}`,
+          shortenedUrl: `${APP_HOST}/${alias}`,
           ['public_status']: publicStatus,
           date,
         },

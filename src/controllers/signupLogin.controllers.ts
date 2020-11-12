@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { config } from 'dotenv';
 
-import { userLoginSchema, userSignupSchema } from '../utils/schemas';
-import { db } from '../database/connection';
-import catchErrorFunction from '../utils/catch-error-function';
+import { userLoginSchema, userSignupSchema } from '@utils/schemas';
+import { db } from '@database/connection';
+import catchErrorFunction from '@utils/catch-error-function';
 
 config();
 
@@ -59,7 +59,6 @@ export default {
           env === 'development'
             ? 60 * 60 * 1000 * 1000 // mil horas
             : 60 * 60 * 1000; // 1 hora
-
         const token = jwt.sign({ userId: userFound._id }, SECRET, {
           expiresIn: maxAgeOfCookie,
         });
@@ -122,5 +121,11 @@ export default {
     } catch (error) {
       catchErrorFunction(error, next);
     }
+  },
+
+  logout(req: Request, res: Response, next: NextFunction) {
+    res.clearCookie('token');
+
+    res.status(205).json({ message: 'Logout relizado com sucesso!' });
   },
 };

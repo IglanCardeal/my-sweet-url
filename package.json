@@ -7,8 +7,9 @@
   "license": "MIT",
   "scripts": {
     "start": "NODE_ENV=production node dist/server.js",
-    "dev": "NODE_ENV=development ts-node-dev --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
-    "build": "tsc"
+    "dev": "NODE_ENV=development ts-node-dev -r tsconfig-paths/register --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
+    "build": "tsc",
+    "migrate-mongo": "./node_modules/migrate-mongo/bin/migrate-mongo.js"
   },
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -21,6 +22,7 @@
     "express": "^4.17.1",
     "helmet": "^3.23.2",
     "jsonwebtoken": "^8.5.1",
+    "migrate-mongo": "^8.1.4",
     "monk": "^7.3.2",
     "nanoid": "^3.1.12",
     "yup": "^0.29.1"
@@ -29,9 +31,12 @@
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.6",
     "@types/helmet": "^0.0.47",
+    "@types/migrate-mongo": "^7.0.1",
     "@types/yup": "^0.29.8",
     "prettier": "2.1.2",
+    "ts-node": "^9.0.0",
     "ts-node-dev": "^1.0.0-pre.49",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^3.9.5"
   }
 }

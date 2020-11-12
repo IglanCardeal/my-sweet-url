@@ -25,6 +25,7 @@ e visualizar todas as url publicas.
 - [Sobre](#sobre)
   - [Como é definido o protocolo de envio?](#protocolo-envio)
 - [Features](#features)
+- [Testes](#testes)
 - [Endpoints](#endpoints)
 - [Como usar localmente](#como-usar)
   - [Requisitos](#como-usar)
@@ -46,9 +47,13 @@ e visualizar todas as url publicas.
 
 Nesta aplicação voçê pode:
 
+<p id="testes"></p>
+
+### Testes
+
 <p id="endpoints"></p>
 
-### Endpoints
+### Endpoints (em documentacao)
 
 **metodo** _/path_
 
