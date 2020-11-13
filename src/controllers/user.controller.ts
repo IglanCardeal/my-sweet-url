@@ -32,7 +32,7 @@ export default {
 
       res
         .status(200)
-        .json({ message: 'Todas as urls do usuario', userUrlsFormated });
+        .json({ message: 'Todas as urls do usuário', userUrlsFormated });
     } catch (error) {
       catchErrorFunction(error, next);
     }
@@ -87,7 +87,7 @@ export default {
 
       if (aliasExist) {
         const error = {
-          message: 'Apelido informado ja existe! Tente outro nome.',
+          message: 'Apelido informado já existe! Tente outro nome.',
           statusCode: 403,
         };
 
@@ -137,7 +137,7 @@ export default {
       if (!userFounded) {
         const error = {
           statusCode: 404,
-          message: 'Usuario nao encontrado! Faca o login novamente.',
+          message: 'Usuário não encontrado! Faça o login novamente.',
         };
 
         throw error;
@@ -146,7 +146,7 @@ export default {
       if (!urlsFounded) {
         const error = {
           statusCode: 404,
-          message: 'Url nao encontrada!',
+          message: 'Url não encontrada!',
         };
 
         throw error;

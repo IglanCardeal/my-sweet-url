@@ -15,5 +15,6 @@ services:
   mongo:
     container_name: my_sweet_mongo
     image: mongo
+    restart: always
     ports:
       - ${DB_PORT}:27017

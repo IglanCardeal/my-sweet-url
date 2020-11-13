@@ -145,7 +145,7 @@ export default {
 
       if (aliasExist) {
         const error = {
-          message: 'Apelido informado ja existe! Tente outro nome.',
+          message: 'Apelido informado já existe! Tente outro nome.',
           statusCode: 403,
         };
 

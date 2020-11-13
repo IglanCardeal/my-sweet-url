@@ -2,7 +2,7 @@
 
 # ![url-icon](./src/public/favicon.ico) My Sweet URL
 
-## Site para encurtar URL's
+## Projeto de uma API Restful para encurtar URL's
 
 </div>
 
@@ -12,20 +12,19 @@
 
 🚧 <b>Em construção...</b> 🚧
 
-### Metodos e retornos publicos
-
-Estes metodos estao relacionados a **usuarios anonimos** (sem cadastro no sistema)
-onde estes usuarios podem cadastrar uma nova _url_, que por padrao, esta url e publica,
-e visualizar todas as url publicas.
-
 ### Tabela de conteúdos
 
-<!--ts-->
-
 - [Sobre](#sobre)
-  - [Como é definido o protocolo de envio?](#protocolo-envio)
+  - [API Restful](#)
+  - [Projeto front end](#)
 - [Features](#features)
-- [Testes](#testes)
+  - [Uso de anônimo](#anonimo)
+  - [Uso de usuário](#usuario)
+  - [Por que me cadastrar na aplicação?](#cadastro)
+- [Features em desenvolvimento](#features)
+  - [Migrations para auxiliar no desenvolvimento](#migrations)
+  - [Testes](#testes)
+  - [Filtros](#filtros)
 - [Endpoints](#endpoints)
 - [Como usar localmente](#como-usar)
   - [Requisitos](#como-usar)
@@ -35,7 +34,6 @@ e visualizar todas as url publicas.
     - [Container Docker](#docker)
 - [Tecnologias/ferramentas usadas](#tecnologias)
 - [Autor](#autor)
-  <!--te-->
 
 <p id="sobre"></p>
 
@@ -45,7 +43,55 @@ e visualizar todas as url publicas.
 
 ### Features 📋
 
-Nesta aplicação voçê pode:
+Esta aplicação pode ser de duas formas: Usuário anônimo ou usuário cadastrado.
+
+Dependendo da forma que a aplicação será usada, determinado recurso estará ou não disponível.
+
+_Quais recursos estão diponíveis e para quem?_ 🤔
+
+Vamos ver a seguir...
+
+<p id="anonimo"></p>
+
+#### Usuário anônimo
+
+Um usuário que não está cadastrado no sistema (anônimo), ele tem acesso aos seguintes recursos:
+
+- Encurtar uma URL, informando um apelido (`alias`) e a `url` a ser encurtada (`www.urlgigante.com.br`).
+
+- Visualizar todas as URLs encurtadas e que estão publicas (`"public_status": true`).
+
+Exemplo:
+
+Executando o projeto localmente, um usuário anônimo que informar os seguintes parâmetros:
+
+```bash
+  {
+    "url":"https://www.youtube.com/watch?v=O_Cc-Xzc0zM",
+    "alias": "seu-tubo"
+  }
+```
+
+Receberá o seguinte retorno:
+
+```bash
+  {
+    "message": "Nova URL adicionada com sucesso.",
+    "urlCreated": {
+      "alias": "seu-tubo",
+      "url": "https://www.youtube.com/watch?v=O_Cc-Xzc0zM",
+      "shortenedUrl": "http://localhost:8080/seu-tubo",
+      "public_status": true,
+      "date": "2020-11-12"
+    }
+  }
+```
+
+A resposta vem padronizada para usuários anônimos, ou seja, toda e qualquer URL que ele encurtar, terá por padrão o status publico, ou seja, qualque um pode visualizar a URL que foi encurtada.
+
+<p id="usuario"></p>
+
+#### Usuário cadastrado
 
 <p id="testes"></p>
 
@@ -53,7 +99,13 @@ Nesta aplicação voçê pode:
 
 <p id="endpoints"></p>
 
-### Endpoints (em documentacao)
+### Endpoints
+
+#### Metodos e retornos anônimos
+
+Estes metodos estao relacionados a **usuários anônimos** (sem cadastro no sistema)
+onde estes usuarios podem cadastrar uma nova _url_, que por padrao, esta url e publica,
+e visualizar todas as url publicas.
 
 **metodo** _/path_
 

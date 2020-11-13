@@ -27,7 +27,7 @@ export default {
       if (!userFound) {
         const error = {
           statusCode: 404,
-          message: 'Usuario nao encontrado! Tente novamente',
+          message: 'Usuário não encontrado! Tente novamente',
         };
 
         throw error;
@@ -38,7 +38,7 @@ export default {
           const error = {
             statusCode: 500,
             message:
-              'Erro interno de servidor ao tentar verificar senha de usuario.',
+              'Erro interno de servidor ao tentar verificar senha de usuário.',
           };
 
           throw error;
@@ -49,7 +49,7 @@ export default {
         if (!isPasswordValid) {
           const error = {
             statusCode: 401,
-            message: 'Senha de usuario usuario incorreta! Tente novamente.',
+            message: 'Senha de usuário usuário incorreta! Tente novamente.',
           };
 
           throw error;
@@ -63,7 +63,7 @@ export default {
           expiresIn: maxAgeOfCookie,
         });
 
-        res.cookie('token', token, {
+        res.cookie('token', `Bearer ${token}`, {
           maxAge: maxAgeOfCookie,
           httpOnly: true,
           secure: false,
@@ -71,7 +71,7 @@ export default {
         });
 
         res.status(200).json({
-          message: 'Usuario autenticado com sucesso',
+          message: 'Usuário autenticado com sucesso',
         });
       });
     } catch (error) {
@@ -100,7 +100,7 @@ export default {
         if (err) {
           const error = {
             statusCode: 500,
-            message: 'Error interno de servidor ao salvar senha de usuario.',
+            message: 'Error interno de servidor ao salvar senha de usuário.',
           };
 
           throw error;
@@ -115,7 +115,7 @@ export default {
         await users.insert(newUser);
 
         res.status(201).json({
-          message: 'Usuario cadastrado com sucesso!',
+          message: 'Usuário cadastrado com sucesso!',
         });
       });
     } catch (error) {

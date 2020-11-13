@@ -21,8 +21,22 @@ export default (req: Request, res: Response, next: NextFunction) => {
     throw error;
   }
 
+  const format = token.split(' ');
+
+  if (format[0] !== 'Bearer') {
+    const error = {
+      statusCode: 401,
+      message:
+        'Token com formato inválido! Realize o login para adquirir token de autenticacao em formato válido.',
+    };
+
+    throw error;
+  }
+
+  const extractedToken = format[1];
+
   try {
-    jwt.verify(token, SECRET, async (err: any, decoded: any) => {
+    jwt.verify(extractedToken, SECRET, async (err: any, decoded: any) => {
       if (err) {
         res.clearCookie('token');
 
