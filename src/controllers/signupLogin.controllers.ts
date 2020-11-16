@@ -6,6 +6,7 @@ import { config } from 'dotenv';
 import { userLoginSchema, userSignupSchema } from '@utils/schemas';
 import { db } from '@database/connection';
 import catchErrorFunction from '@utils/catch-error-function';
+import throwErrorHandler from '@utils/throw-error-handler';
 
 config();
 
@@ -25,34 +26,24 @@ export default {
       const userFound = await users.findOne({ username });
 
       if (!userFound) {
-        const error = {
-          statusCode: 404,
-          message: 'Usuário não encontrado! Tente novamente',
-        };
-
-        throw error;
+        throwErrorHandler(404, 'Usuário não encontrado! Tente novamente');
       }
 
       bcrypt.compare(password, userFound.password, (err, result) => {
         if (err) {
-          const error = {
-            statusCode: 500,
-            message:
-              'Erro interno de servidor ao tentar verificar senha de usuário.',
-          };
-
-          throw error;
+          throwErrorHandler(
+            500,
+            'Erro interno de servidor ao tentar verificar senha de usuário',
+          );
         }
 
         const isPasswordValid = result;
 
         if (!isPasswordValid) {
-          const error = {
-            statusCode: 401,
-            message: 'Senha de usuário usuário incorreta! Tente novamente.',
-          };
-
-          throw error;
+          throwErrorHandler(
+            401,
+            'Senha de usuário usuário incorreta! Tente novamente.',
+          );
         }
 
         const maxAgeOfCookie =
@@ -80,7 +71,11 @@ export default {
   },
 
   async signup(req: Request, res: Response, next: NextFunction) {
-    const { email, username, password } = req.body;
+    let { email, username, password } = req.body;
+
+    email = email.trim();
+    username = username.trim().toLowerCase();
+    password = password.trim();
 
     try {
       await userSignupSchema.validate({ email, username, password });
@@ -88,22 +83,18 @@ export default {
       const userAlreadyExist = await users.findOne({ email });
 
       if (userAlreadyExist) {
-        const error = {
-          statusCode: 401,
-          message: 'Email informado ja cadastrado! Use outro email.',
-        };
-
-        throw error;
+        throwErrorHandler(
+          401,
+          'Email informado ja cadastrado! Use outro email.',
+        );
       }
 
       bcrypt.hash(password, 12, async (err, hash) => {
         if (err) {
-          const error = {
-            statusCode: 500,
-            message: 'Error interno de servidor ao salvar senha de usuário.',
-          };
-
-          throw error;
+          throwErrorHandler(
+            500,
+            'Error interno de servidor ao salvar senha de usuário.',
+          );
         }
 
         const newUser = {

@@ -10,6 +10,10 @@ module.exports = {
 
     const NUMBER_OF_OBJECT = 20;
 
+    const randomNumber = (min, max) => {
+      return Math.floor(Math.random() * (max - min) + min);
+    };
+
     const generatUsersUrlsObject = () => {
       const baseUrl = 'https://www.google.com';
       const date = new Date().toLocaleDateString('br');
@@ -17,10 +21,6 @@ module.exports = {
       // gerar letra aleatoria para teste de ordenacao
       const randomLetter = () => {
         const arr = 'WTeOrOdhuXPUdXPeuKjUjeMTgbhHdLkYA6qhVe6eL9UUzgtUizhQeasbuyhkdkakojf'.toLowerCase().split('');
-
-        const randomNumber = (min, max) => {
-          return Math.floor(Math.random() * (max - min) + min);
-        };
 
         return arr[randomNumber(0, arr.length)];
       };
@@ -36,7 +36,8 @@ module.exports = {
           url: `${baseUrl}/teste-${i}`,
           publicStatus: false,
           date: date,
-          userId: userId
+          userId: userId,
+          number_access: randomNumber(0, 100) * 100
         });
 
         i++;

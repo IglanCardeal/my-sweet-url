@@ -15,11 +15,11 @@
 ### Tabela de conteúdos
 
 - [Sobre](#sobre)
-  - [API Restful](#)
-  - [Projeto front end](#)
+  - [API Restful](#api)
+  - [Projeto front-end](#frontend)
 - [Features](#features)
-  - [Uso de anônimo](#anonimo)
-  - [Uso de usuário](#usuario)
+  - [Usuário anônimo](#anonimo)
+  - [Usuário usuário](#usuario)
   - [Por que me cadastrar na aplicação?](#cadastro)
 - [Features em desenvolvimento](#features)
   - [Migrations para auxiliar no desenvolvimento](#migrations)
@@ -39,6 +39,10 @@
 
 ### Sobre :coffee:
 
+<p id="api"></p>
+
+<p id="frontend"></p>
+
 <p id="features"></p>
 
 ### Features 📋
@@ -55,11 +59,11 @@ Vamos ver a seguir...
 
 #### Usuário anônimo
 
-Um usuário que não está cadastrado no sistema (anônimo), ele tem acesso aos seguintes recursos:
+Um usuário que não está cadastrado no sistema (usuário anônimo), ele tem acesso aos seguintes recursos:
 
-- Encurtar uma URL, informando um apelido (`alias`) e a `url` a ser encurtada (`www.urlgigante.com.br`).
+- [x] Encurtar uma URL, informando um apelido (`alias`) e a `url` a ser encurtada (`www.urlgigante.com.br`).
 
-- Visualizar todas as URLs encurtadas e que estão publicas (`"public_status": true`).
+- [x] Visualizar todas as URLs encurtadas e que estão publicas (`"public_status": true`).
 
 Exemplo:
 
@@ -87,7 +91,7 @@ Receberá o seguinte retorno:
   }
 ```
 
-A resposta vem padronizada para usuários anônimos, ou seja, toda e qualquer URL que ele encurtar, terá por padrão o status publico, ou seja, qualque um pode visualizar a URL que foi encurtada.
+A resposta vem padronizada para usuários anônimos, ou seja, toda e qualquer URL que ele encurtar, terá por padrão o status publico. Qualquer usuário pode visualizar a URL que foi encurtada e o seu apelido.
 
 <p id="usuario"></p>
 

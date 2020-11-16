@@ -6,6 +6,7 @@ import path from 'path';
 import { db } from '@database/connection';
 import { urlSchema, urlToFilter } from '@utils/schemas';
 import catchErrorFunction from '@utils/catch-error-function';
+import throwErrorHandler from '@utils/throw-error-handler';
 
 config();
 
@@ -15,11 +16,26 @@ const urls = db.get('urls');
 
 urls.createIndex('alias');
 urls.createIndex('date');
+urls.createIndex('number_access');
 
 export default {
   async publicShowUrls(req: Request, res: Response, next: NextFunction) {
+    const orderByArray = ['alias', 'date', 'number_access'];
     const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
     const paginateToFloor = Math.floor(paginate);
+    let orderBy = req.query.orderby?.toString() || '';
+
+    const validOrderBy = orderByArray.includes(orderBy);
+
+    if (!validOrderBy) orderBy = 'alias';
+
+    console.log(orderBy);
+
+    const sortOrderBaseOnParameter = {
+      date: -1,
+      alias: 1,
+      number_access: -1,
+    };
 
     try {
       const publicUrls = await urls.find(
@@ -27,6 +43,9 @@ export default {
         {
           limit: 10,
           skip: paginateToFloor,
+          sort: {
+            [orderBy]: sortOrderBaseOnParameter[orderBy],
+          },
         },
       );
 
@@ -103,12 +122,6 @@ export default {
       const url = await urls.findOne({ alias });
 
       if (!url?.url) {
-        // const error = {
-        //   message: 'Nenhuma URL encontrada com este apelido.',
-        //   statusCode: 404,
-        // };
-
-        // throw error;
         return res.sendFile(path.join(__dirname, '../public', '404.html'));
       }
 
@@ -123,7 +136,7 @@ export default {
         },
       );
 
-      return res.status(308).redirect(url.url);
+      res.status(308).redirect(url.url);
     } catch (error) {
       catchErrorFunction(error, next);
     }
@@ -144,12 +157,10 @@ export default {
       const aliasExist = await urls.findOne({ alias });
 
       if (aliasExist) {
-        const error = {
-          message: 'Apelido informado já existe! Tente outro nome.',
-          statusCode: 403,
-        };
-
-        throw error;
+        throwErrorHandler(
+          403,
+          'Apelido informado já existe! Tente outro nome.',
+        );
       }
 
       alias = alias.toLowerCase();

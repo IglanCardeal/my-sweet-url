@@ -10,26 +10,30 @@ const router = Router();
 
 // PUBLIC routes
 // router.get('/urls/:alias', urlControllers.publicRedirectToUrl);
-router.get('/urls', urlControllers.publicShowUrls);
 router.get('/:alias', urlControllers.publicRedirectToUrl);
-router.post('/urls/filtered', urlControllers.publicShowFilteredUrls);
-router.post('/urls/create', urlControllers.publicToShortUrl);
+router.get('/api/urls', urlControllers.publicShowUrls);
+router.post('/api/urls/filtered', urlControllers.publicShowFilteredUrls);
+router.post('/api/urls/create', urlControllers.publicToShortUrl);
 
 // SIGNUP/LOGIN/LOGOUT routes
-router.post('/login', signupLoginControllers.login);
-router.post('/signup', signupLoginControllers.signup);
-router.delete('/logout', signupLoginControllers.logout);
+router.post('/api/login', signupLoginControllers.login);
+router.post('/api/signup', signupLoginControllers.signup);
+router.delete('/api/logout', signupLoginControllers.logout);
 
 // USERS routes
-router.get('/users/urls', checkAuthentication, userControllers.userShowUrls);
-// router.get('/users/urls/:alias', userControllers.userRedirectUrl);
+router.get(
+  '/api/users/urls',
+  checkAuthentication,
+  userControllers.userShowUrls,
+);
+// router.get('/api/users/urls/:alias', userControllers.userRedirectUrl);
 router.post(
-  '/users/urls/create',
+  '/api/users/urls/create',
   checkAuthentication,
   userControllers.userToShortUrl,
 );
 router.put(
-  '/users/urls/edit',
+  '/api/users/urls/edit',
   checkAuthentication,
   userControllers.userEditUrl,
 );

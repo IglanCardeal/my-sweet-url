@@ -6,13 +6,13 @@ module.exports = {
       const baseUrl = 'https://www.google.com';
       const date = new Date().toLocaleDateString('br');
 
+      const randomNumber = (min, max) => {
+        return Math.floor(Math.random() * (max - min) + min);
+      };
+
        // gerar letra aleatoria para teste de ordenacao
        const randomLetter = () => {
         const arr = 'WTeOrOdhuXPUdXPeuKjUjeMTgbhHdLkYA6qhVe6eL9UUzgtUizhQeasbuyhkdkakojf'.toLowerCase().split('');
-
-        const randomNumber = (min, max) => {
-          return Math.floor(Math.random() * (max - min) + min);
-        };
 
         return arr[randomNumber(0, arr.length)];
       };
@@ -28,7 +28,8 @@ module.exports = {
           url: `${baseUrl}/teste-${i}`,
           publicStatus: true,
           date: date,
-          userId: null
+          userId: null,
+          number_access: randomNumber(0, 100) * 100
         });
 
         i++;

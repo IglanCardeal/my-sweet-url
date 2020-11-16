@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { config } from 'dotenv';
 import { nanoid } from 'nanoid';
+import path from 'path';
 
 import { db } from '../database/connection';
 import { urlSchema } from '../utils/schemas';
 import catchErrorFunction from '../utils/catch-error-function';
+import throwErrorHandler from '@utils/throw-error-handler';
 
 config();
 
@@ -45,12 +47,7 @@ export default {
       const url = await urls.findOne({ alias });
 
       if (!url?.url) {
-        const error = {
-          message: 'Nenhuma URL encontrada com este apelido.',
-          statusCode: 404,
-        };
-
-        throw error;
+        return res.sendFile(path.join(__dirname, '../public', '404.html'));
       }
 
       const number_access = url.number_access + 1;
@@ -64,7 +61,7 @@ export default {
         },
       );
 
-      return res.status(308).redirect(url.url);
+      res.status(308).redirect(url.url);
     } catch (error) {
       catchErrorFunction(error, next);
     }
@@ -86,12 +83,10 @@ export default {
       const aliasExist = await urls.findOne({ alias });
 
       if (aliasExist) {
-        const error = {
-          message: 'Apelido informado já existe! Tente outro nome.',
-          statusCode: 403,
-        };
-
-        throw error;
+        throwErrorHandler(
+          403,
+          'Apelido informado já existe! Tente outro nome.',
+        );
       }
 
       const date = new Date().toLocaleDateString('br');
@@ -135,24 +130,15 @@ export default {
       ]);
 
       if (!userFounded) {
-        const error = {
-          statusCode: 404,
-          message: 'Usuário não encontrado! Faça o login novamente.',
-        };
-
-        throw error;
+        throwErrorHandler(
+          404,
+          'Usuário não encontrado! Faça o login novamente.',
+        );
       }
 
       if (!urlsFounded) {
-        const error = {
-          statusCode: 404,
-          message: 'Url não encontrada!',
-        };
-
-        throw error;
+        throwErrorHandler(404, 'Url não encontrada!');
       }
-
-      console.log(urlsFounded, userFounded);
 
       const updatedUrl = await urls.findOneAndUpdate(
         { userId: userId },

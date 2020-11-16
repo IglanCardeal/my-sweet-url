@@ -9,7 +9,7 @@
     "start": "NODE_ENV=production node dist/server.js",
     "dev": "NODE_ENV=development ts-node-dev -r tsconfig-paths/register --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
     "build": "tsc",
-    "migrate-mongo": "./node_modules/migrate-mongo/bin/migrate-mongo.js"
+    "migrations": "./node_modules/migrate-mongo/bin/migrate-mongo.js"
   },
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
