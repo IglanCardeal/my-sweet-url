@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { config } from 'dotenv';
 import { nanoid } from 'nanoid';
-import path from 'path';
 
-import { db } from '../database/connection';
-import { urlSchema } from '../utils/schemas';
-import catchErrorFunction from '../utils/catch-error-function';
+import { db } from '@database/connection';
+import { urlSchema } from '@utils/schemas';
+import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
+import getDomain from '@utils/get-domain';
+import checkProtocol from '@utils/check-protocol';
 
 config();
 
@@ -41,32 +42,32 @@ export default {
     }
   },
 
-  async userRedirectUrl(req: Request, res: Response, next: NextFunction) {
-    const { alias } = req.params;
+  // async userRedirectUrl(req: Request, res: Response, next: NextFunction) {
+  //   const { alias } = req.params;
 
-    try {
-      const url = await urls.findOne({ alias });
+  //   try {
+  //     const url = await urls.findOne({ alias });
 
-      if (!url?.url) {
-        return res.sendFile(path.join(__dirname, '../public', '404.html'));
-      }
+  //     if (!url?.url) {
+  //       return res.sendFile(path.join(__dirname, '../public', '404.html'));
+  //     }
 
-      const number_access = url.number_access + 1;
+  //     const number_access = url.number_access + 1;
 
-      urls.findOneAndUpdate(
-        { alias },
-        {
-          $set: {
-            number_access: number_access,
-          },
-        },
-      );
+  //     urls.findOneAndUpdate(
+  //       { alias },
+  //       {
+  //         $set: {
+  //           number_access: number_access,
+  //         },
+  //       },
+  //     );
 
-      res.status(308).redirect(url.url);
-    } catch (error) {
-      catchErrorFunction(error, next);
-    }
-  },
+  //     res.status(308).redirect(url.url);
+  //   } catch (error) {
+  //     catchErrorFunction(error, next);
+  //   }
+  // },
 
   async userToShortUrl(req: Request, res: Response, next: NextFunction) {
     const { userId } = res.locals;
@@ -91,13 +92,16 @@ export default {
       }
 
       const date = new Date().toLocaleDateString('br');
+      const domain = getDomain(url);
+      const urlWithProtocol = checkProtocol(url);
 
       const newUrl = {
         alias,
-        url,
+        url: urlWithProtocol,
         publicStatus,
         userId,
         date,
+        domain,
         number_access: 0,
       };
 
@@ -105,12 +109,15 @@ export default {
 
       res.status(201).json({
         message: 'URL salva com sucesso!',
-        urlSaved: {
+        urlcreated: {
           alias,
-          url,
+          url: urlWithProtocol,
           publicStatus,
           date,
-          shorteredUrl: `${APP_HOST}/user/url/${alias}`,
+          domain,
+          // shorteredUrl: `${APP_HOST}/user/url/${alias}`, // redirect padrao
+          // para todos
+          shorteredUrl: `${APP_HOST}/${alias}`,
         },
       });
     } catch (error) {
@@ -141,16 +148,20 @@ export default {
         throwErrorHandler(404, 'Url não encontrada!');
       }
 
+      const domain = getDomain(url);
+      const urlWithProtocol = checkProtocol(url);
+
       const updatedUrl = await urls.findOneAndUpdate(
         { userId: userId },
-        { $set: { alias: alias, url: url } },
+        { $set: { alias: alias, url: urlWithProtocol, domain: domain } },
       );
 
       res.status(200).json({
         message: 'Url editada com sucesso!',
-        updatedUrl: {
+        updatedurl: {
           alias: updatedUrl.alias,
           url: updatedUrl.url,
+          domain: updatedUrl.domain,
         },
       });
     } catch (error) {

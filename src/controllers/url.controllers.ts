@@ -8,6 +8,7 @@ import { urlSchema, domainValidator, urlToFilter } from '@utils/schemas';
 import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
 import getDomain from '@utils/get-domain';
+import checkProtocol from '@utils/check-protocol';
 
 config();
 
@@ -188,10 +189,11 @@ export default {
 
       const date = new Date().toLocaleDateString('br');
       const domain = getDomain(url);
+      const urlWithProtocol = checkProtocol(url);
 
       const newUrl = {
         alias,
-        url,
+        url: urlWithProtocol,
         publicStatus,
         userId,
         domain,
@@ -205,7 +207,7 @@ export default {
         message: 'Nova URL adicionada com sucesso.',
         urlCreated: {
           alias,
-          url,
+          url: urlWithProtocol,
           shortenedUrl: `${APP_HOST}/${alias}`,
           domain,
           ['public_status']: publicStatus,

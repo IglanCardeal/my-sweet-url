@@ -10,11 +10,11 @@ export const urlSchema = yup.object().shape({
     .trim()
     .min(
       3,
-      'Nome de usuário tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
+      'Nome de apelido tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
     )
     .max(
       14,
-      'Nome de usuário tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
+      'Nome de apelido tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
     )
     .matches(
       /^[\w\-]+$/gi,
@@ -44,6 +44,14 @@ export const urlToFilter = yup.object().shape({
   alias: yup
     .string()
     .trim()
+    .min(
+      3,
+      'Nome de apelido tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
+    )
+    .max(
+      14,
+      'Nome de apelido tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
+    )
     .matches(
       /^[\w\-]+$/gi,
       'Formato do apelido invalido. Use somente letras, numeros, "_" ou "-".',
