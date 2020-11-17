@@ -27,6 +27,7 @@ export default {
           url: url.url,
           date: url.date,
           publicStatus: url.publicStatus,
+          domain: url.domain,
           number_access: url.number_access,
           shorteredUrl: `${APP_HOST}/${url.alias}`,
         };

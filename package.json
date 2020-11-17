@@ -25,6 +25,7 @@
     "migrate-mongo": "^8.1.4",
     "monk": "^7.3.2",
     "nanoid": "^3.1.12",
+    "psl": "^1.8.0",
     "yup": "^0.29.1"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "@types/express": "^4.17.6",
     "@types/helmet": "^0.0.47",
     "@types/migrate-mongo": "^7.0.1",
+    "@types/psl": "^1.1.0",
     "@types/yup": "^0.29.8",
     "prettier": "2.1.2",
     "ts-node": "^9.0.0",

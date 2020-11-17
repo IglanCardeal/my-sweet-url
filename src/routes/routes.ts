@@ -12,7 +12,7 @@ const router = Router();
 // router.get('/urls/:alias', urlControllers.publicRedirectToUrl);
 router.get('/:alias', urlControllers.publicRedirectToUrl);
 router.get('/api/urls', urlControllers.publicShowUrls);
-router.post('/api/urls/filtered', urlControllers.publicShowFilteredUrls);
+router.get('/api/urls/filtered', urlControllers.publicShowFilteredUrls);
 router.post('/api/urls/create', urlControllers.publicToShortUrl);
 
 // SIGNUP/LOGIN/LOGOUT routes

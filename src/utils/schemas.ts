@@ -10,11 +10,11 @@ export const urlSchema = yup.object().shape({
     .trim()
     .min(
       3,
-      'Nome de usuario tem que ter tamanho minimo de 3 e maximo de 14 caracteres.',
+      'Nome de usuário tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
     )
     .max(
       14,
-      'Nome de usuario tem que ter tamanho minimo de 3 e maximo de 14 caracteres.',
+      'Nome de usuário tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
     )
     .matches(
       /^[\w\-]+$/gi,
@@ -23,7 +23,10 @@ export const urlSchema = yup.object().shape({
   url: yup
     .string()
     .trim()
-    .url('URL nao pode ser vazia ou tem que ser em um formato valido!')
+    .matches(
+      /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      'URL nao pode ser vazia ou tem que ser em um formato valido!',
+    )
     .required('URL nao pode ser vazia ou tem que ser em um formato valido!'),
   publicStatus: yup
     .boolean()
@@ -48,47 +51,50 @@ export const urlToFilter = yup.object().shape({
   url: yup
     .string()
     .trim()
-    .url('URL nao pode ser vazia ou tem que ser em um formato valido!'),
+    .matches(
+      /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      'URL nao pode ser vazia ou tem que ser em um formato valido!',
+    ),
 });
 
-// Schema para cadastro de usuario e edicao de usuario
+// Schema para cadastro de usuário e edicao de usuário
 export const userLoginSchema = yup.object().shape({
   username: yup
     .string()
     .trim()
     .required(
-      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .min(
       3,
-      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .max(
       25,
-      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .matches(
       /^[\w\-" "]+$/gi,
-      'Formato do nome de usuario invalido. Use somente letras, numeros, "_" ou "-".',
+      'Formato do nome de usuário invalido. Use somente letras, numeros, "_" ou "-".',
     ),
 
   password: yup
     .string()
     .trim()
     .required(
-      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .min(
       3,
-      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .max(
       25,
-      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .matches(
       /^[\w\-]+$/gi,
-      'Formato da senha de usuario invalido. Use somente letras, numeros, "_" ou "-". Nao use espacos em branco',
+      'Formato da senha de usuário invalido. Use somente letras, numeros, "_" ou "-". Nao use espacos em branco',
     ),
 });
 
@@ -97,38 +103,38 @@ export const userSignupSchema = yup.object().shape({
     .string()
     .trim()
     .required(
-      'Nome de usuario tem que ter tamanho minimo de 3 e maximo de 25 caracteres.',
+      'Nome de usuário tem que ter tamanho minimo de 3 e máximo de 25 caracteres.',
     )
     .min(
       3,
-      'Nome de usuario tem que ter tamanho minimo de 3 e maximo de 25 caracteres.',
+      'Nome de usuário tem que ter tamanho minimo de 3 e máximo de 25 caracteres.',
     )
     .max(
       25,
-      'Nome de usuario tem que ter tamanho minimo de 3 e maximo de 25 caracteres.',
+      'Nome de usuário tem que ter tamanho minimo de 3 e máximo de 25 caracteres.',
     )
     .matches(
       /^[\w\-" "]+$/gi,
-      'Formato do nome de usuario invalido. Use somente letras, numeros, "_" ou "-".',
+      'Formato do nome de usuário invalido. Use somente letras, numeros, "_" ou "-".',
     ),
 
   password: yup
     .string()
     .trim()
     .required(
-      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .min(
       3,
-      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .max(
       25,
-      'Senha de usuario tem que ter minimo de 3 e maximo de 25 caracteres.',
+      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .matches(
       /^[\w\-]+$/gi,
-      'Formato da senha de usuario invalido. Use somente letras, numeros, "_" ou "-". Nao use espacos em branco',
+      'Formato da senha de usuário invalido. Use somente letras, numeros, "_" ou "-". Nao use espacos em branco.',
     ),
 
   email: yup
@@ -136,4 +142,11 @@ export const userSignupSchema = yup.object().shape({
     .trim()
     .email('Email deve ser informado e deve ser em formato valido.')
     .required('Email deve ser informado e deve ser em formato valido.'),
+});
+
+export const domainValidator = yup.object().shape({
+  domain: yup
+    .string()
+    .trim()
+    .matches(/[a-z0-9-]+(\.[a-z]{2,}){1,3}?$/, 'Nome de dominio inválido.'),
 });

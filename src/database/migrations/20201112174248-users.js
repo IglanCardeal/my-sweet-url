@@ -1,6 +1,8 @@
+const psl = require('psl');
+
 module.exports = {
   async up(db, client) {
-    const newUser = await db.collection('users').insert({
+    const newUser = await db.collection('users').insertOne({
       username: "teste",
       email: "tete@email.com",
       password: "$2b$12$WTeOrOdhuXPUdXPeuKjUjeMTgbhHdLkYA6qhVe6eL9UUzgtUizhQe"
@@ -16,6 +18,7 @@ module.exports = {
 
     const generatUsersUrlsObject = () => {
       const baseUrl = 'https://www.google.com';
+      const parsedUlr = psl.parse(baseUrl.split('//')[1]).domain;
       const date = new Date().toLocaleDateString('br');
 
       // gerar letra aleatoria para teste de ordenacao
@@ -37,6 +40,7 @@ module.exports = {
           publicStatus: false,
           date: date,
           userId: userId,
+          domain: parsedUlr,
           number_access: randomNumber(0, 100) * 100
         });
 

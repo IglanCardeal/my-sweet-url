@@ -26,7 +26,7 @@ startDatabaseConnectionAndServer(app);
 /**
  * TODO:
  * [X]1 - a pagina inicial deve ser uma lista de todas as urls(publicas) ja encurtadas
- *    [x]1.1 - opcao de realizar uma busca por url OU apelido (2 inputs) quando for exibida todas as urls.
+ *    [x]1.1 - opcao de realizar uma busca por url/dominio/apelido (3 inputs) quando for exibida todas as urls.
  *
  * [X]2 - opcao de fazer login e cadastro. Por padrao, nao precisa de cadastro para usar a aplicacao, mas a URL encurtada sera sempre de visualizacao publica
  *

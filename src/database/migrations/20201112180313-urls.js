@@ -1,3 +1,5 @@
+const psl = require('psl');
+
 module.exports = {
   async up(db, client) {
     const NUMBER_OF_OBJECT = 20;
@@ -5,6 +7,7 @@ module.exports = {
     const generatPublicUrlsObject = () => {
       const baseUrl = 'https://www.google.com';
       const date = new Date().toLocaleDateString('br');
+      const parsedUlr = psl.parse(baseUrl.split('//')[1]).domain;
 
       const randomNumber = (min, max) => {
         return Math.floor(Math.random() * (max - min) + min);
@@ -28,6 +31,7 @@ module.exports = {
           url: `${baseUrl}/teste-${i}`,
           publicStatus: true,
           date: date,
+          domain: parsedUlr,
           userId: null,
           number_access: randomNumber(0, 100) * 100
         });
