@@ -9,6 +9,7 @@ import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
 import getDomain from '@utils/get-domain';
 import checkProtocol from '@utils/check-protocol';
+import orderingUrls from '@utils/ordering-urls';
 
 config();
 
@@ -22,35 +23,8 @@ urls.createIndex('number_access');
 
 export default {
   async publicShowUrls(req: Request, res: Response, next: NextFunction) {
-    let orderBy = req.query.orderby?.toString() || '';
-
-    const orderByArray = ['alias', 'date', 'number_access', 'domain'];
-
-    const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
-    const paginateToFloor = Math.floor(paginate);
-
-    const validOrderBy = orderByArray.includes(orderBy);
-
-    if (!validOrderBy) orderBy = 'alias';
-
-    const sortOrderBaseOnParameter = {
-      date: -1,
-      alias: 1,
-      number_access: -1,
-      domain: 1,
-    };
-
     try {
-      const publicUrls = await urls.find(
-        { publicStatus: true },
-        {
-          limit: 10,
-          skip: paginateToFloor,
-          sort: {
-            [orderBy]: sortOrderBaseOnParameter[orderBy],
-          },
-        },
-      );
+      const publicUrls = await orderingUrls(urls, req)
 
       const urlsWithShortenedUrls = publicUrls.map(url => {
         return {

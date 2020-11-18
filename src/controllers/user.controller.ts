@@ -8,6 +8,7 @@ import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
 import getDomain from '@utils/get-domain';
 import checkProtocol from '@utils/check-protocol';
+import orderingUrls from '@utils/ordering-urls';
 
 config();
 
@@ -20,7 +21,7 @@ export default {
     const { userId } = res.locals;
 
     try {
-      const userUrls = await urls.find({ userId: userId });
+      const userUrls = await orderingUrls(urls, req, userId);
 
       const userUrlsFormated = userUrls.map(url => {
         return {

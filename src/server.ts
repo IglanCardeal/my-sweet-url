@@ -30,7 +30,7 @@ startDatabaseConnectionAndServer(app);
  *
  * [X]2 - opcao de fazer login e cadastro. Por padrao, nao precisa de cadastro para usar a aplicacao, mas a URL encurtada sera sempre de visualizacao publica
  *
- * [x]3 - Caso tenha feito o login, opcao de quando o usuario cadastrar uma url, definir ela como publica ou privada, alem de poder exibidir todas as suas url cadastradas
+ * [x]3 - Caso tenha feito o login, opcao de quando o usuario cadastrar uma url, definir ela como publica ou privada
  *
  * [x]4 - pagina de usuario mostrando todas as suas url e um `input type radio` para o usuario alterar se a url sera publica ou privada
  *
