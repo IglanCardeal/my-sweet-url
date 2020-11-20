@@ -35,13 +35,33 @@
 - [Tecnologias/ferramentas usadas](#tecnologias)
 - [Autor](#autor)
 
+<div align="justify">
+
 <p id="sobre"></p>
 
 ### Sobre :coffee:
 
 <p id="api"></p>
 
+#### Sobre esta API
+
+Este projeto consiste de uma API Restful para **encurtar URL's**, onde um usuário, cadastrado ou anônimo, pode informar uma url que ele julgue ser grande demais, ou que ele queira anônimar, e **receberá a sua versão equivalente encurtada**, para ele possa usá-la ou compartilhá-la.
+
+Por exemplo, um usuário anônimo pode informar uma url do tipo:
+
+`https://www.umaurlgrandequalquer.com.br/caminho/de/teste/1`
+
+informar um apelido, por exemplo: `minha-url`, e receber, como retorno, por exemplo, a sua versão equivalente encurtada: `http://localhost:8080/minha-url`. Neste caso o host está como `http://localhost:8080` pois estou adotando como exemplo o servidor local de desenvolvimento da API, rodando em minha máquina com minhas configurações de servidor. Em produção ou em outros ambientes de teste, esse host está sujeito a valores diferentes.
+
+Quando afirmo url equivalente, estou dizendo que o servidor será capaz de capturar o apelido no link `http://localhost:8080/` **`minha-url`**, resolver este apelido e redirecionar para a url de destino, `https://www.umaurlgrandequalquer.com.br/caminho/de/teste/1`.
+
+Os recurso que cada usuário, anônimo ou cadastrado, pode usar, será especificado e explicado a seguir na documentação.
+
 <p id="frontend"></p>
+
+#### Projeto front-end
+
+Após esta API está concluída, vou desenvolver um front-end para implementar as funcionalidades desta API. O projeto front-end será feito em React (NextJS) e, futuramente, pretendo criar um app deste front-end com React Native, quando meus conhecimentos nesta plataforma estiverem mais consolidados. Consulte os repositórios deste perfil para ver se já está disponível o projeto front-end.
 
 <p id="features"></p>
 
@@ -332,3 +352,5 @@ Entre em contato! 👋🏽
 - cmtcardeal@outlook.com :email:
 - Instagram [@cmtcardeal](https://www.instagram.com/cmtecardeal/)
 - StackOverflow [Cmte Cardeal](https://pt.stackoverflow.com/users/95771/cmte-cardeal?tab=profile)
+
+</div>

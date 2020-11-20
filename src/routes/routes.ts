@@ -9,7 +9,6 @@ import checkAuthentication from '@middlewares/check-authentication';
 const router = Router();
 
 // PUBLIC routes
-// router.get('/urls/:alias', urlControllers.publicRedirectToUrl);
 router.get('/:alias', urlControllers.publicRedirectToUrl);
 router.get('/api/urls', urlControllers.publicShowUrls);
 router.get('/api/urls/filtered', urlControllers.publicShowFilteredUrls);
@@ -26,13 +25,12 @@ router.get(
   checkAuthentication,
   userControllers.userShowUrls,
 );
-// router.get('/api/users/urls/:alias', userControllers.userRedirectUrl);
 router.post(
   '/api/users/urls/create',
   checkAuthentication,
   userControllers.userToShortUrl,
 );
-router.put(
+router.patch(
   '/api/users/urls/edit',
   checkAuthentication,
   userControllers.userEditUrl,

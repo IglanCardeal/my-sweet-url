@@ -130,6 +130,11 @@ export default {
     const { userId } = res.locals;
     const { alias, url, publicStatus } = req.body;
 
+    // somente urls privadas podem ser editadas
+    if (publicStatus) {
+      throwErrorHandler(403, 'Somente urls privadas podem ser editadas.');
+    }
+
     try {
       await urlSchema.validate({ alias, url, userId, publicStatus });
 
