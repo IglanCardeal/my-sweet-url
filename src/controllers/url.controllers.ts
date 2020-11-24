@@ -112,6 +112,7 @@ export default {
   },
 
   async publicRedirectToUrl(req: Request, res: Response, next: NextFunction) {
+    // Redirecionamento padrao para todos
     const { alias } = req.params;
 
     try {
@@ -146,7 +147,7 @@ export default {
     let userId = '0';
 
     try {
-      if (!alias) alias = nanoid(5);
+      if (!alias) alias = nanoid(7);
 
       await urlSchema.validate({ alias, url, publicStatus, userId });
 

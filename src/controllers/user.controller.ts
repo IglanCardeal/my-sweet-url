@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 import { nanoid } from 'nanoid';
 
 import { db } from '@database/connection';
-import { urlSchema } from '@utils/schemas';
+import { userUrlSchema } from '@utils/schemas';
 import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
 import getDomain from '@utils/get-domain';
@@ -25,6 +25,7 @@ export default {
 
       const userUrlsFormated = userUrls.map(url => {
         return {
+          id: url._id,
           alias: url.alias,
           url: url.url,
           date: url.date,
@@ -75,17 +76,20 @@ export default {
     let { alias, url, publicStatus } = req.body;
 
     try {
-      if (!alias) alias = nanoid(7);
+      if (!alias) alias = nanoid(5);
 
       if (!(typeof publicStatus === 'boolean')) publicStatus = false;
 
-      await urlSchema.validate({ alias, url, publicStatus, userId });
+      await userUrlSchema.validate({ alias, url, publicStatus, userId });
 
       alias = alias.toLowerCase();
 
-      const aliasExist = await urls.findOne({ alias });
+      let aliasAlreadyExist;
 
-      if (aliasExist) {
+      if (!alias) alias = nanoid(5);
+      else aliasAlreadyExist = await urls.findOne({ alias });
+
+      if (aliasAlreadyExist) {
         throwErrorHandler(
           403,
           'Apelido informado já existe! Tente outro nome.',
@@ -128,7 +132,7 @@ export default {
 
   async userEditUrl(req: Request, res: Response, next: NextFunction) {
     const { userId } = res.locals;
-    const { alias, url, publicStatus } = req.body;
+    let { alias, url, publicStatus, id } = req.body;
 
     // somente urls privadas podem ser editadas
     if (publicStatus) {
@@ -136,11 +140,14 @@ export default {
     }
 
     try {
-      await urlSchema.validate({ alias, url, userId, publicStatus });
+      if (!alias) alias = nanoid(5);
 
-      const [userFounded, urlsFounded] = await Promise.all([
+      await userUrlSchema.validate({ alias, url, userId, publicStatus });
+
+      const [userFounded, urlsFounded, aliasAlreadyExist] = await Promise.all([
         users.findOne({ _id: userId }),
-        urls.find({ userId, alias, url }),
+        urls.find({ userId, publicStatus: false, _id: id }),
+        urls.findOne({ alias }),
       ]);
 
       if (!userFounded) {
@@ -154,12 +161,27 @@ export default {
         throwErrorHandler(404, 'Url não encontrada!');
       }
 
+      if (aliasAlreadyExist) {
+        throwErrorHandler(
+          403,
+          'Apelido informado já existe! Informe outro apelido ou deixe-o em branco',
+        );
+      }
+
+      const date = new Date().toLocaleDateString('br');
       const domain = getDomain(url);
       const urlWithProtocol = checkProtocol(url);
 
       const updatedUrl = await urls.findOneAndUpdate(
         { userId: userId },
-        { $set: { alias: alias, url: urlWithProtocol, domain: domain } },
+        {
+          $set: {
+            alias: alias,
+            url: urlWithProtocol,
+            domain: domain,
+            date: date,
+          },
+        },
       );
 
       res.status(200).json({
@@ -168,6 +190,7 @@ export default {
           alias: updatedUrl.alias,
           url: updatedUrl.url,
           domain: updatedUrl.domain,
+          date: updatedUrl.date,
         },
       });
     } catch (error) {

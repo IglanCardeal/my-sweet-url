@@ -45,7 +45,7 @@
 
 #### Sobre esta API
 
-Este projeto consiste de uma API Restful para **encurtar URL's**, onde um usuário, cadastrado ou anônimo, pode informar uma url que ele julgue ser grande demais, ou que ele queira anônimar, e **receberá a sua versão equivalente encurtada**, para ele possa usá-la ou compartilhá-la.
+Este projeto foi feito com objetivo de enriquecer meu portfólio e ampliar meus conhecimentos em NodeJS, desenvolvendo uma aplicação de back-end que consiste de uma API Restful para **encurtar URL's**, onde um usuário, cadastrado ou anônimo, pode informar uma url que ele julgue ser grande demais, ou que ele queira anônimar, e **receberá a sua versão equivalente encurtada**, para ele possa usá-la ou compartilhá-la.
 
 Por exemplo, um usuário anônimo pode informar uma url do tipo:
 
@@ -85,6 +85,8 @@ Um usuário que não está cadastrado no sistema (usuário anônimo), ele tem ac
 
 - [x] Visualizar todas as URLs encurtadas e que estão publicas (`"public_status": true`).
 
+- [x] Limite de 10 caracteres para o apelido informado
+
 Exemplo:
 
 Executando o projeto localmente, um usuário anônimo que informar os seguintes parâmetros:
@@ -111,15 +113,31 @@ Receberá o seguinte retorno:
   }
 ```
 
-A resposta vem padronizada para usuários anônimos, ou seja, toda e qualquer URL que ele encurtar, terá por padrão o status publico. Qualquer usuário pode visualizar a URL que foi encurtada e o seu apelido.
+A resposta vem padronizada para usuários anônimos, ou seja, toda e qualquer URL que ele encurtar, terá por padrão o status publico. Qualquer usuário pode visualizar a URL (que for publica), que foi encurtada e o seu apelido.
+
+**O apelido não é obrigatório**, o usuário pode apenas informar a url, o apelido será gerado com nome aleatório pelo serviço do back-end.
 
 <p id="usuario"></p>
 
 #### Usuário cadastrado
 
+Um usuário pode se cadastrar no sistema e ter acesso a alguns recursos a mais que um usuário anônimo. Estes recursos podem ser relevantes ou não dependendo da vontade do usuário.
+
+Ao se cadastrar na aplicação, o usuário autenticado pode, além de acessar todos os recursos para usuários anônimos:
+
+- [x] Definir a url encurtada como privada.
+
+- [x] Editar uma url privada que ele criou, alterando seu .
+
+- [x] Excluir uma url privada que ele criou.
+
+- [x] Limite de 14 caracteres para o apelido informado
+
 <p id="testes"></p>
 
 ### Testes
+
+Falar aqui sobre os arquivos do INSOMNIA para realizar testes localmente das funcionalidades
 
 <p id="endpoints"></p>
 

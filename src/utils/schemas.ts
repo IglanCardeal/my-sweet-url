@@ -8,26 +8,23 @@ export const urlSchema = yup.object().shape({
   alias: yup
     .string()
     .trim()
-    .min(
-      3,
-      'Nome de apelido tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
-    )
+    .min(0)
     .max(
-      14,
-      'Nome de apelido tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
+      10,
+      'Nome de apelido tem que ter tamanho máximo de 10 caracteres.',
     )
     .matches(
       /^[\w\-]+$/gi,
-      'Formato do apelido invalido. Use somente letras, numeros, "_" ou "-".',
+      'Formato do apelido invalido. Use somente letras, números, "_" ou "-".',
     ),
   url: yup
     .string()
     .trim()
     .matches(
       /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      'URL nao pode ser vazia ou tem que ser em um formato valido!',
+      'URL não pode ser vazia ou tem que ser em um formato valido!',
     )
-    .required('URL nao pode ser vazia ou tem que ser em um formato valido!'),
+    .required('URL não pode ser vazia ou tem que ser em um formato valido!'),
   publicStatus: yup
     .boolean()
     .required(
@@ -37,6 +34,40 @@ export const urlSchema = yup.object().shape({
       'O estatus(publicStatus) da URL tem que ser um Boolean "true" ou "false"',
     ),
   userId: yup.string(),
+  id: yup.string().trim(),
+});
+
+export const userUrlSchema = yup.object().shape({
+  alias: yup
+    .string()
+    .trim()
+    .min(0)
+    .max(
+      14,
+      'Nome de apelido tem que ter tamanho máximo de 14 caracteres.',
+    )
+    .matches(
+      /^[\w\-]+$/gi,
+      'Formato do apelido invalido. Use somente letras, números, "_" ou "-".',
+    ),
+  url: yup
+    .string()
+    .trim()
+    .matches(
+      /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      'URL não pode ser vazia ou tem que ser em um formato valido!',
+    )
+    .required('URL não pode ser vazia ou tem que ser em um formato valido!'),
+  publicStatus: yup
+    .boolean()
+    .required(
+      'O estatus(publicStatus) da URL tem que ser um Boolean "true" ou "false"',
+    )
+    .typeError(
+      'O estatus(publicStatus) da URL tem que ser um Boolean "true" ou "false"',
+    ),
+  userId: yup.string(),
+  id: yup.string().trim(),
 });
 
 // Schema para validar dominio da url ou alias
@@ -44,24 +75,21 @@ export const urlToFilter = yup.object().shape({
   alias: yup
     .string()
     .trim()
-    .min(
-      3,
-      'Nome de apelido tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
-    )
+    .min(0)
     .max(
       14,
-      'Nome de apelido tem que ter tamanho minimo de 3 e máximo de 14 caracteres.',
+      'Nome de apelido tem que ter tamanho máximo de 14 caracteres.',
     )
     .matches(
       /^[\w\-]+$/gi,
-      'Formato do apelido invalido. Use somente letras, numeros, "_" ou "-".',
+      'Formato do apelido invalido. Use somente letras, números, "_" ou "-".',
     ),
   url: yup
     .string()
     .trim()
     .matches(
       /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      'URL nao pode ser vazia ou tem que ser em um formato valido!',
+      'URL não pode ser vazia ou tem que ser em um formato valido!',
     ),
 });
 
@@ -83,7 +111,7 @@ export const userLoginSchema = yup.object().shape({
     )
     .matches(
       /^[\w\-" "]+$/gi,
-      'Formato do nome de usuário invalido. Use somente letras, numeros, "_" ou "-".',
+      'Formato do nome de usuário invalido. Use somente letras, números, "_" ou "-".',
     ),
 
   password: yup
@@ -102,7 +130,7 @@ export const userLoginSchema = yup.object().shape({
     )
     .matches(
       /^[\w\-]+$/gi,
-      'Formato da senha de usuário invalido. Use somente letras, numeros, "_" ou "-". Nao use espacos em branco',
+      'Formato da senha de usuário invalido. Use somente letras, números, "_" ou "-". Não use espacos em branco',
     ),
 });
 
@@ -123,7 +151,7 @@ export const userSignupSchema = yup.object().shape({
     )
     .matches(
       /^[\w\-" "]+$/gi,
-      'Formato do nome de usuário invalido. Use somente letras, numeros, "_" ou "-".',
+      'Formato do nome de usuário invalido. Use somente letras, números, "_" ou "-".',
     ),
 
   password: yup
@@ -142,7 +170,7 @@ export const userSignupSchema = yup.object().shape({
     )
     .matches(
       /^[\w\-]+$/gi,
-      'Formato da senha de usuário invalido. Use somente letras, numeros, "_" ou "-". Nao use espacos em branco.',
+      'Formato da senha de usuário invalido. Use somente letras, números, "_" ou "-". Não use espacos em branco.',
     ),
 
   email: yup

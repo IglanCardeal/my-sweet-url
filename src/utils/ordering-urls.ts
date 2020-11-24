@@ -1,6 +1,7 @@
 import { Request } from 'express';
 
 interface Urls {
+  _id: string;
   alias: string;
   url: string;
   date: string;
