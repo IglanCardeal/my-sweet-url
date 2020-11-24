@@ -79,13 +79,15 @@ Vamos ver a seguir...
 
 #### Usuário anônimo
 
-Um usuário que não está cadastrado no sistema (usuário anônimo), ele tem acesso aos seguintes recursos:
+Um usuário que não está cadastrado no sistema (usuário anônimo), ele tem acesso aos seguintes recursos/benefícios:
 
 - [x] Encurtar uma URL, informando um apelido (`alias`) e a `url` a ser encurtada (`www.urlgigante.com.br`).
 
 - [x] Visualizar todas as URLs encurtadas e que estão publicas (`"public_status": true`).
 
-- [x] Limite de 10 caracteres para o apelido informado
+- [x] Limite de 10 caracteres para o apelido informado.
+
+- [x] Tamanho do apelido aleatório gerado pelo sistema é de 7 caracteres.
 
 Exemplo:
 
@@ -123,15 +125,17 @@ A resposta vem padronizada para usuários anônimos, ou seja, toda e qualquer UR
 
 Um usuário pode se cadastrar no sistema e ter acesso a alguns recursos a mais que um usuário anônimo. Estes recursos podem ser relevantes ou não dependendo da vontade do usuário.
 
-Ao se cadastrar na aplicação, o usuário autenticado pode, além de acessar todos os recursos para usuários anônimos:
+Ao se cadastrar na aplicação, o usuário autenticado pode, além de acessar todos os recursos para usuários anônimos, ter acesso aos seguintes recursos/benefícios:
 
 - [x] Definir a url encurtada como privada.
 
-- [x] Editar uma url privada que ele criou, alterando seu .
+- [x] Editar uma url privada que ele criou, alterando seu apelido ou url.
 
 - [x] Excluir uma url privada que ele criou.
 
 - [x] Limite de 14 caracteres para o apelido informado
+
+- [x] Tamanho do apelido aleatório gerado pelo sistema é de 5 caracteres.
 
 <p id="testes"></p>
 
