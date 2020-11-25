@@ -4,7 +4,8 @@ interface Urls {
   _id: string;
   alias: string;
   url: string;
-  date: string;
+  createdAt: string;
+  updatedAt?: string;
   publicStatus: boolean;
   domain: string;
   number_access: number;

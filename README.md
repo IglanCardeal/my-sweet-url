@@ -109,8 +109,9 @@ Receberá o seguinte retorno:
       "alias": "seu-tubo",
       "url": "https://www.youtube.com/watch?v=O_Cc-Xzc0zM",
       "shortenedUrl": "http://localhost:8080/seu-tubo",
+      "domain": "youtube.com",
       "public_status": true,
-      "date": "2020-11-12"
+      "createdAt": "24/11/2020"
     }
   }
 ```

@@ -28,7 +28,8 @@ export default {
           id: url._id,
           alias: url.alias,
           url: url.url,
-          date: url.date,
+          createdAt: url.createdAt,
+          updatedAt: url.updatedAt,
           publicStatus: url.publicStatus,
           domain: url.domain,
           number_access: url.number_access,
@@ -105,7 +106,8 @@ export default {
         url: urlWithProtocol,
         publicStatus,
         userId,
-        date,
+        createdAt: date,
+        updatedAt: date,
         domain,
         number_access: 0,
       };
@@ -179,7 +181,7 @@ export default {
             alias: alias,
             url: urlWithProtocol,
             domain: domain,
-            date: date,
+            updatedAt: date,
           },
         },
       );
@@ -190,7 +192,7 @@ export default {
           alias: updatedUrl.alias,
           url: updatedUrl.url,
           domain: updatedUrl.domain,
-          date: updatedUrl.date,
+          updatedAt: updatedUrl.updatedAt,
         },
       });
     } catch (error) {

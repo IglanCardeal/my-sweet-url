@@ -30,7 +30,7 @@ export default {
         return {
           alias: url.alias,
           url: url.url,
-          date: url.date,
+          createdAt: url.createdAt,
           publicStatus: url.publicStatus,
           domain: url.domain,
           number_access: url.number_access,
@@ -94,7 +94,7 @@ export default {
         return {
           alias: url.alias,
           url: url.url,
-          date: url.date,
+          createdAt: url.createdAt,
           publicStatus: url.publicStatus,
           number_access: url.number_access,
           domain: url.domain,
@@ -172,7 +172,7 @@ export default {
         publicStatus,
         userId,
         domain,
-        date,
+        createdAt: date,
         number_access: 0,
       };
 
@@ -186,7 +186,7 @@ export default {
           shortenedUrl: `${APP_HOST}/${alias}`,
           domain,
           ['public_status']: publicStatus,
-          date,
+          createdAt: date,
         },
       });
     } catch (error) {

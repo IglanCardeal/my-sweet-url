@@ -30,7 +30,7 @@ module.exports = {
           alias: `${letter}_teste-${i}`,
           url: `${baseUrl}/teste-${i}`,
           publicStatus: true,
-          date: date,
+          createdAt: date,
           domain: parsedUlr,
           userId: null,
           number_access: randomNumber(0, 100) * 100

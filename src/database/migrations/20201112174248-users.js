@@ -38,7 +38,8 @@ module.exports = {
           alias: `${letter}_user-${i}`,
           url: `${baseUrl}/teste-${i}`,
           publicStatus: false,
-          date: date,
+          createdAt: date,
+          updatedAt: date,
           userId: userId,
           domain: parsedUlr,
           number_access: randomNumber(0, 100) * 100
