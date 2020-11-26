@@ -24,6 +24,7 @@
 - [Features em desenvolvimento](#features)
   - [Migrations para auxiliar no desenvolvimento](#migrations)
   - [Testes](#testes)
+    - [Manuais](#manuais)
   - [Filtros](#filtros)
 - [Endpoints](#endpoints)
 - [Como usar localmente](#como-usar)
@@ -138,11 +139,33 @@ Ao se cadastrar na aplicação, o usuário autenticado pode, além de acessar to
 
 - [x] Tamanho do apelido aleatório gerado pelo sistema é de 5 caracteres.
 
-<p id="testes"></p>
+Um usuário quando define uma url como privada, esta apenas não será exibida na listagem publica de urls encurtadas, logo nada irá impedir de o usuário compartilhar a sua url encurtada, mas cabe ao usuário garantir o funcionamento da mesma, pois se ele utiliza uma url privada em algum lugar, e por algum motivo ele editou o apelido ou excluiu, esta não irá funcionar corretamente.
+
+<p id="Testes"></p>
 
 ### Testes
 
-Falar aqui sobre os arquivos do INSOMNIA para realizar testes localmente das funcionalidades
+<p id="manuais"></p>
+
+#### Testes manuais
+
+O projeto possui um arquivo json chamado `Insomnia_API.json` que server para fazer teste manuais das rotas e recursos da aplicação. Usando o aplicativo para testar API's [Insomnia](https://insomnia.rest/download/), você pode importar o arquivo deste projeto e começar a testar.
+
+![insomnia](./src/public/img/insomnia.png)
+
+As chamada para a API estão organizadas por pastas, para facilitar o entendimento do arquivo. As pastas estão divididas de acordo com os recursos que as chamadas solicitão:
+
+- `Signup Login Logout`: é responsável por tratar chamadas para as funcionalidades de autenticação e cadastro de novos usuários;
+
+- `User`: é responsável por tratar chamadas para funcionalidades de usuário cadastrado e autenticado no sistema, como criar urls privadas, editar, excluir, etc...;
+
+- `Public`:  é responsável por tratar chamadas para funcionalidades de usuário anônimo, como criar e visualizar urls publicas.
+
+Na pasta `Public`, eu adicionei chamadas personalizadas para testar recursos de paginação, ordenação dos dados retornados pela API, como por exemplo, ordenar por data de criação/apelido/dominio/numero de acessos, além de poder fazer uma busca filtrada, filtrando a busca por dominio, por exemplo.
+
+Veja abaixo um exemplo de filtrar publicamente uma url por dominio, através de uma *query string*:
+
+![bydomain](./src/public/img/bydomain.png)
 
 <p id="endpoints"></p>
 
