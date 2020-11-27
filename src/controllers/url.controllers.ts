@@ -4,6 +4,8 @@ import { config } from 'dotenv';
 import path from 'path';
 
 import { db } from '@database/connection';
+// import redisClient from '@database/redis-connection';
+
 import { urlSchema, domainValidator, urlToFilter } from '@utils/schemas';
 import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
@@ -24,7 +26,9 @@ urls.createIndex('number_access');
 export default {
   async publicShowUrls(req: Request, res: Response, next: NextFunction) {
     try {
-      const publicUrls = await orderingUrls(urls, req)
+      console.time('Duracao');
+
+      const publicUrls = await orderingUrls(urls, req);
 
       const urlsWithShortenedUrls = publicUrls.map(url => {
         return {
@@ -37,6 +41,8 @@ export default {
           shorteredUrl: `${APP_HOST}/${url.alias}`,
         };
       });
+
+      console.timeEnd('Duracao');
 
       res.status(200).json({
         message: 'Todas as URLs publicas.',
@@ -54,6 +60,8 @@ export default {
   ) {
     let findBy = req.query.findby?.toString().trim() || '';
     const value = req.query.value?.toString().trim();
+    const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
+    const paginateToFloor = Math.floor(paginate);
 
     const findByArray = ['alias', 'domain'];
     const validFindBy = findByArray.includes(findBy);
@@ -68,27 +76,21 @@ export default {
         );
       }
 
-      if (findBy === 'domain') {
+      if (findBy === 'domain')
         await domainValidator.validate({ domain: value });
+      else await urlToFilter.validate({ alias: value });
 
-        urlsFiltereds = await urls.find({
+      // limite de 10 por causa da busca por dominio
+      urlsFiltereds = await urls.find(
+        {
           [findBy]: value,
           publicStatus: true,
-        });
-      } else {
-        // coloquei urls.findOne pois o alias unico
-        await urlToFilter.validate({ alias: value });
-
-        urlsFiltereds = await urls.findOne({
-          [findBy]: value,
-          publicStatus: true,
-        });
-      }
-
-      urlsFiltereds = await urls.find({
-        [findBy]: value,
-        publicStatus: true,
-      });
+        },
+        {
+          limit: 10,
+          skip: paginateToFloor,
+        },
+      );
 
       const urlsFilteredsWithShortenedUrls = urlsFiltereds.map(url => {
         return {

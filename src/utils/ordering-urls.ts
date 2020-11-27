@@ -1,5 +1,6 @@
 import { Request } from 'express';
 
+import { redisGetAsync, redisSetAsync } from '@database/redis-connection';
 interface Urls {
   _id: string;
   alias: string;
@@ -35,6 +36,14 @@ const orderingUrls = async (
 
   try {
     if (userId !== null) {
+      const redisKeyUser = `user_${userId}_order-${orderBy}_page-${paginateToFloor}`;
+      const cachedUserQuery = await redisGetAsync(redisKeyUser);
+
+      if (cachedUserQuery) {
+        console.log('SERVINDO Urls usuario do Cache');
+        return JSON.parse(cachedUserQuery);
+      }
+
       const userUrls = await urls.find(
         { userId: userId },
         {
@@ -46,7 +55,19 @@ const orderingUrls = async (
         },
       );
 
+      console.log('Salvando urls usuario no Cache');
+
+      redisSetAsync(redisKeyUser, JSON.stringify(userUrls));
+
       return userUrls;
+    }
+
+    const redisKeyPublic = `public_order-${orderBy}_page-${paginateToFloor}`;
+    const cachedPublicQuery = await redisGetAsync(redisKeyPublic);
+
+    if (cachedPublicQuery) {
+      console.log('SERVINDO Urls publicas do Cache');
+      return JSON.parse(cachedPublicQuery);
     }
 
     const publicUrls = await urls.find(
@@ -59,6 +80,10 @@ const orderingUrls = async (
         },
       },
     );
+
+    console.log('Salvando urls publicas no Cache');
+
+    redisSetAsync(redisKeyPublic, JSON.stringify(publicUrls));
 
     return publicUrls;
   } catch (error) {

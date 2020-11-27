@@ -11,6 +11,14 @@ services:
   #   #   - ./data:/data/db
   #   links:
   #     - mongo
+  redis:
+    container_name: my_sweet_redis
+    image: "redis:alpine"
+    restart: always
+    ports:
+      - "6379:6379"
+    expose:
+      - 6379
 
   mongo:
     container_name: my_sweet_mongo
