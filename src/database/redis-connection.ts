@@ -4,7 +4,14 @@ import util from 'util';
 
 config();
 
-const REDIS_HOST = process.env.REDIS_HOST || 'redis://127.0.0.1:6379';
+// quando env de producao, redis roda no container do docker
+const REDIS_HOST =
+  process.env.NODE_ENV === 'development'
+    ? process.env.REDIS_HOST || 'redis://127.0.0.1:6379'
+    : process.env.PROD_REDIS_HOST || 'redis://my_sweet_redis:6379';
+
+console.log('============REDIS SERVER============\n');
+console.log(`*** Redis database URI: ${REDIS_HOST}`);
 
 const client = redis.createClient(REDIS_HOST);
 

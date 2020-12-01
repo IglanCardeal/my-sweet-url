@@ -6,15 +6,12 @@
   "author": "Iglan Cardeal <cmtcardeal@outlook.com>",
   "license": "MIT",
   "scripts": {
-    "start": "NODE_ENV=production node dist/server.js",
+    "start": "NODE_ENV=development ts-node -r tsconfig-paths/register dist/server.js",
     "dev": "NODE_ENV=development ts-node-dev -r tsconfig-paths/register --transpile-only --no-notify --ignore-watch node_modules src/server.ts",
     "build": "tsc",
     "migrations": "./node_modules/migrate-mongo/bin/migrate-mongo.js"
   },
   "dependencies": {
-    "@types/bcrypt": "^3.0.0",
-    "@types/cookie-parser": "^1.4.2",
-    "@types/jsonwebtoken": "^8.5.0",
     "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -30,9 +27,12 @@
     "yup": "^0.29.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.6",
     "@types/helmet": "^0.0.47",
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/migrate-mongo": "^7.0.1",
     "@types/psl": "^1.1.0",
     "@types/redis": "^2.8.28",
