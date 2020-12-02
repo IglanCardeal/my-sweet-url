@@ -1,6 +1,10 @@
 import { Request } from 'express';
 
-import { redisGetAsync, redisSetAsync } from '@database/redis-connection';
+import {
+  redisGetAsync,
+  redisSetAsync,
+  redisExpire,
+} from '@database/redis-connection';
 interface Urls {
   _id: string;
   alias: string;
@@ -26,6 +30,7 @@ const orderingUrls = async (
 
   const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
   const paginateToFloor = Math.floor(paginate);
+  const paginationLimit = 10;
 
   const sortOrderBaseOnParameter = {
     date: -1,
@@ -47,7 +52,7 @@ const orderingUrls = async (
       const userUrls = await urls.find(
         { userId: userId },
         {
-          limit: 10,
+          limit: paginationLimit,
           skip: paginateToFloor,
           sort: {
             [orderBy]: sortOrderBaseOnParameter[orderBy],
@@ -57,7 +62,11 @@ const orderingUrls = async (
 
       console.log('Salvando urls usuario no Cache');
 
-      redisSetAsync(redisKeyUser, JSON.stringify(userUrls));
+      await redisSetAsync(redisKeyUser, JSON.stringify(userUrls));
+
+      const redisExpirationTimeInSeconds = 10;
+
+      redisExpire(redisKeyUser, redisExpirationTimeInSeconds);
 
       return userUrls;
     }
@@ -73,7 +82,7 @@ const orderingUrls = async (
     const publicUrls = await urls.find(
       { publicStatus: true },
       {
-        limit: 10,
+        limit: paginationLimit,
         skip: paginateToFloor,
         sort: {
           [orderBy]: sortOrderBaseOnParameter[orderBy],
@@ -83,7 +92,11 @@ const orderingUrls = async (
 
     console.log('Salvando urls publicas no Cache');
 
-    redisSetAsync(redisKeyPublic, JSON.stringify(publicUrls));
+    await redisSetAsync(redisKeyPublic, JSON.stringify(publicUrls));
+
+    const redisExpirationTimeInSeconds = 10;
+
+    redisExpire(redisKeyPublic, redisExpirationTimeInSeconds);
 
     return publicUrls;
   } catch (error) {

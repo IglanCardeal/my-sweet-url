@@ -14,8 +14,8 @@ console.log('============REDIS SERVER============\n');
 console.log(`*** Redis database URI: ${REDIS_HOST}`);
 
 const client = redis.createClient(REDIS_HOST);
-
 const redisGetAsync = util.promisify(client.get).bind(client);
 const redisSetAsync = util.promisify(client.set).bind(client);
+const redisExpire = util.promisify(client.expire).bind(client);
 
-export { redisGetAsync, redisSetAsync };
+export { redisGetAsync, redisSetAsync, redisExpire };

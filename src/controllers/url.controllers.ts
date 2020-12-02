@@ -62,7 +62,7 @@ export default {
     const value = req.query.value?.toString().trim();
     const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
     const paginateToFloor = Math.floor(paginate);
-
+    const paginationLimit = 10;
     const findByArray = ['alias', 'domain'];
     const validFindBy = findByArray.includes(findBy);
 
@@ -87,7 +87,7 @@ export default {
           publicStatus: true,
         },
         {
-          limit: 10,
+          limit: paginationLimit,
           skip: paginateToFloor,
         },
       );
