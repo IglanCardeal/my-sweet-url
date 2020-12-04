@@ -4,7 +4,11 @@ import { config } from 'dotenv';
 import path from 'path';
 
 import { db } from '@database/connection';
-// import redisClient from '@database/redis-connection';
+import {
+  redisGetAsync,
+  redisSetAsync,
+  redisExpire,
+} from '@database/redis-connection';
 
 import { urlSchema, domainValidator, urlToFilter } from '@utils/schemas';
 import catchErrorFunction from '@utils/catch-error-function';
@@ -62,11 +66,13 @@ export default {
     const value = req.query.value?.toString().trim();
     const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
     const paginateToFloor = Math.floor(paginate);
-    const paginationLimit = 10;
+    const paginationLimit = 10; // limite de 10 por causa da busca por dominio
     const findByArray = ['alias', 'domain'];
     const validFindBy = findByArray.includes(findBy);
 
     let urlsFiltereds;
+
+    console.time('Start');
 
     try {
       if (!validFindBy) {
@@ -80,7 +86,18 @@ export default {
         await domainValidator.validate({ domain: value });
       else await urlToFilter.validate({ alias: value });
 
-      // limite de 10 por causa da busca por dominio
+      const redisPublicKey = `public_findby_${findBy}=${value}_page${paginateToFloor}`;
+      const cachedPublicQuery = await redisGetAsync(redisPublicKey);
+
+      if (cachedPublicQuery) {
+        const result = JSON.parse(cachedPublicQuery);
+
+        return res.status(200).json({
+          message: 'Todas as URLs publicas filtradas.',
+          ['filtered_public_urls']: result,
+        });
+      }
+
       urlsFiltereds = await urls.find(
         {
           [findBy]: value,
@@ -104,6 +121,15 @@ export default {
         };
       });
 
+      await redisSetAsync(
+        redisPublicKey,
+        JSON.stringify(urlsFilteredsWithShortenedUrls),
+      );
+
+      const redisExpirationTimeInSeconds = 10;
+
+      redisExpire(redisPublicKey, redisExpirationTimeInSeconds);
+
       res.status(200).json({
         message: 'Todas as URLs publicas filtradas.',
         ['filtered_public_urls']: urlsFilteredsWithShortenedUrls,
@@ -124,13 +150,13 @@ export default {
         return res.sendFile(path.join(__dirname, '../public', '404.html'));
       }
 
-      const number_access = url.number_access + 1;
+      const updatedNumberAccess = url.number_access + 1;
 
       urls.findOneAndUpdate(
         { alias },
         {
           $set: {
-            number_access: number_access,
+            number_access: updatedNumberAccess,
           },
         },
       );
