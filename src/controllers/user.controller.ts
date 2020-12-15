@@ -45,33 +45,6 @@ export default {
     }
   },
 
-  // async userRedirectUrl(req: Request, res: Response, next: NextFunction) {
-  //   const { alias } = req.params;
-
-  //   try {
-  //     const url = await urls.findOne({ alias });
-
-  //     if (!url?.url) {
-  //       return res.sendFile(path.join(__dirname, '../public', '404.html'));
-  //     }
-
-  //     const number_access = url.number_access + 1;
-
-  //     urls.findOneAndUpdate(
-  //       { alias },
-  //       {
-  //         $set: {
-  //           number_access: number_access,
-  //         },
-  //       },
-  //     );
-
-  //     res.status(308).redirect(url.url);
-  //   } catch (error) {
-  //     catchErrorFunction(error, next);
-  //   }
-  // },
-
   async userToShortUrl(req: Request, res: Response, next: NextFunction) {
     const { userId } = res.locals;
     let { alias, url, publicStatus } = req.body;
@@ -94,7 +67,10 @@ export default {
         throwErrorHandler(
           403,
           'Apelido informado já existe! Tente outro nome.',
+          next,
         );
+
+        return;
       }
 
       const date = new Date().toLocaleDateString('br');
@@ -138,7 +114,7 @@ export default {
 
     // somente urls privadas podem ser editadas
     if (publicStatus) {
-      throwErrorHandler(403, 'Somente urls privadas podem ser editadas.');
+      throwErrorHandler(403, 'Somente urls privadas podem ser editadas.', next);
     }
 
     try {
@@ -156,18 +132,24 @@ export default {
         throwErrorHandler(
           404,
           'Usuário não encontrado! Faça o login novamente.',
+          next,
         );
+
+        return;
       }
 
       if (!urlsFounded) {
-        throwErrorHandler(404, 'Url não encontrada!');
+        throwErrorHandler(404, 'Url não encontrada!', next);
       }
 
       if (aliasAlreadyExist) {
         throwErrorHandler(
           403,
           'Apelido informado já existe! Informe outro apelido ou deixe-o em branco',
+          next,
         );
+
+        return;
       }
 
       const date = new Date().toLocaleDateString('br');
@@ -199,4 +181,31 @@ export default {
       catchErrorFunction(error, next);
     }
   },
+
+  // async userRedirectUrl(req: Request, res: Response, next: NextFunction) {
+  //   const { alias } = req.params;
+
+  //   try {
+  //     const url = await urls.findOne({ alias });
+
+  //     if (!url?.url) {
+  //       return res.sendFile(path.join(__dirname, '../public', '404.html'));
+  //     }
+
+  //     const number_access = url.number_access + 1;
+
+  //     urls.findOneAndUpdate(
+  //       { alias },
+  //       {
+  //         $set: {
+  //           number_access: number_access,
+  //         },
+  //       },
+  //     );
+
+  //     res.status(308).redirect(url.url);
+  //   } catch (error) {
+  //     catchErrorFunction(error, next);
+  //   }
+  // },
 };

@@ -99,15 +99,15 @@ export const userLoginSchema = yup.object().shape({
     .string()
     .trim()
     .required(
-      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
+      'Nome de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .min(
       3,
-      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
+      'Nome de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .max(
       25,
-      'Senha de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
+      'Nome de usuário tem que ter minimo de 3 e máximo de 25 caracteres.',
     )
     .matches(
       /^[\w\-" "]+$/gi,

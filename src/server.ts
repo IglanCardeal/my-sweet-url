@@ -3,7 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 
-import routes from './routes/routes';
+import publicRoutes from '@routes/public.routes';
+import userRoutes from '@routes/user.routes';
+import signupLoginRoutes from '@routes/signup-login.routes';
 
 import { startDatabaseConnectionAndServer } from '@database/connection';
 
@@ -17,9 +19,17 @@ app.use(helmet());
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors(corsOptions));
-app.use(routes);
+
+app.use(signupLoginRoutes);
+app.use(publicRoutes);
+app.use(userRoutes);
+
 app.use(errorHandler);
 app.use(notFoundHandler);
+
+process.on('uncaughtException', error => {
+  console.log('Erro nao tratado:', error);
+});
 
 startDatabaseConnectionAndServer(app);
 
@@ -37,6 +47,7 @@ startDatabaseConnectionAndServer(app);
  * [x]5 - logoff
  *
  * []6 - API RATE LIMITING
+ *  []6.1 - limitar pelo endereco IP
  *
  * [X]7 - Reposta 404 caso alias nao encontrado no banco
  *

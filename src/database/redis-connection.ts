@@ -18,4 +18,4 @@ const redisGetAsync = util.promisify(client.get).bind(client);
 const redisSetAsync = util.promisify(client.set).bind(client);
 const redisExpire = util.promisify(client.expire).bind(client);
 
-export { redisGetAsync, redisSetAsync, redisExpire };
+export { redisGetAsync, redisSetAsync, redisExpire, client };

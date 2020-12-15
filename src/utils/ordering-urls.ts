@@ -45,7 +45,7 @@ const orderingUrls = async (
       const cachedUserQuery = await redisGetAsync(redisKeyUser);
 
       if (cachedUserQuery) {
-        console.log('SERVINDO Urls usuario do Cache');
+        // console.log('SERVINDO Urls usuario do Cache');
         return JSON.parse(cachedUserQuery);
       }
 
@@ -60,7 +60,7 @@ const orderingUrls = async (
         },
       );
 
-      console.log('Salvando urls usuario no Cache');
+      // console.log('Salvando urls usuario no Cache');
 
       await redisSetAsync(redisKeyUser, JSON.stringify(userUrls));
 
@@ -75,7 +75,7 @@ const orderingUrls = async (
     const cachedPublicQuery = await redisGetAsync(redisKeyPublic);
 
     if (cachedPublicQuery) {
-      console.log('SERVINDO Urls publicas do Cache');
+      // console.log('SERVINDO Urls publicas do Cache');
       return JSON.parse(cachedPublicQuery);
     }
 
@@ -90,7 +90,7 @@ const orderingUrls = async (
       },
     );
 
-    console.log('Salvando urls publicas no Cache');
+    // console.log('Salvando urls publicas no Cache');
 
     await redisSetAsync(redisKeyPublic, JSON.stringify(publicUrls));
 

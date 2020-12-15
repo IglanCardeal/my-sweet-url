@@ -14,9 +14,9 @@ export default (
   console.log(error);
 
   if (error.statusCode) {
-    res.status(error.statusCode).json({ message: error.message });
+    return res.status(error.statusCode).json({ message: error.message });
   } else {
-    res.status(500).json({
+    return res.status(500).json({
       message: '500 - Erro interno de servidor. Desculpe pelo o ocorrido :/',
     });
   }

@@ -30,8 +30,6 @@ urls.createIndex('number_access');
 export default {
   async publicShowUrls(req: Request, res: Response, next: NextFunction) {
     try {
-      console.time('Duracao');
-
       const publicUrls = await orderingUrls(urls, req);
 
       const urlsWithShortenedUrls = publicUrls.map(url => {
@@ -45,8 +43,6 @@ export default {
           shorteredUrl: `${APP_HOST}/${url.alias}`,
         };
       });
-
-      console.timeEnd('Duracao');
 
       res.status(200).json({
         message: 'Todas as URLs publicas.',
@@ -72,14 +68,15 @@ export default {
 
     let urlsFiltereds;
 
-    console.time('Start');
-
     try {
       if (!validFindBy) {
         throwErrorHandler(
           403,
           'Campo de busca inválido. Somente apelido (alias) ou dominio (domain) são aceitos no filtro.',
+          next,
         );
+
+        return;
       }
 
       if (findBy === 'domain')
@@ -185,7 +182,10 @@ export default {
         throwErrorHandler(
           403,
           'Apelido informado já existe! Tente outro nome.',
+          next,
         );
+
+        return;
       }
 
       alias = alias.toLowerCase();

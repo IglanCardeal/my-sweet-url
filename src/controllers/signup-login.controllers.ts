@@ -26,7 +26,9 @@ export default {
       const userFound = await users.findOne({ username });
 
       if (!userFound) {
-        throwErrorHandler(404, 'Usuário não encontrado! Tente novamente');
+        throwErrorHandler(404, 'Usuário não encontrado! Tente novamente', next);
+
+        return;
       }
 
       bcrypt.compare(password, userFound.password, (err, result) => {
@@ -34,7 +36,10 @@ export default {
           throwErrorHandler(
             500,
             'Erro interno de servidor ao tentar verificar senha de usuário',
+            next,
           );
+
+          return;
         }
 
         const isPasswordValid = result;
@@ -43,7 +48,10 @@ export default {
           throwErrorHandler(
             401,
             'Senha de usuário usuário incorreta! Tente novamente.',
+            next,
           );
+
+          return;
         }
 
         const maxAgeOfCookie =
@@ -86,7 +94,10 @@ export default {
         throwErrorHandler(
           401,
           'Email informado ja cadastrado! Use outro email.',
+          next,
         );
+
+        return;
       }
 
       bcrypt.hash(password, 12, async (err, hash) => {
@@ -94,7 +105,10 @@ export default {
           throwErrorHandler(
             500,
             'Error interno de servidor ao salvar senha de usuário.',
+            next,
           );
+
+          return;
         }
 
         const newUser = {
