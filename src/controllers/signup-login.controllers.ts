@@ -11,8 +11,9 @@ import throwErrorHandler from '@utils/throw-error-handler';
 config();
 
 const users = db.get('users');
-const SECRET = process.env.JWT_SECRET || 'chavesecretaaleatoria';
 const env = process.env.NODE_ENV;
+// const PRIVATE_KEY = JWTKeys.PRIVATE_KEY.trim();
+const PRIVATE_KEY = process.env.JWT_PRIVATE_KEY!;
 
 export default {
   async login(req: Request, res: Response, next: NextFunction) {
@@ -58,20 +59,39 @@ export default {
           env === 'development'
             ? 60 * 60 * 1000 * 1000 // mil horas
             : 60 * 60 * 1000; // 1 hora
-        const token = jwt.sign({ userId: userFound._id }, SECRET, {
-          expiresIn: maxAgeOfCookie,
-        });
 
-        res.cookie('token', `Bearer ${token}`, {
-          maxAge: maxAgeOfCookie,
-          httpOnly: true,
-          secure: false,
-          sameSite: true,
-        });
+        jwt.sign(
+          { userId: userFound._id },
+          PRIVATE_KEY,
+          {
+            expiresIn: maxAgeOfCookie,
+            algorithm: 'RS256',
+          },
+          (err, token) => {
+            if (err) {
+              console.log('Erro ao gerar token: ', err);
 
-        res.status(200).json({
-          message: 'Usuário autenticado com sucesso',
-        });
+              throwErrorHandler(
+                500,
+                'Erro interno de servidor ao gerar o token :/.',
+                next,
+              );
+
+              return;
+            }
+
+            res.cookie('token', `Bearer ${token}`, {
+              maxAge: maxAgeOfCookie,
+              httpOnly: true,
+              secure: false,
+              sameSite: true,
+            });
+
+            res.status(200).json({
+              message: 'Usuário autenticado com sucesso',
+            });
+          },
+        );
       });
     } catch (error) {
       catchErrorFunction(error, next);

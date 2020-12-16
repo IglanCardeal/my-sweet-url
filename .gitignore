@@ -1,3 +1,7 @@
+# Keys
+
+src/keys/jwt-keys.ts
+
 # Logs
 logs
 *.log

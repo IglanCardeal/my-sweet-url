@@ -10,9 +10,12 @@ export default (error: any, next: NextFunction) => {
       statusCode: 403,
     };
 
-    return next(error);
+    next(error);
+
+    return;
   }
 
-  console.log(error);
-  return next(error);
+  next(error);
+
+  return;
 };
