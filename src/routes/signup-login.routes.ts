@@ -1,14 +1,13 @@
 import { Router } from 'express';
 
 import signupLoginControllers from '@controllers/signup-login.controllers';
-
-import apiRateLimiter from '@middlewares/api-rate-limit';
+import loginRateLimit from '@middlewares/rate-limit/login-rate-limit'
 
 const router = Router();
 
 router.post(
   '/api/login',
-  apiRateLimiter.userLoginApiLimit,
+  loginRateLimit.userLoginApiLimit,
   signupLoginControllers.login,
 );
 router.post('/api/signup', signupLoginControllers.signup);

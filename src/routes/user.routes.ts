@@ -3,7 +3,7 @@ import { Router } from 'express';
 import userControllers from '@controllers/user.controller';
 
 import checkAuthentication from '@middlewares/check-authentication';
-import apiRateLimiter from '@middlewares/api-rate-limit';
+import apiRateLimiter from '@middlewares/rate-limit/login-rate-limit';
 
 const router = Router();
 

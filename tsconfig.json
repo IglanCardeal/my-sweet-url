@@ -21,8 +21,7 @@
       "@middlewares/*": ["./src/middlewares/*"],
       "@routes/*": ["./src/routes/*"],
       "@controllers/*": ["./src/controllers/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@keys/*": ["./src/keys/*"]
+      "@utils/*": ["./src/utils/*"]
     }
   },
   "include": ["./src/**/*.ts"],
