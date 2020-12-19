@@ -1,31 +1,35 @@
 import { Request, Response, NextFunction } from 'express';
-import { RateLimiterRedis } from 'rate-limiter-flexible';
 
-import { client } from '@database/redis-connection';
+import rateLimiterStoreConfig from '@database/rate-limiter-store';
+
+// retorna um par "username_127.0.0.1"
+const getUsernameIPkey = (username: string, ip: string) => `${username}_${ip}`;
 
 const maxWrongAttemptsByIPperDay = 50;
 const maxConsecutiveFailsByUsernameAndIP = 5;
 
-const limiterSlowBruteByIP = new RateLimiterRedis({
-  storeClient: client,
-  keyPrefix: 'login_fail_ip_per_day',
-  points: maxWrongAttemptsByIPperDay,
-  duration: 60 * 60 * 24, // armazena por 1 dia
-  blockDuration: 60 * 60 * 24, // bloqueia por 1 dia a cada 100 requisicoes
-  // duration: 10, // armazena por 1 dia
-  // blockDuration: 10, // bloqueia por 1 dia a cada 100 requisicoes
-});
+const oneMinute = 60;
+const oneDay = 60 * 60 * 24;
 
-const limiterConsecutiveFailsByUsernameAndIP = new RateLimiterRedis({
-  storeClient: client,
+const rateLimitConfigUsernameAndIP = {
+  maxWrongAttemps: maxConsecutiveFailsByUsernameAndIP,
   keyPrefix: 'login_fail_consecutive_username_and_ip',
-  points: maxConsecutiveFailsByUsernameAndIP,
-  duration: 60, // bloqueia por 1 minuto
-  blockDuration: 5, // bloqueia por 1 minuto
-});
+  durationSeconds: oneMinute,
+  blockDurationSeconds: oneMinute,
+};
+const limiterConsecutiveFailsByUsernameAndIP = rateLimiterStoreConfig(
+  rateLimitConfigUsernameAndIP,
+);
 
-// retorna um par "username_127.0.0.1"
-const getUsernameIPkey = (username: string, ip: string) => `${username}_${ip}`;
+const rateLimitConfigSlowBruteByIp = {
+  maxWrongAttemps: maxWrongAttemptsByIPperDay,
+  keyPrefix: 'login_fail_ip_per_day',
+  durationSeconds: oneDay,
+  blockDurationSeconds: oneDay,
+};
+const limiterSlowBruteByIP = rateLimiterStoreConfig(
+  rateLimitConfigSlowBruteByIp,
+);
 
 export default {
   userLoginApiLimit: async (

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import signupLoginControllers from '@controllers/signup-login.controllers';
-import loginRateLimit from '@middlewares/rate-limit/login-rate-limit'
+import loginRateLimit from '@middlewares/rate-limiter/login-rate-limit'
 
 const router = Router();
 
