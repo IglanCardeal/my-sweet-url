@@ -3,35 +3,28 @@ import { Request, Response, NextFunction } from 'express';
 import rateLimiterMessager from '@utils/rate-limiter-message';
 import rateLimiterStoreConfig from '@database/rate-limiter-store';
 
-// retorna um par "username_127.0.0.1"
-const getUsernameIPkey = (username: string, ip: string) => `${username}_${ip}`;
+const maxSignupByIPperDay = 10;
 
-const maxConsecutiveFailsByUsernameAndIP = 5;
+const twoMinutes = 60 * 2;
 
-const oneMinute = 60;
-
-const rateLimitConfigUsernameAndIP = {
-  maxWrongAttemps: maxConsecutiveFailsByUsernameAndIP,
-  keyPrefix: 'login_fail_consecutive_username_and_ip',
-  durationSeconds: oneMinute,
-  blockDurationSeconds: oneMinute,
+const rateLimitConfigSlowBruteByIP = {
+  maxWrongAttemps: maxSignupByIPperDay,
+  keyPrefix: 'signup_fail_ip_per_day',
+  durationSeconds: twoMinutes,
+  blockDurationSeconds: twoMinutes,
 };
-const limiterConsecutiveFailsByUsernameAndIP = rateLimiterStoreConfig(
-  rateLimitConfigUsernameAndIP,
+const limiterSlowBruteByIP = rateLimiterStoreConfig(
+  rateLimitConfigSlowBruteByIP,
 );
 
-async function userLoginApiLimit(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+async function signupApiLimit(req: Request, res: Response, next: NextFunction) {
   const originIpAddress = req.ip;
   const username = req.body.username;
 
   if (!username) {
     const error = {
       statusCode: 400,
-      message: 'Nome de usuário deve ser informado.',
+      message: 'Nome de usuário deve ser informado no cadastro.',
     };
 
     next(error);
@@ -39,24 +32,19 @@ async function userLoginApiLimit(
     return;
   }
 
-  const usernameIPkey = getUsernameIPkey(username, originIpAddress);
-
   try {
-    const resUsernameAndIP = await limiterConsecutiveFailsByUsernameAndIP.get(
-      usernameIPkey,
-    );
+    const resSlowByIP = await limiterSlowBruteByIP.get(originIpAddress);
 
-    const reason = 'Bloqueado por limite de requisições por usuário.';
+    const reason = 'Bloqueado por limite de requisições por endereço IP.';
     let retrySeconds = 0;
 
-    // verifica se ip ou username + ip foi bloqueado
-    const blockedUsernameAndIp = Boolean(
-      resUsernameAndIP !== null &&
-        resUsernameAndIP.consumedPoints > maxConsecutiveFailsByUsernameAndIP,
+    // verifica se iP ou username + iP foi bloqueado
+    const blockedIP = Boolean(
+      resSlowByIP !== null && resSlowByIP.consumedPoints > maxSignupByIPperDay,
     );
 
-    if (blockedUsernameAndIp) {
-      retrySeconds = Math.round(resUsernameAndIP!.msBeforeNext / 1000) || 1;
+    if (blockedIP) {
+      retrySeconds = Math.round(resSlowByIP!.msBeforeNext / 1000) || 1;
     }
 
     if (retrySeconds > 0) {
@@ -77,7 +65,7 @@ async function userLoginApiLimit(
     }
 
     try {
-      await limiterConsecutiveFailsByUsernameAndIP.consume(usernameIPkey);
+      await limiterSlowBruteByIP.consume(originIpAddress);
 
       next();
     } catch (error) {
@@ -107,4 +95,4 @@ async function userLoginApiLimit(
   }
 }
 
-export default userLoginApiLimit;
+export default signupApiLimit;

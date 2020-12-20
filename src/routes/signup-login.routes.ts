@@ -1,16 +1,26 @@
 import { Router } from 'express';
 
 import signupLoginControllers from '@controllers/signup-login.controllers';
-import loginRateLimit from '@middlewares/rate-limiter/login-rate-limit'
+
+// rate limiter
+import slowBruteForce from '@middlewares/rate-limiter/slow-brute-force';
+import userLoginApiLimit from '@middlewares/rate-limiter/login-rate-limit';
+import userLogoutApiLimit from '@middlewares/rate-limiter/logout-rate-limit';
+import signupApiLimit from '@middlewares/rate-limiter/signup-rate-limit';
 
 const router = Router();
 
 router.post(
   '/api/login',
-  loginRateLimit.userLoginApiLimit,
+  slowBruteForce,
+  userLoginApiLimit,
   signupLoginControllers.login,
 );
-router.post('/api/signup', signupLoginControllers.signup);
-router.delete('/api/logout', signupLoginControllers.logout);
+router.post('/api/signup', signupApiLimit, signupLoginControllers.signup);
+router.delete(
+  '/api/logout',
+  userLogoutApiLimit,
+  signupLoginControllers.logout,
+);
 
 export default router;
