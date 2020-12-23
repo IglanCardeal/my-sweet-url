@@ -12,11 +12,26 @@
 
 🚧 <b>Em construção...</b> 🚧
 
+#### TODO:
+
+**V1**
+
+- [ ] Refatorar os códigos de API Rate Limiter
+- [ ] Incluir solução de Cache para redirecionamento de url
+- [ ] Finalizar a documentação
+
+**V2**
+
+- [ ] Incluir recuperação de senha
+- [ ] Incluir geração de arquivos CSV de urls cadastradas por usuários cadastrados
+- [ ] Envio de CSV por email do usuário
+- [ ] **Verificar possibilidade de cadastrar/entrar com Google OAuth**
 ### Tabela de conteúdos
 
 - [Sobre](#sobre)
   - [API Restful](#api)
   - [Projeto front-end](#frontend)
+- [API Rate Limiter](#rate-limiter)
 - [Features](#features)
   - [Usuário anônimo](#anonimo)
   - [Usuário usuário](#usuario)
@@ -63,6 +78,10 @@ Os recurso que cada usuário, anônimo ou cadastrado, pode usar, será especific
 #### Projeto front-end
 
 Após esta API está concluída, vou desenvolver um front-end para implementar as funcionalidades desta API. O projeto front-end será feito em React (NextJS) e, futuramente, pretendo criar um app deste front-end com React Native, quando meus conhecimentos nesta plataforma estiverem mais consolidados. Consulte os repositórios deste perfil para ver se já está disponível o projeto front-end.
+
+<p id="rate-limiter"></p>
+
+### API Rate Limiter ✋
 
 <p id="features"></p>
 
@@ -159,11 +178,11 @@ As chamada para a API estão organizadas por pastas, para facilitar o entendimen
 
 - `User`: é responsável por tratar chamadas para funcionalidades de usuário cadastrado e autenticado no sistema, como criar urls privadas, editar, excluir, etc...;
 
-- `Public`:  é responsável por tratar chamadas para funcionalidades de usuário anônimo, como criar e visualizar urls publicas.
+- `Public`: é responsável por tratar chamadas para funcionalidades de usuário anônimo, como criar e visualizar urls publicas.
 
 Na pasta `Public`, eu adicionei chamadas personalizadas para testar recursos de paginação, ordenação dos dados retornados pela API, como por exemplo, ordenar por data de criação/apelido/dominio/numero de acessos, além de poder fazer uma busca filtrada, filtrando a busca por dominio, por exemplo.
 
-Veja abaixo um exemplo de filtrar publicamente uma url por dominio, através de uma *query string*:
+Veja abaixo um exemplo de filtrar publicamente uma url por dominio, através de uma _query string_:
 
 ![bydomain](./src/public/img/bydomain.png)
 

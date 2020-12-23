@@ -2,11 +2,21 @@ import { Router } from 'express';
 
 import urlControllers from '@controllers/url.controllers';
 
+import publicSlowBruteForce from '@middlewares/rate-limiter/public-rate-limit';
+
 const router = Router();
 
-router.get('/:alias', urlControllers.publicRedirectToUrl);
-router.get('/api/urls', urlControllers.publicShowUrls);
-router.get('/api/urls/filtered', urlControllers.publicShowFilteredUrls);
-router.post('/api/urls/create', urlControllers.publicToShortUrl);
+router.get('/:alias', publicSlowBruteForce, urlControllers.publicRedirectToUrl);
+router.get('/api/urls', publicSlowBruteForce, urlControllers.publicShowUrls);
+router.get(
+  '/api/urls/filtered',
+  publicSlowBruteForce,
+  urlControllers.publicShowFilteredUrls,
+);
+router.post(
+  '/api/urls/create',
+  publicSlowBruteForce,
+  urlControllers.publicToShortUrl,
+);
 
 export default router;

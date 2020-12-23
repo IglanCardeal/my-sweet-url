@@ -28,17 +28,6 @@ async function userLoginApiLimit(
   const originIpAddress = req.ip;
   const username = req.body.username;
 
-  if (!username) {
-    const error = {
-      statusCode: 400,
-      message: 'Nome de usuário deve ser informado.',
-    };
-
-    next(error);
-
-    return;
-  }
-
   const usernameIPkey = getUsernameIPkey(username, originIpAddress);
 
   try {
@@ -78,6 +67,17 @@ async function userLoginApiLimit(
 
     try {
       await limiterConsecutiveFailsByUsernameAndIP.consume(usernameIPkey);
+
+      if (!username) {
+        const error = {
+          statusCode: 400,
+          message: 'Nome de usuário deve ser informado.',
+        };
+
+        next(error);
+
+        return;
+      }
 
       next();
     } catch (error) {

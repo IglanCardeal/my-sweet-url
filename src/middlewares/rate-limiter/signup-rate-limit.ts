@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import rateLimiterMessager from '@utils/rate-limiter-message';
 import rateLimiterStoreConfig from '@database/rate-limiter-store';
 
-const maxSignupByIPperDay = 10;
+const maxSignupByIPperDay = 6;
 
 const twoMinutes = 60 * 2;
 
@@ -20,17 +20,6 @@ const limiterSlowBruteByIP = rateLimiterStoreConfig(
 async function signupApiLimit(req: Request, res: Response, next: NextFunction) {
   const originIpAddress = req.ip;
   const username = req.body.username;
-
-  if (!username) {
-    const error = {
-      statusCode: 400,
-      message: 'Nome de usuário deve ser informado no cadastro.',
-    };
-
-    next(error);
-
-    return;
-  }
 
   try {
     const resSlowByIP = await limiterSlowBruteByIP.get(originIpAddress);
@@ -66,6 +55,17 @@ async function signupApiLimit(req: Request, res: Response, next: NextFunction) {
 
     try {
       await limiterSlowBruteByIP.consume(originIpAddress);
+
+      if (!username) {
+        const error = {
+          statusCode: 400,
+          message: 'Nome de usuário deve ser informado no cadastro.',
+        };
+
+        next(error);
+
+        return;
+      }
 
       next();
     } catch (error) {
