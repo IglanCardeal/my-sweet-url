@@ -13,9 +13,16 @@ const REDIS_HOST =
 console.log('============REDIS SERVER============\n');
 console.log(`*** Redis database URI: ${REDIS_HOST}`);
 
-const client = redis.createClient(REDIS_HOST);
-const redisGetAsync = util.promisify(client.get).bind(client);
-const redisSetAsync = util.promisify(client.set).bind(client);
-const redisExpire = util.promisify(client.expire).bind(client);
+// tive que usar o paradigma POG (programação orientada a gambiarras)
+// para corrigir problemas de parâmetros do TS para o método hmget
+type FixBugRedisHmget = (arg1: string, arg2: string) => Promise<string[]>;
 
-export { redisGetAsync, redisSetAsync, redisExpire, client };
+export const client = redis.createClient(REDIS_HOST);
+export const redisGetAsync = util.promisify(client.get).bind(client);
+export const redisSetAsync = util.promisify(client.set).bind(client);
+export const redisExpireAsync = util.promisify(client.expire).bind(client);
+export const redisHmsetAsync = util.promisify(client.hmset).bind(client);
+export const redisHmgetAsync = util
+  .promisify(client.hmget)
+  .bind(client) as FixBugRedisHmget;
+export const redisHgetAllAsync = util.promisify(client.hgetall).bind(client);

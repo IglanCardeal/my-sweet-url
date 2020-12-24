@@ -7,7 +7,7 @@ import { db } from '@database/connection';
 import {
   redisGetAsync,
   redisSetAsync,
-  redisExpire,
+  redisExpireAsync,
 } from '@database/redis-connection';
 
 import { urlSchema, domainValidator, urlToFilter } from '@utils/schemas';
@@ -126,7 +126,7 @@ export default {
 
       const redisExpirationTimeInSeconds = 10;
 
-      redisExpire(redisPublicKey, redisExpirationTimeInSeconds);
+      redisExpireAsync(redisPublicKey, redisExpirationTimeInSeconds);
 
       res.status(200).json({
         message: 'Todas as URLs publicas filtradas.',

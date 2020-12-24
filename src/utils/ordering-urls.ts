@@ -3,7 +3,7 @@ import { Request } from 'express';
 import {
   redisGetAsync,
   redisSetAsync,
-  redisExpire,
+  redisExpireAsync,
 } from '@database/redis-connection';
 interface Urls {
   _id: string;
@@ -66,7 +66,7 @@ const orderingUrls = async (
 
       const redisExpirationTimeInSeconds = 10;
 
-      redisExpire(redisKeyUser, redisExpirationTimeInSeconds);
+      redisExpireAsync(redisKeyUser, redisExpirationTimeInSeconds);
 
       return userUrls;
     }
@@ -96,7 +96,7 @@ const orderingUrls = async (
 
     const redisExpirationTimeInSeconds = 10;
 
-    redisExpire(redisKeyPublic, redisExpirationTimeInSeconds);
+    redisExpireAsync(redisKeyPublic, redisExpirationTimeInSeconds);
 
     return publicUrls;
   } catch (error) {
