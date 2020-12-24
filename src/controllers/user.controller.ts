@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { config } from 'dotenv';
-import { nanoid } from 'nanoid';
+// import { nanoid } from 'nanoid';
 
 import { db } from '@database/connection';
 import { userUrlSchema } from '@utils/schemas';
@@ -9,6 +9,7 @@ import throwErrorHandler from '@utils/throw-error-handler';
 import getDomain from '@utils/get-domain';
 import checkProtocol from '@utils/check-protocol';
 import orderingUrls from '@utils/ordering-urls';
+import generateAlias from '@utils/generate-alias';
 
 config();
 
@@ -50,27 +51,26 @@ export default {
     let { alias, url, publicStatus } = req.body;
 
     try {
-      if (!alias) alias = nanoid(5);
-
       if (!(typeof publicStatus === 'boolean')) publicStatus = false;
+      if (!alias) alias = 'undefined'; // criei apenas para passar no validator
 
       await userUrlSchema.validate({ alias, url, publicStatus, userId });
 
-      alias = alias.toLowerCase();
+      if (alias === 'undefined') {
+        // gera alias aleatorio se nao informado
+        alias = await generateAlias(5);
+      } else {
+        const aliasExist = await urls.findOne({ alias });
 
-      let aliasAlreadyExist;
+        if (aliasExist) {
+          throwErrorHandler(
+            403,
+            'Apelido informado já existe! Tente outro nome.',
+            next,
+          );
 
-      if (!alias) alias = nanoid(5);
-      else aliasAlreadyExist = await urls.findOne({ alias });
-
-      if (aliasAlreadyExist) {
-        throwErrorHandler(
-          403,
-          'Apelido informado já existe! Tente outro nome.',
-          next,
-        );
-
-        return;
+          return;
+        }
       }
 
       const date = new Date().toLocaleDateString('br');
@@ -115,12 +115,19 @@ export default {
     // somente urls privadas podem ser editadas
     if (publicStatus) {
       throwErrorHandler(403, 'Somente urls privadas podem ser editadas.', next);
+
+      return;
     }
 
     try {
-      if (!alias) alias = nanoid(5);
+      if (!alias) alias = 'undefined';
 
       await userUrlSchema.validate({ alias, url, userId, publicStatus });
+
+      if (alias === 'undefined') {
+        // gera alias aleatorio se nao informado
+        alias = await generateAlias(5);
+      }
 
       const [userFounded, urlsFounded, aliasAlreadyExist] = await Promise.all([
         users.findOne({ _id: userId }),

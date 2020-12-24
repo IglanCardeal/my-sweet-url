@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { nanoid } from 'nanoid';
+// import { nanoid } from 'nanoid';
 import { config } from 'dotenv';
 import path from 'path';
 
@@ -16,6 +16,7 @@ import throwErrorHandler from '@utils/throw-error-handler';
 import getDomain from '@utils/get-domain';
 import checkProtocol from '@utils/check-protocol';
 import orderingUrls from '@utils/ordering-urls';
+import generateAlias from '@utils/generate-alias';
 
 config();
 
@@ -172,23 +173,25 @@ export default {
     let userId = '0';
 
     try {
-      if (!alias) alias = nanoid(7);
+      if (!alias) alias = 'undefined'; // criei apenas para passar no validator
 
       await urlSchema.validate({ alias, url, publicStatus, userId });
 
-      const aliasExist = await urls.findOne({ alias });
+      if (alias === 'undefined') {
+        alias = await generateAlias(7);
+      } else {
+        const aliasExist = await urls.findOne({ alias });
 
-      if (aliasExist) {
-        throwErrorHandler(
-          403,
-          'Apelido informado já existe! Tente outro nome.',
-          next,
-        );
+        if (aliasExist) {
+          throwErrorHandler(
+            403,
+            'Apelido informado já existe! Tente outro nome.',
+            next,
+          );
 
-        return;
+          return;
+        }
       }
-
-      alias = alias.toLowerCase();
 
       const date = new Date().toLocaleDateString('br');
       const domain = getDomain(url);
