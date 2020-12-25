@@ -9,10 +9,7 @@ export const urlSchema = yup.object().shape({
     .string()
     .trim()
     .min(0)
-    .max(
-      10,
-      'Nome de apelido tem que ter tamanho máximo de 10 caracteres.',
-    )
+    .max(10, 'Nome de apelido tem que ter tamanho máximo de 10 caracteres.')
     .matches(
       /^[\w\-]+$/gi,
       'Formato do apelido invalido. Use somente letras, números, "_" ou "-".',
@@ -42,10 +39,7 @@ export const userUrlSchema = yup.object().shape({
     .string()
     .trim()
     .min(0)
-    .max(
-      14,
-      'Nome de apelido tem que ter tamanho máximo de 14 caracteres.',
-    )
+    .max(14, 'Nome de apelido tem que ter tamanho máximo de 14 caracteres.')
     .matches(
       /^[\w\-]+$/gi,
       'Formato do apelido invalido. Use somente letras, números, "_" ou "-".',
@@ -76,10 +70,7 @@ export const urlToFilter = yup.object().shape({
     .string()
     .trim()
     .min(0)
-    .max(
-      14,
-      'Nome de apelido tem que ter tamanho máximo de 14 caracteres.',
-    )
+    .max(14, 'Nome de apelido tem que ter tamanho máximo de 14 caracteres.')
     .matches(
       /^[\w\-]+$/gi,
       'Formato do apelido invalido. Use somente letras, números, "_" ou "-".',
@@ -185,4 +176,16 @@ export const domainValidator = yup.object().shape({
     .string()
     .trim()
     .matches(/[a-z0-9-]+(\.[a-z]{2,}){1,3}?$/, 'Nome de dominio inválido.'),
+});
+
+export const aliaslValidator = yup.object().shape({
+  alias: yup
+    .string()
+    .trim()
+    .min(0)
+    .max(14, 'Nome de apelido tem que ter tamanho máximo de 14 caracteres.')
+    .matches(
+      /^[\w\-]+$/gi,
+      'Formato do apelido invalido. Use somente letras, números, "_" ou "-".',
+    ),
 });

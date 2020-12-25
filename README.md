@@ -17,7 +17,8 @@
 **V1**
 
 - [x] Refatorar os códigos de mensagens de API Rate Limiter
-- [ ] Incluir solução de Cache para redirecionamento de url
+- [x] Incluir solução de Cache para redirecionamento de url
+- [ ] Atualizar cache para cada alteracao/criação/exclusao de url
 - [ ] Finalizar a documentação
 
 **V2**

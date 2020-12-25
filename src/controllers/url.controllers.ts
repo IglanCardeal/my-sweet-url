@@ -7,10 +7,17 @@ import { db } from '@database/connection';
 import {
   redisGetAsync,
   redisSetAsync,
+  redisHmgetAsync,
   redisExpireAsync,
+  redisHmsetAsync,
 } from '@database/redis-connection';
 
-import { urlSchema, domainValidator, urlToFilter } from '@utils/schemas';
+import {
+  urlSchema,
+  domainValidator,
+  urlToFilter,
+  aliaslValidator,
+} from '@utils/schemas';
 import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
 import getDomain from '@utils/get-domain';
@@ -138,14 +145,38 @@ export default {
   },
 
   async publicRedirectToUrl(req: Request, res: Response, next: NextFunction) {
-    // Redirecionamento padrao para todos
     const { alias } = req.params;
 
     try {
+      await aliaslValidator.validate({ alias });
+      // verifica se existe no cache para melhorar performance
+      const urlFoundedOnCache = await redisHmgetAsync('cached_alias', alias);
+
+      if (urlFoundedOnCache[0]) {
+        res.status(308).redirect(urlFoundedOnCache[0]);
+
+        const urlToUpdate = await urls.findOne({ alias });
+
+        const updatedNumberAccess = urlToUpdate.number_access + 1;
+
+        urls.findOneAndUpdate(
+          { alias },
+          {
+            $set: {
+              number_access: updatedNumberAccess,
+            },
+          },
+        );
+
+        return;
+      }
+
       const url = await urls.findOne({ alias });
 
       if (!url?.url) {
-        return res.sendFile(path.join(__dirname, '../public', '404.html'));
+        res.sendFile(path.join(__dirname, '../public', '404.html'));
+
+        return;
       }
 
       const updatedNumberAccess = url.number_access + 1;
@@ -159,9 +190,14 @@ export default {
         },
       );
 
+      redisHmsetAsync(['cached_alias', url.alias, url.url]);
+
       res.status(308).redirect(url.url);
     } catch (error) {
-      catchErrorFunction(error, next);
+      // console.log(error.errors[0]);
+
+      res.sendFile(path.join(__dirname, '../public', '404.html'));
+      // catchErrorFunction(error, next);
     }
   },
 

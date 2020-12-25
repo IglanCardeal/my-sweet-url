@@ -13,7 +13,7 @@ import corsOptions from '@middlewares/cors-options';
 import errorHandler from '@middlewares/error-handler';
 import notFoundHandler from '@middlewares/404-handler';
 
-import { activeAliasEvents, aliasEventEmitter } from '@events/alias-cache';
+import { activeAliasEvents, aliasEventEmitter } from '@events/alias-feed-cache';
 
 const app = express();
 
