@@ -109,10 +109,11 @@ export default {
   },
 
   async userEditUrl(req: Request, res: Response, next: NextFunction) {
+    // somente urls privadas podem ser editadas
+    // pode-se editar alias e/ou url
     const { userId } = res.locals;
     let { alias, url, publicStatus, id } = req.body;
 
-    // somente urls privadas podem ser editadas
     if (publicStatus) {
       throwErrorHandler(403, 'Somente urls privadas podem ser editadas.', next);
 
@@ -122,20 +123,21 @@ export default {
     try {
       if (!alias) alias = 'undefined';
 
-      await userUrlSchema.validate({ alias, url, userId, publicStatus });
+      await userUrlSchema.validate({ alias, url, userId, publicStatus, id });
 
       if (alias === 'undefined') {
-        // gera alias aleatorio se nao informado
+        // gera alias aleatorio se não informado
         alias = await generateAlias(5);
       }
 
-      const [userFounded, urlsFounded, aliasAlreadyExist] = await Promise.all([
+      const [userFounded, urlsFounded, aliasExisting] = await Promise.all([
         users.findOne({ _id: userId }),
         urls.find({ userId, publicStatus: false, _id: id }),
         urls.findOne({ alias }),
       ]);
 
       if (!userFounded) {
+        // verificação de segurança
         throwErrorHandler(
           404,
           'Usuário não encontrado! Faça o login novamente.',
@@ -145,18 +147,39 @@ export default {
         return;
       }
 
-      if (!urlsFounded) {
-        throwErrorHandler(404, 'Url não encontrada!', next);
-      }
-
-      if (aliasAlreadyExist) {
+      if (!urlsFounded[0]) {
         throwErrorHandler(
-          403,
-          'Apelido informado já existe! Informe outro apelido ou deixe-o em branco',
+          404,
+          'Alias não encontrado! Verifique o id do alias.',
           next,
         );
 
         return;
+      }
+      if (aliasExisting) {
+        // este código verifica o alias informado pertence ao mesmoa alias
+        //  que está sendo editado através do id do alias.
+        // se for diferente, quer dizer que o apelido informado já existe e
+        //  pertence a outro alias e portanto não pode ser usado na edicão.
+        // se for "true", o nome do alias já exite e pertence a outra url.
+        // se for "false", o nome do alias pertence ao proprio alias que está
+        //  sendo editado.
+        // é para o caso quando o usuário edita somente a url, mas mantem o
+        //  nome do alias inalterado
+        const aliasDoNotBelongsToTheCurrentAliasId = Boolean(
+          urlsFounded[0]._id.toString().trim() !==
+            aliasExisting._id.toString().trim(),
+        );
+
+        if (aliasDoNotBelongsToTheCurrentAliasId) {
+          throwErrorHandler(
+            403,
+            'Apelido informado já existe! Informe outro apelido ou deixe-o em branco',
+            next,
+          );
+
+          return;
+        }
       }
 
       const date = new Date().toLocaleDateString('br');
@@ -164,7 +187,7 @@ export default {
       const urlWithProtocol = checkProtocol(url);
 
       const updatedUrl = await urls.findOneAndUpdate(
-        { userId: userId },
+        { userId: userId, publicStatus: false, _id: id },
         {
           $set: {
             alias: alias,

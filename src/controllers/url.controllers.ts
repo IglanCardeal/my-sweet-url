@@ -7,8 +7,8 @@ import { db } from '@database/connection';
 import {
   redisGetAsync,
   redisSetAsync,
-  redisHmgetAsync,
   redisExpireAsync,
+  redisHmgetAsync,
   redisHmsetAsync,
 } from '@database/redis-connection';
 

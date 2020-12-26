@@ -24,8 +24,8 @@
 **V2**
 
 - [ ] Incluir recuperação de senha
-- [ ] Incluir geração de arquivos CSV de urls cadastradas por usuários cadastrados
-- [ ] Envio de CSV por email do usuário
+- [ ] Incluir geração de arquivos CSV de urls cadastradas pelos usuários cadastrados
+- [ ] Envio de CSV por email do usuário (se possível)
 - [ ] **Verificar possibilidade de cadastrar/entrar com Google OAuth**
 ### Tabela de conteúdos
 
@@ -35,7 +35,7 @@
 - [API Rate Limiter](#rate-limiter)
 - [Features](#features)
   - [Usuário anônimo](#anonimo)
-  - [Usuário usuário](#usuario)
+  - [Usuário cadastrado](#usuario)
   - [Por que me cadastrar na aplicação?](#cadastro)
 - [Features em desenvolvimento](#features)
   - [Migrations para auxiliar no desenvolvimento](#migrations)

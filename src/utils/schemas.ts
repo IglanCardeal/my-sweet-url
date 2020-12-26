@@ -60,8 +60,20 @@ export const userUrlSchema = yup.object().shape({
     .typeError(
       'O estatus(publicStatus) da URL tem que ser um Boolean "true" ou "false"',
     ),
-  userId: yup.string(),
-  id: yup.string().trim(),
+  userId: yup
+    .string()
+    .trim()
+    .matches(
+      /^[\w\-]+$/gi,
+      'Formato do id de usuário está inválido. Não será possível usar este recurso sem alterar este formato.',
+    ),
+  id: yup
+    .string()
+    .trim()
+    .matches(
+      /^[\w\-]+$/gi,
+      'Formato do id do alias está inválido. Não será possível usar este recurso sem alterar este formato.',
+    ),
 });
 
 // Schema para validar dominio da url ou alias
