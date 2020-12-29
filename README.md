@@ -18,7 +18,8 @@
 
 - [x] Refatorar os códigos de mensagens de API Rate Limiter
 - [x] Incluir solução de Cache para redirecionamento de url
-- [ ] Atualizar cache para cada alteracao/criação/exclusao de url
+- [X] Atualizar cache para cada alteracao/criação de url
+  - [ ] Adicionar eventos para atulizar cache de urls ordenadas/filtradas
 - [ ] Finalizar a documentação
 
 **V2**
@@ -149,11 +150,9 @@ Um usuário pode se cadastrar no sistema e ter acesso a alguns recursos a mais q
 
 Ao se cadastrar na aplicação, o usuário autenticado pode, além de acessar todos os recursos para usuários anônimos, ter acesso aos seguintes recursos/benefícios:
 
-- [x] Definir a url encurtada como privada.
+- [x] Definir a url encurtada como privada (esta não será exibida na listagem publica).
 
 - [x] Editar uma url privada que ele criou, alterando seu apelido ou url.
-
-- [x] Excluir uma url privada que ele criou.
 
 - [x] Limite de 14 caracteres para o apelido informado
 

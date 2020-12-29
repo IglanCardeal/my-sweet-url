@@ -3,6 +3,7 @@ import { config } from 'dotenv';
 // import { nanoid } from 'nanoid';
 
 import { db } from '@database/connection';
+
 import { userUrlSchema } from '@utils/schemas';
 import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
@@ -10,6 +11,8 @@ import getDomain from '@utils/get-domain';
 import checkProtocol from '@utils/check-protocol';
 import orderingUrls from '@utils/ordering-urls';
 import generateAlias from '@utils/generate-alias';
+
+import { redisHmsetAsync, redisHdelAsync } from '@database/redis-connection';
 
 config();
 
@@ -22,6 +25,7 @@ export default {
     const { userId } = res.locals;
 
     try {
+      // já trás do cache se existir
       const userUrls = await orderingUrls(urls, req, userId);
 
       const userUrlsFormated = userUrls.map(url => {
@@ -50,8 +54,11 @@ export default {
     const { userId } = res.locals;
     let { alias, url, publicStatus } = req.body;
 
+    url = checkProtocol(url);
+
     try {
       if (!(typeof publicStatus === 'boolean')) publicStatus = false;
+
       if (!alias) alias = 'undefined'; // criei apenas para passar no validator
 
       await userUrlSchema.validate({ alias, url, publicStatus, userId });
@@ -75,11 +82,12 @@ export default {
 
       const date = new Date().toLocaleDateString('br');
       const domain = getDomain(url);
-      const urlWithProtocol = checkProtocol(url);
+
+      await redisHmsetAsync(['cached_alias', alias, url]);
 
       const newUrl = {
         alias,
-        url: urlWithProtocol,
+        url,
         publicStatus,
         userId,
         createdAt: date,
@@ -88,13 +96,16 @@ export default {
         number_access: 0,
       };
 
-      await urls.insert(newUrl);
+      // await urls.insert(newUrl);
+      // salva url no banco assincronamente
+      // pois já foi salva no cache
+      urls.insert(newUrl);
 
       res.status(201).json({
         message: 'URL salva com sucesso!',
         urlcreated: {
           alias,
-          url: urlWithProtocol,
+          url,
           publicStatus,
           date,
           domain,
@@ -114,6 +125,8 @@ export default {
     const { userId } = res.locals;
     let { alias, url, publicStatus, id } = req.body;
 
+    url = checkProtocol(url);
+
     if (publicStatus) {
       throwErrorHandler(403, 'Somente urls privadas podem ser editadas.', next);
 
@@ -132,7 +145,7 @@ export default {
 
       const [userFounded, urlsFounded, aliasExisting] = await Promise.all([
         users.findOne({ _id: userId }),
-        urls.find({ userId, publicStatus: false, _id: id }),
+        urls.find({ userId, publicStatus: false, _id: id.toString() }),
         urls.findOne({ alias }),
       ]);
 
@@ -184,14 +197,19 @@ export default {
 
       const date = new Date().toLocaleDateString('br');
       const domain = getDomain(url);
-      const urlWithProtocol = checkProtocol(url);
+
+      // remove o valor antigo do cache
+      await redisHdelAsync('cached_alias', urlsFounded[0].alias);
+
+      // atualiza o cache
+      await redisHmsetAsync(['cached_alias', alias, url]);
 
       const updatedUrl = await urls.findOneAndUpdate(
         { userId: userId, publicStatus: false, _id: id },
         {
           $set: {
             alias: alias,
-            url: urlWithProtocol,
+            url,
             domain: domain,
             updatedAt: date,
           },

@@ -208,6 +208,8 @@ export default {
     let publicStatus = true;
     let userId = '0';
 
+    url = checkProtocol(url); // verifica se já vem com protocolo HTTP
+
     try {
       if (!alias) alias = 'undefined'; // criei apenas para passar no validator
 
@@ -231,11 +233,10 @@ export default {
 
       const date = new Date().toLocaleDateString('br');
       const domain = getDomain(url);
-      const urlWithProtocol = checkProtocol(url);
 
       const newUrl = {
         alias,
-        url: urlWithProtocol,
+        url,
         publicStatus,
         userId,
         domain,
@@ -243,13 +244,16 @@ export default {
         number_access: 0,
       };
 
-      await urls.insert(newUrl);
+      // atualiza o cache
+      await redisHmsetAsync(['cached_alias', alias, url]);
+
+      urls.insert(newUrl);
 
       res.status(201).json({
         message: 'Nova URL adicionada com sucesso.',
         urlCreated: {
           alias,
-          url: urlWithProtocol,
+          url,
           shortenedUrl: `${APP_HOST}/${alias}`,
           domain,
           ['public_status']: publicStatus,

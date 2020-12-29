@@ -17,11 +17,17 @@ export const urlSchema = yup.object().shape({
   url: yup
     .string()
     .trim()
-    .matches(
-      /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      'URL não pode ser vazia ou tem que ser em um formato valido!',
+    .max(2000)
+    // .matches(
+    //   /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+    //   'URL não pode ser vazia ou,m que ser em um formato válido e de tamanho máximo de 2000 caracteres!',
+    // )
+    .required(
+      'URL não pode ser vazia, tem que ser em um formato válido e de tamanho máximo de 2000 caracteres!',
     )
-    .required('URL não pode ser vazia ou tem que ser em um formato valido!'),
+    .typeError(
+      'URL não pode ser vazia, tem que ser em um formato válido e de tamanho máximo de 2000 caracteres!',
+    ),
   publicStatus: yup
     .boolean()
     .required(
@@ -47,11 +53,20 @@ export const userUrlSchema = yup.object().shape({
   url: yup
     .string()
     .trim()
-    .matches(
-      /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      'URL não pode ser vazia ou tem que ser em um formato valido!',
+    .max(2000)
+    .url(
+      'URL não pode ser vazia, tem que ser em um formato válido e de tamanho máximo de 2000 caracteres!',
     )
-    .required('URL não pode ser vazia ou tem que ser em um formato valido!'),
+    // .matches(
+    //   /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+    //   'URL não pode ser vazia ou,m que ser em um formato válido e de tamanho máximo de 2000 caracteres!',
+    // )
+    .required(
+      'URL não pode ser vazia, tem que ser em um formato válido e de tamanho máximo de 2000 caracteres!',
+    )
+    .typeError(
+      'URL não pode ser vazia, tem que ser em um formato válido e de tamanho máximo de 2000 caracteres!',
+    ),
   publicStatus: yup
     .boolean()
     .required(
@@ -76,7 +91,7 @@ export const userUrlSchema = yup.object().shape({
     ),
 });
 
-// Schema para validar dominio da url ou alias
+// Schema para validar domínio da url ou alias
 export const urlToFilter = yup.object().shape({
   alias: yup
     .string()
@@ -86,13 +101,6 @@ export const urlToFilter = yup.object().shape({
     .matches(
       /^[\w\-]+$/gi,
       'Formato do apelido invalido. Use somente letras, números, "_" ou "-".',
-    ),
-  url: yup
-    .string()
-    .trim()
-    .matches(
-      /((https?):\/\/)?(www.)?[a-z0-9-]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#-]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      'URL não pode ser vazia ou tem que ser em um formato valido!',
     ),
 });
 
@@ -187,7 +195,13 @@ export const domainValidator = yup.object().shape({
   domain: yup
     .string()
     .trim()
-    .matches(/[a-z0-9-]+(\.[a-z]{2,}){1,3}?$/, 'Nome de dominio inválido.'),
+    // .matches(/[a-z0-9-]+(\.[a-z]{2,}){1,3}?$/, 'Nome de domínio inválido.'),
+    .max(255, 'Nome de domínio deve ter no máximo 255 caracteres.')
+    .matches(
+      /^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$/,
+      'Nome de domínio inválido.',
+    )
+    .typeError('Nome de domínio deve ter no máximo 255 caracteres.'),
 });
 
 export const aliaslValidator = yup.object().shape({

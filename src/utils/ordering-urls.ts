@@ -64,9 +64,9 @@ const orderingUrls = async (
 
       await redisSetAsync(redisKeyUser, JSON.stringify(userUrls));
 
-      const redisExpirationTimeInSeconds = 10;
+      const redisUserExpirationTimeInSeconds = 100;
 
-      redisExpireAsync(redisKeyUser, redisExpirationTimeInSeconds);
+      redisExpireAsync(redisKeyUser, redisUserExpirationTimeInSeconds);
 
       return userUrls;
     }
@@ -94,9 +94,9 @@ const orderingUrls = async (
 
     await redisSetAsync(redisKeyPublic, JSON.stringify(publicUrls));
 
-    const redisExpirationTimeInSeconds = 10;
+    const redisPublicExpirationTimeInSeconds = 200;
 
-    redisExpireAsync(redisKeyPublic, redisExpirationTimeInSeconds);
+    redisExpireAsync(redisKeyPublic, redisPublicExpirationTimeInSeconds);
 
     return publicUrls;
   } catch (error) {
