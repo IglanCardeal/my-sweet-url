@@ -12,14 +12,14 @@
 
 🚧 <b>Em construção...</b> 🚧
 
-#### TODO:
+#### TODO
 
 **V1**
 
 - [x] Refatorar os códigos de mensagens de API Rate Limiter
 - [x] Incluir solução de Cache para redirecionamento de url
-- [X] Atualizar cache para cada alteracao/criação de url
-  - [ ] Adicionar eventos para atulizar cache de urls ordenadas/filtradas
+- [x] Atualizar cache para cada alteracao/criação de url
+  - [x] Adicionar eventos para atualizar cache de urls ordenadas
 - [ ] Finalizar a documentação
 
 **V2**
@@ -28,6 +28,7 @@
 - [ ] Incluir geração de arquivos CSV de urls cadastradas pelos usuários cadastrados
 - [ ] Envio de CSV por email do usuário (se possível)
 - [ ] **Verificar possibilidade de cadastrar/entrar com Google OAuth**
+
 ### Tabela de conteúdos
 
 - [Sobre](#sobre)

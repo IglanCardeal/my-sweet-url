@@ -22,6 +22,8 @@ const db = monk(connectionUri);
 
 const startDatabaseConnectionAndServer = (app: any): void => {
   db.then(() => {
+    console.clear();
+
     console.log('\n============DATABASE============\n');
     console.log(
       `*** Database connection successful.\n*** Database URI: ${DB_URL}`,

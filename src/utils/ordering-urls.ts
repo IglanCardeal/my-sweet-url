@@ -64,7 +64,9 @@ const orderingUrls = async (
 
       await redisSetAsync(redisKeyUser, JSON.stringify(userUrls));
 
-      const redisUserExpirationTimeInSeconds = 100;
+      const oneMinute = 60;
+
+      const redisUserExpirationTimeInSeconds = oneMinute;
 
       redisExpireAsync(redisKeyUser, redisUserExpirationTimeInSeconds);
 
@@ -75,7 +77,7 @@ const orderingUrls = async (
     const cachedPublicQuery = await redisGetAsync(redisKeyPublic);
 
     if (cachedPublicQuery) {
-      // console.log('SERVINDO Urls publicas do Cache');
+      console.log('SERVINDO Urls publicas do Cache');
       return JSON.parse(cachedPublicQuery);
     }
 
@@ -94,7 +96,9 @@ const orderingUrls = async (
 
     await redisSetAsync(redisKeyPublic, JSON.stringify(publicUrls));
 
-    const redisPublicExpirationTimeInSeconds = 200;
+    const twoMinutes = 120;
+
+    const redisPublicExpirationTimeInSeconds = twoMinutes;
 
     redisExpireAsync(redisKeyPublic, redisPublicExpirationTimeInSeconds);
 

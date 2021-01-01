@@ -13,7 +13,7 @@ import corsOptions from '@middlewares/cors-options';
 import errorHandler from '@middlewares/error-handler';
 import notFoundHandler from '@middlewares/404-handler';
 
-import { activeAliasEvents, aliasEventEmitter } from '@events/alias-feed-cache';
+import { activeAliasEvents, aliasEventEmitter } from '@events/index';
 
 const app = express();
 
@@ -30,9 +30,7 @@ app.use(errorHandler);
 app.use(notFoundHandler);
 
 // Emite o evento para alimentar o cache com os alias/urls
-// para melhorar performance do recurso de redirecionamento
 activeAliasEvents();
-aliasEventEmitter.emit('set_alias_cache');
 
 process.on('uncaughtException', error => {
   console.log('Erro nao tratado:', error);

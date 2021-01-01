@@ -244,7 +244,7 @@ export default {
         number_access: 0,
       };
 
-      // atualiza o cache
+      // salva no cache
       await redisHmsetAsync(['cached_alias', alias, url]);
 
       urls.insert(newUrl);
