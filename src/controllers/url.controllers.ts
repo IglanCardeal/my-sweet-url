@@ -22,7 +22,7 @@ import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
 import getDomain from '@utils/get-domain';
 import checkProtocol from '@utils/check-protocol';
-import orderingUrls from '@utils/ordering-urls';
+// import orderingUrls from '@utils/ordering-urls';
 import generateAlias from '@utils/generate-alias';
 
 config();
@@ -37,10 +37,55 @@ urls.createIndex('number_access');
 
 export default {
   async publicShowUrls(req: Request, res: Response, next: NextFunction) {
-    try {
-      const publicUrls = await orderingUrls(urls, req);
+    let orderBy = req.query.orderby?.toString() || '';
 
-      const urlsWithShortenedUrls = publicUrls.map(url => {
+    const orderByArray = ['alias', 'date', 'number_access', 'domain'];
+    const validOrderBy = orderByArray.includes(orderBy);
+
+    if (!validOrderBy) orderBy = 'alias';
+
+    const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
+    const paginateToFloor = Math.floor(paginate);
+    const paginationLimit = 10;
+
+    const sortOrderBaseOnParameter = {
+      date: -1,
+      alias: 1,
+      number_access: -1,
+      domain: 1,
+    };
+
+    try {
+      const redisKeyPublic = `public_order-${orderBy}_page-${paginateToFloor}`;
+      const cachedPublicQuery = await redisGetAsync(redisKeyPublic);
+
+      if (cachedPublicQuery) {
+        // console.log('SERVINDO Urls publicas do Cache');
+        return JSON.parse(cachedPublicQuery);
+      }
+
+      const publicUrlsArray = await urls.find(
+        { publicStatus: true },
+        {
+          limit: paginationLimit,
+          skip: paginateToFloor,
+          sort: {
+            [orderBy]: sortOrderBaseOnParameter[orderBy],
+          },
+        },
+      );
+
+      // console.log('Salvando urls publicas no Cache');
+
+      await redisSetAsync(redisKeyPublic, JSON.stringify(publicUrlsArray));
+
+      const twoMinutes = 120;
+
+      const redisPublicExpirationTimeInSeconds = twoMinutes;
+
+      redisExpireAsync(redisKeyPublic, redisPublicExpirationTimeInSeconds);
+
+      const urlsWithShortenedUrls = publicUrlsArray.map(url => {
         return {
           alias: url.alias,
           url: url.url,
@@ -91,7 +136,7 @@ export default {
         await domainValidator.validate({ domain: value });
       else await urlToFilter.validate({ alias: value });
 
-      const redisPublicKey = `public_findby_${findBy}=${value}_page${paginateToFloor}`;
+      const redisPublicKey = `public_filterby_${findBy}=${value}_page${paginateToFloor}`;
       const cachedPublicQuery = await redisGetAsync(redisPublicKey);
 
       if (cachedPublicQuery) {
@@ -131,7 +176,9 @@ export default {
         JSON.stringify(urlsFilteredsWithShortenedUrls),
       );
 
-      const redisExpirationTimeInSeconds = 10;
+      const tenSeconds = 10;
+
+      const redisExpirationTimeInSeconds = tenSeconds;
 
       redisExpireAsync(redisPublicKey, redisExpirationTimeInSeconds);
 

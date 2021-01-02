@@ -9,10 +9,16 @@ import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
 import getDomain from '@utils/get-domain';
 import checkProtocol from '@utils/check-protocol';
-import orderingUrls from '@utils/ordering-urls';
+// import orderingUrls from '@utils/ordering-urls';
 import generateAlias from '@utils/generate-alias';
 
-import { redisHmsetAsync, redisHdelAsync } from '@database/redis-connection';
+import {
+  redisHmsetAsync,
+  redisHdelAsync,
+  redisGetAsync,
+  redisSetAsync,
+  redisExpireAsync,
+} from '@database/redis-connection';
 
 config();
 
@@ -24,9 +30,53 @@ export default {
   async userShowUrls(req: Request, res: Response, next: NextFunction) {
     const { userId } = res.locals;
 
+    let orderBy = req.query.orderby?.toString() || '';
+
+    const orderByArray = ['alias', 'date', 'number_access', 'domain'];
+    const validOrderBy = orderByArray.includes(orderBy);
+
+    if (!validOrderBy) orderBy = 'alias';
+
+    const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
+    const paginateToFloor = Math.floor(paginate);
+    const paginationLimit = 10;
+
+    const sortOrderBaseOnParameter = {
+      date: -1,
+      alias: 1,
+      number_access: -1,
+      domain: 1,
+    };
+
     try {
-      // já trás do cache se existir
-      const userUrls = await orderingUrls(urls, req, userId);
+      const redisKeyUser = `user_${userId}_order-${orderBy}_page-${paginateToFloor}`;
+      const cachedUserQuery = await redisGetAsync(redisKeyUser);
+
+      if (cachedUserQuery) {
+        // console.log('SERVINDO Urls usuario do Cache');
+        return JSON.parse(cachedUserQuery);
+      }
+
+      const userUrls = await urls.find(
+        { userId: userId },
+        {
+          limit: paginationLimit,
+          skip: paginateToFloor,
+          sort: {
+            [orderBy]: sortOrderBaseOnParameter[orderBy],
+          },
+        },
+      );
+
+      // console.log('Salvando urls usuario no Cache');
+
+      await redisSetAsync(redisKeyUser, JSON.stringify(userUrls));
+
+      const oneMinute = 60;
+
+      const redisUserExpirationTimeInSeconds = oneMinute;
+
+      redisExpireAsync(redisKeyUser, redisUserExpirationTimeInSeconds);
 
       const userUrlsFormated = userUrls.map(url => {
         return {
@@ -109,8 +159,6 @@ export default {
           publicStatus,
           date,
           domain,
-          // shorteredUrl: `${APP_HOST}/user/url/${alias}`, // redirect padrao
-          // para todos
           shorteredUrl: `${APP_HOST}/${alias}`,
         },
       });
@@ -229,31 +277,4 @@ export default {
       catchErrorFunction(error, next);
     }
   },
-
-  // async userRedirectUrl(req: Request, res: Response, next: NextFunction) {
-  //   const { alias } = req.params;
-
-  //   try {
-  //     const url = await urls.findOne({ alias });
-
-  //     if (!url?.url) {
-  //       return res.sendFile(path.join(__dirname, '../public', '404.html'));
-  //     }
-
-  //     const number_access = url.number_access + 1;
-
-  //     urls.findOneAndUpdate(
-  //       { alias },
-  //       {
-  //         $set: {
-  //           number_access: number_access,
-  //         },
-  //       },
-  //     );
-
-  //     res.status(308).redirect(url.url);
-  //   } catch (error) {
-  //     catchErrorFunction(error, next);
-  //   }
-  // },
 };

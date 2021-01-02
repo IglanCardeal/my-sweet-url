@@ -18,9 +18,10 @@
 
 - [x] Refatorar os códigos de mensagens de API Rate Limiter
 - [x] Incluir solução de Cache para redirecionamento de url
-- [x] Atualizar cache para cada alteracao/criação de url
+- [x] Atualizar cache para cada alteraçãoo/criação de url
   - [x] Adicionar eventos para atualizar cache de urls ordenadas
 - [ ] Finalizar a documentação
+- [ ] Descomentar as imagens deste readme
 
 **V2**
 
@@ -85,6 +86,10 @@ Após esta API está concluída, vou desenvolver um front-end para implementar a
 <p id="rate-limiter"></p>
 
 ### API Rate Limiter ✋
+
+Este projeto possui limitadores de API para ajudar a previnir ataques DoS e DDoS. Um dos exemplos do efeito desta medida protetora é para realizar o login na aplicação que possui um limite de 5 tentativas de login antes de bloquear futuras tentativas por 1 minuto.
+
+As outras rotas também possuem limitadores incluindo proteção para Brute Force Attack, máximo de uso da API por dia, dentre outros...
 
 <p id="features"></p>
 
@@ -171,7 +176,7 @@ Um usuário quando define uma url como privada, esta apenas não será exibida n
 
 O projeto possui um arquivo json chamado `Insomnia_API.json` que server para fazer teste manuais das rotas e recursos da aplicação. Usando o aplicativo para testar API's [Insomnia](https://insomnia.rest/download/), você pode importar o arquivo deste projeto e começar a testar.
 
-![insomnia](./src/public/img/insomnia.png)
+<!-- ![insomnia](./src/public/img/insomnia.png) -->
 
 As chamada para a API estão organizadas por pastas, para facilitar o entendimento do arquivo. As pastas estão divididas de acordo com os recursos que as chamadas solicitão:
 
@@ -185,7 +190,11 @@ Na pasta `Public`, eu adicionei chamadas personalizadas para testar recursos de 
 
 Veja abaixo um exemplo de filtrar publicamente uma url por dominio, através de uma _query string_:
 
-![bydomain](./src/public/img/bydomain.png)
+<!-- ![bydomain](./src/public/img/bydomain.png) -->
+
+#### Testes automatizados
+
+Apesar deste projeto não ter seguido a metodologia TDD, eu irei inserir testes usando a biblioteca [JEST](https://jestjs.io/pt-BR/). Quando feito, será informado nesta seção a explicação para usos de testes automatizados.
 
 <p id="endpoints"></p>
 
