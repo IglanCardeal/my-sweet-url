@@ -200,39 +200,90 @@ Apesar deste projeto não ter seguido a metodologia TDD, eu irei inserir testes 
 
 ### Endpoints
 
-#### Metodos e retornos anônimos
+#### Métodos e retornos anônimos (Publico)
 
 Estes metodos estao relacionados a **usuários anônimos** (sem cadastro no sistema)
-onde estes usuarios podem cadastrar uma nova _url_, que por padrao, esta url e publica,
-e visualizar todas as url publicas.
+onde estes usuários podem cadastrar uma nova _url_, que por padrão, esta url é publica,
+e visualizar todas as url publicas cadastradas no sistema.
 
-**metodo** _/path_
+##### Listar todas as URLs publicas
 
-- **GET** _/showurls_
+- Método: `GET`
 
-  - Corpo de requisicao: _nenhum_
+- Path: `/api/urls`
 
-  - Retorno da requisicao (exemplo):
+- Corpo de requisicao: `null`
 
-  ```json
-  {
-    "message": "Todas as URLs publicas.",
-    "public_urls": [
-      {
-        "alias": "seu-tubo",
-        "url": "https://www.youtube.com/"
-      }
-    ]
-  }
-  ```
+- Retorno da requisicao (exemplo):
 
-  - message: `string`,
+```json
+{
+  "message": "Todas as URLs publicas.",
+  "public_urls": [
+    {
+      "alias": "seu-tubo",
+      "url": "https://www.youtube.com/"
+    }
+  ]
+}
+```
 
-  - public_urls: `array[{}]`
+| Campo           |   Tipo   |                                                          Descrição |
+| --------------- | :------: | -----------------------------------------------------------------: |
+| **message**     | `string` |                                 Mensagem de informação da consulta |
+| **public_urls** | `Array`  | Array de objetos contendo o `alias` e a `url` das urls cadastradas |
+| **alias**       | `string` |                          Nome do apelido dado para a url encurtada |
+| **url**         | `string` |                                                     url cadastrada |
 
-  - alias: `string`
+É possível ordernar as `public_urls` através das query strings. É possível ordernar se baseando nos seguintes atributos:
 
-  - url: `string`
+- `domain`, ordena as urls de acordo com o domínio em ordem alfabética;
+- `number_access`, ordena as urls de acordo como o número de acessos em ordem decrescente;
+- `alias`, ordena as urls de acordo com o apelido em ordem alfabética;
+- `date`, ordena as urls de acordo com a data de criação das mais recentes para as mais antigas.
+
+Para ordenar deve-se informar via query string no `path` os valores para a variável `orderby`.
+
+Exemplo:
+
+- Ordena por domínio: `/api/urls?orderby=domain`
+- Ordena pela data de criação: `/api/urls?orderby=date`
+
+Para paginar os resultados, informar na query string o valor para a variável `page`.
+
+Exemplo:
+
+- Ordena por domínio e retorna a primeira página: `/api/urls?orderby=domain&page=0`
+- Ordena por domínio e retorna a segunda página: `/api/urls?orderby=domain&page=1`
+
+##### Listar todas as URLs publicas
+
+- Método: `GET`
+
+- Path: `/api/urls/filtered`
+
+- Corpo de requisicao: `null`
+
+- Retorno da requisicao (exemplo):
+
+```json
+{
+  "message": "Todas as URLs publicas.",
+  "public_urls": [
+    {
+      "alias": "seu-tubo",
+      "url": "https://www.youtube.com/"
+    }
+  ]
+}
+```
+
+| Campo           |   Tipo   |                                                          Descrição |
+| --------------- | :------: | -----------------------------------------------------------------: |
+| **message**     | `string` |                                 Mensagem de informação da consulta |
+| **public_urls** | `Array`  | Array de objetos contendo o `alias` e a `url` das URLs cadastradas |
+| **alias**       | `string` |                          Nome do apelido dado para a URL encurtada |
+| **url**         | `string` |                                                     URL cadastrada |
 
 <p id="como-usar"></p>
 
