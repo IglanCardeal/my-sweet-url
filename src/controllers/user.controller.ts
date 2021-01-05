@@ -28,15 +28,12 @@ const { APP_HOST } = process.env;
 
 export default {
   async userShowUrls(req: Request, res: Response, next: NextFunction) {
+    let orderBy = req.query.orderby?.toString().trim() || '';
+
     const { userId } = res.locals;
-
-    let orderBy = req.query.orderby?.toString() || '';
-
     const orderByArray = ['alias', 'date', 'number_access', 'domain'];
-    const validOrderBy = orderByArray.includes(orderBy);
-
-    if (!validOrderBy) orderBy = 'alias';
-
+    const indexOfOrderBy = orderByArray.indexOf(orderBy);
+    const invalidOrderByValue = Boolean(indexOfOrderBy < 0);
     const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
     const paginateToFloor = Math.floor(paginate);
     const paginationLimit = 10;
@@ -47,6 +44,12 @@ export default {
       number_access: -1,
       domain: 1,
     };
+
+    if (invalidOrderByValue) orderBy = 'alias';
+
+    // const validOrderBy = orderByArray.includes(orderBy);
+
+    // if (!validOrderBy) orderBy = 'alias';
 
     try {
       const redisKeyUser = `user_${userId}_order-${orderBy}_page-${paginateToFloor}`;
@@ -103,12 +106,14 @@ export default {
   async userToShortUrl(req: Request, res: Response, next: NextFunction) {
     const { userId } = res.locals;
     let { alias, url, publicStatus } = req.body;
+    const invalidPublicStatusType = typeof publicStatus !== 'boolean';
+
+    if (invalidPublicStatusType) publicStatus = false;
+    // if (!(typeof publicStatus === 'boolean')) publicStatus = false;
 
     url = checkProtocol(url);
 
     try {
-      if (!(typeof publicStatus === 'boolean')) publicStatus = false;
-
       if (!alias) alias = 'undefined'; // criei apenas para passar no validator
 
       await userUrlSchema.validate({ alias, url, publicStatus, userId });
@@ -181,6 +186,17 @@ export default {
       return;
     }
 
+    if (!userId) {
+      // verificação de segurança
+      throwErrorHandler(
+        404,
+        'Usuário não encontrado! Faça o login novamente.',
+        next,
+      );
+
+      return;
+    }
+
     try {
       if (!alias) alias = 'undefined';
 
@@ -191,22 +207,27 @@ export default {
         alias = await generateAlias(5);
       }
 
-      const [userFounded, urlsFounded, aliasExisting] = await Promise.all([
-        users.findOne({ _id: userId }),
+      // const [userFounded, urlsFounded, aliasExisting] = await Promise.all([
+      //   users.findOne({ _id: userId }),
+      //   urls.find({ userId, publicStatus: false, _id: id.toString() }),
+      //   urls.findOne({ alias }),
+      // ]);
+
+      // if (!userFounded) {
+      //   // verificação de segurança
+      //   throwErrorHandler(
+      //     404,
+      //     'Usuário não encontrado! Faça o login novamente.',
+      //     next,
+      //   );
+
+      //   return;
+      // }
+
+      const [urlsFounded, aliasExisting] = await Promise.all([
         urls.find({ userId, publicStatus: false, _id: id.toString() }),
         urls.findOne({ alias }),
       ]);
-
-      if (!userFounded) {
-        // verificação de segurança
-        throwErrorHandler(
-          404,
-          'Usuário não encontrado! Faça o login novamente.',
-          next,
-        );
-
-        return;
-      }
 
       if (!urlsFounded[0]) {
         throwErrorHandler(

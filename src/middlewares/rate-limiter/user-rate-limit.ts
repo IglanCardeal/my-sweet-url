@@ -66,17 +66,6 @@ async function userRequestApiLimit(
     try {
       await maxRequestByUserTokenAndIP.consume(userTokenIp);
 
-      // if (!userToken) {
-      //   const error = {
-      //     statusCode: 400,
-      //     message: 'Token deve ser informado para requisições de usuário.',
-      //   };
-
-      //   next(error);
-
-      //   return;
-      // }
-
       next();
     } catch (error) {
       if (error instanceof Error) {

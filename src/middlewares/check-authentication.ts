@@ -15,19 +15,20 @@ export default (req: Request, res: Response, next: NextFunction) => {
     const error = {
       statusCode: 401,
       message:
-        'Nenhum token informado! Realize o login para adquirir token de autenticacão.',
+        'Nenhum token informado! Realize o login para adquirir token de autenticação.',
     };
 
     throw error;
   }
 
   const format = token.split(' ');
+  const doNotStartWithBearer = Boolean(format[0] !== 'Bearer');
 
-  if (format[0] !== 'Bearer') {
+  if (doNotStartWithBearer) {
     const error = {
       statusCode: 401,
       message:
-        'Token com formato inválido! Realize o login para adquirir token de autenticacão em formato válido.',
+        'Token com formato inválido! Realize o login para adquirir token de autenticação em formato válido.',
     };
 
     throw error;
@@ -43,7 +44,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
         const error = {
           statusCode: 401,
           message:
-            'Token invalido! Realize o login para obter token válido e acessar esta rota.',
+            'Token inválido! Realize o login para obter token válido e acessar esta rota.',
         };
 
         throw error;

@@ -204,7 +204,7 @@ export const domainValidator = yup.object().shape({
     .typeError('Nome de domínio deve ter no máximo 255 caracteres.'),
 });
 
-export const aliaslValidator = yup.object().shape({
+export const aliasValidator = yup.object().shape({
   alias: yup
     .string()
     .trim()

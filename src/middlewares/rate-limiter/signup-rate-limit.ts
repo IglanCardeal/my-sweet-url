@@ -89,7 +89,7 @@ async function signupApiLimit(req: Request, res: Response, next: NextFunction) {
       return;
     }
   } catch (error) {
-    console.log('Erro em API RATE para login de usuario: ', error);
+    console.log('Erro em API RATE para login de usuário: ', error);
 
     next(error);
   }

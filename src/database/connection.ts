@@ -12,11 +12,13 @@ const {
   PROD_DB_PORT,
   PROD_DB_NAME,
 } = process.env;
-const DB_URL = `${DB_HOST}:${DB_PORT}/${DB_NAME}`;
-const PROD_DB_URL = `${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}`;
+const developmentDatabase = `${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+const productionDatabase = `${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}`;
 
 const connectionUri =
-  process.env.NODE_ENV === 'development' ? DB_URL : PROD_DB_URL;
+  process.env.NODE_ENV === 'development'
+    ? developmentDatabase
+    : productionDatabase;
 
 const db = monk(connectionUri);
 
@@ -26,7 +28,7 @@ const startDatabaseConnectionAndServer = (app: any): void => {
 
     console.log('\n============DATABASE============\n');
     console.log(
-      `*** Database connection successful.\n*** Database URI: ${DB_URL}`,
+      `*** Database connection successful.\n*** Database URI: ${developmentDatabase}`,
     );
 
     app.listen(APP_PORT, () => {

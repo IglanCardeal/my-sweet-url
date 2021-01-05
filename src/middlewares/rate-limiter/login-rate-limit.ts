@@ -38,7 +38,7 @@ async function userLoginApiLimit(
     const reason = 'Bloqueado por limite de requisições por usuário.';
     let retrySeconds = 0;
 
-    // verifica se ip ou username + ip foi bloqueado
+    // verifica se username+ip foi bloqueado
     const blockedUsernameAndIp = Boolean(
       resUsernameAndIP !== null &&
         resUsernameAndIP.consumedPoints > maxConsecutiveFailsByUsernameAndIP,
@@ -101,7 +101,7 @@ async function userLoginApiLimit(
       return;
     }
   } catch (error) {
-    console.log('Erro em API RATE para login de usuario: ', error);
+    console.log('Erro em API RATE para login de usuário: ', error);
 
     next(error);
   }

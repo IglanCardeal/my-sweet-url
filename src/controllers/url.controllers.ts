@@ -16,7 +16,7 @@ import {
   urlSchema,
   domainValidator,
   urlToFilter,
-  aliaslValidator,
+  aliasValidator,
 } from '@utils/schemas';
 import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
@@ -40,10 +40,8 @@ export default {
     let orderBy = req.query.orderby?.toString() || '';
 
     const orderByArray = ['alias', 'date', 'number_access', 'domain'];
-    const validOrderBy = orderByArray.includes(orderBy);
-
-    if (!validOrderBy) orderBy = 'alias';
-
+    const indexOfOrderBy = orderByArray.indexOf(orderBy);
+    const invalidOrderByValue = Boolean(indexOfOrderBy < 0);
     const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
     const paginateToFloor = Math.floor(paginate);
     const paginationLimit = 10;
@@ -54,6 +52,8 @@ export default {
       number_access: -1,
       domain: 1,
     };
+
+    if (invalidOrderByValue) orderBy = 'alias';
 
     try {
       const redisKeyPublic = `public_order-${orderBy}_page-${paginateToFloor}`;
@@ -112,26 +112,26 @@ export default {
     next: NextFunction,
   ) {
     let findBy = req.query.findby?.toString().trim() || '';
+    let urlsFiltereds;
+
     const value = req.query.value?.toString().trim();
     const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
     const paginateToFloor = Math.floor(paginate);
-    const paginationLimit = 10; // limite de 10 por causa da busca por dominio
+    const paginationLimit = 10; // limite de 10 por causa da busca por domínio
     const findByArray = ['alias', 'domain'];
-    const validFindBy = findByArray.includes(findBy);
+    const invalidFindByValue = findByArray.indexOf(findBy) < 0;
 
-    let urlsFiltereds;
+    if (invalidFindByValue) {
+      throwErrorHandler(
+        403,
+        'Campo de busca inválido. Somente apelido (alias) ou dominio (domain) são aceitos no filtro.',
+        next,
+      );
+
+      return;
+    }
 
     try {
-      if (!validFindBy) {
-        throwErrorHandler(
-          403,
-          'Campo de busca inválido. Somente apelido (alias) ou dominio (domain) são aceitos no filtro.',
-          next,
-        );
-
-        return;
-      }
-
       if (findBy === 'domain')
         await domainValidator.validate({ domain: value });
       else await urlToFilter.validate({ alias: value });
@@ -142,10 +142,12 @@ export default {
       if (cachedPublicQuery) {
         const result = JSON.parse(cachedPublicQuery);
 
-        return res.status(200).json({
+        res.status(200).json({
           message: 'Todas as URLs publicas filtradas.',
           ['filtered_public_urls']: result,
         });
+
+        return;
       }
 
       urlsFiltereds = await urls.find(
@@ -195,7 +197,7 @@ export default {
     const { alias } = req.params;
 
     try {
-      await aliaslValidator.validate({ alias });
+      await aliasValidator.validate({ alias });
       // verifica se existe no cache para melhorar performance
       const urlFoundedOnCache = await redisHmgetAsync('cached_alias', alias);
 

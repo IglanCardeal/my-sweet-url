@@ -81,7 +81,7 @@ async function userLogoutApiLimit(
       return;
     }
   } catch (error) {
-    console.log('Erro em API RATE para logout de usuario: ', error);
+    console.log('Erro em API RATE para logout de usuário: ', error);
 
     next(error);
   }
