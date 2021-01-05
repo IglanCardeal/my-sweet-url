@@ -61,7 +61,14 @@ export default {
 
       if (cachedPublicQuery) {
         // console.log('SERVINDO Urls publicas do Cache');
-        return JSON.parse(cachedPublicQuery);
+        const result = JSON.parse(cachedPublicQuery);
+
+        res.status(200).json({
+          message: 'Todas as URLs publicas.',
+          ['public_urls']: result,
+        });
+
+        return;
       }
 
       const publicUrlsArray = await urls.find(
@@ -178,9 +185,9 @@ export default {
         JSON.stringify(urlsFilteredsWithShortenedUrls),
       );
 
-      const tenSeconds = 10;
+      const oneMinute = 60;
 
-      const redisExpirationTimeInSeconds = tenSeconds;
+      const redisExpirationTimeInSeconds = oneMinute;
 
       redisExpireAsync(redisPublicKey, redisExpirationTimeInSeconds);
 
@@ -223,6 +230,7 @@ export default {
       const url = await urls.findOne({ alias });
 
       if (!url?.url) {
+        // se não achar o alias, retorna pagina 404
         res.sendFile(path.join(__dirname, '../public', '404.html'));
 
         return;

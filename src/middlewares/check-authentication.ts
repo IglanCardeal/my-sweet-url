@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { config } from 'dotenv';
 
 import catchErrorFunction from '@utils/catch-error-function';
+import { verifyOptions } from '@utils/sign-verify-token-options';
 
 config();
 
@@ -37,6 +38,9 @@ export default (req: Request, res: Response, next: NextFunction) => {
   const extractedToken = format[1];
 
   try {
+    // const legitToken = jwt.verify(extractedToken, PUBLIC_KEY, verifyOptions);
+
+    // console.log('Token legit?: ',legitToken);
     jwt.verify(extractedToken, PUBLIC_KEY, (err: any, decoded: any) => {
       if (err) {
         res.clearCookie('token');

@@ -47,17 +47,21 @@ export default {
 
     if (invalidOrderByValue) orderBy = 'alias';
 
-    // const validOrderBy = orderByArray.includes(orderBy);
-
-    // if (!validOrderBy) orderBy = 'alias';
-
     try {
       const redisKeyUser = `user_${userId}_order-${orderBy}_page-${paginateToFloor}`;
       const cachedUserQuery = await redisGetAsync(redisKeyUser);
 
       if (cachedUserQuery) {
         // console.log('SERVINDO Urls usuario do Cache');
-        return JSON.parse(cachedUserQuery);
+        const result = JSON.parse(cachedUserQuery);
+
+        res
+          .status(200)
+          .json({
+            message: 'Todas as urls do usuário',
+            userUrlsFormated: result,
+          });
+        return;
       }
 
       const userUrls = await urls.find(

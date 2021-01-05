@@ -2,17 +2,17 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { config } from 'dotenv';
+import { promisify } from 'util';
 
 import { userLoginSchema, userSignupSchema } from '@utils/schemas';
 import { db } from '@database/connection';
 import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
+import { signOptions, ageOfCookie } from '@utils/sign-verify-token-options';
 
 config();
 
 const users = db.get('users');
-const env = process.env.NODE_ENV;
-// const PRIVATE_KEY = JWTKeys.PRIVATE_KEY.trim();
 const PRIVATE_KEY = process.env.JWT_PRIVATE_KEY!;
 
 export default {
@@ -32,66 +32,43 @@ export default {
         return;
       }
 
-      bcrypt.compare(password, userFound.password, (err, result) => {
-        if (err) {
-          throwErrorHandler(
-            500,
-            'Erro interno de servidor ao tentar verificar senha de usuário',
-            next,
-          );
+      const comparedPassword = await bcrypt.compare(
+        password,
+        userFound.password,
+      );
 
-          return;
-        }
-
-        const isPasswordValid = result;
-
-        if (!isPasswordValid) {
-          throwErrorHandler(
-            401,
-            'Senha de usuário usuário incorreta! Tente novamente.',
-            next,
-          );
-
-          return;
-        }
-
-        const maxAgeOfCookie =
-          env === 'development'
-            ? 60 * 60 * 1000 * 1000 // mil horas
-            : 60 * 60 * 1000; // 1 hora
-
-        jwt.sign(
-          { userId: userFound._id },
-          PRIVATE_KEY,
-          {
-            expiresIn: maxAgeOfCookie,
-            algorithm: 'RS256',
-          },
-          (err, token) => {
-            if (err) {
-              console.log('Erro ao gerar token: ', err);
-
-              throwErrorHandler(
-                500,
-                'Erro interno de servidor ao gerar o token :/.',
-                next,
-              );
-
-              return;
-            }
-
-            res.cookie('token', `Bearer ${token}`, {
-              maxAge: maxAgeOfCookie,
-              httpOnly: true,
-              secure: false,
-              sameSite: true,
-            });
-
-            res.status(200).json({
-              message: 'Usuário autenticado com sucesso',
-            });
-          },
+      if (!comparedPassword) {
+        throwErrorHandler(
+          401,
+          'Senha de usuário usuário incorreta! Tente novamente.',
+          next,
         );
+
+        return;
+      }
+
+      const payload = { userId: userFound._id };
+
+      // const token = await jwt.sign(payload, PRIVATE_KEY, signOptions);
+      type FixSignArgumenst = (
+        payload: any,
+        secretOrPrivateKey: string,
+        options: any,
+      ) => Promise<string>;
+
+      const jwtSignAsync = promisify(jwt.sign).bind(jwt) as FixSignArgumenst;
+
+      const token = await jwtSignAsync(payload, PRIVATE_KEY, signOptions);
+
+      res.cookie('token', `Bearer ${token}`, {
+        maxAge: ageOfCookie,
+        httpOnly: true,
+        secure: false,
+        sameSite: true,
+      });
+
+      res.status(200).json({
+        message: 'Usuário autenticado com sucesso',
       });
     } catch (error) {
       catchErrorFunction(error, next);
