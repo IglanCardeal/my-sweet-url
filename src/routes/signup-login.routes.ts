@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import signupLoginControllers from '@controllers/signup-login.controllers';
+import signupLoginControllers from '@api/signup-login.controllers';
 
 // rate limiter
 import slowBruteForce from '@middlewares/rate-limiter/slow-brute-force';

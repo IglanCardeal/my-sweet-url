@@ -4,7 +4,7 @@ import {
   redisHgetAllAsync,
   redisHmgetAsync,
   redisHdelAsync,
-} from '@database/redis-connection';
+} from '@utils/promisify-redis-methods';
 
 const urls = db.get('urls');
 

@@ -20,18 +20,22 @@ interface SignOptionsByMe {
   algorithm: 'RS256' | 'HS256' | 'HS384' | 'HS512' | 'RS384' | 'RS512';
 }
 
+const issuer = 'My Sweet Url',
+  subject = 'none',
+  audience = 'none';
+
 export const signOptions = {
-  issuer: 'My Sweet Url',
-  subject: 'none',
-  audience: 'any',
+  issuer: issuer,
+  subject: subject,
+  audience: audience,
   expiresIn: maxAgeOfCookie,
   algorithm: 'RS256',
 } as SignOptionsByMe;
 
 export const verifyOptions = {
-  issuer: 'My Sweet Url',
-  subject: 'none',
-  audience: 'any',
+  issuer: issuer,
+  subject: subject,
+  audience: audience,
   expiresIn: maxAgeOfCookie,
   algorithm: ['RS256'],
 };

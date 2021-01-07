@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import userControllers from '@controllers/user.controller';
+import userControllers from '@api/user.controller';
 
 import checkAuthentication from '@middlewares/check-authentication';
 import userRateLimiter from '@middlewares/rate-limiter/user-rate-limit';

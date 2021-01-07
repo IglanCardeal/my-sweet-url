@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-// import { nanoid } from 'nanoid';
-import { config } from 'dotenv';
+
 import path from 'path';
 
 import { db } from '@database/connection';
@@ -10,24 +9,22 @@ import {
   redisExpireAsync,
   redisHmgetAsync,
   redisHmsetAsync,
-} from '@database/redis-connection';
+} from '@utils/promisify-redis-methods';
 
 import {
   urlSchema,
   domainValidator,
   urlToFilter,
   aliasValidator,
-} from '@utils/schemas';
+} from '@schemas/schemas';
 import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
 import getDomain from '@utils/get-domain';
 import checkProtocol from '@utils/check-protocol';
-// import orderingUrls from '@utils/ordering-urls';
+
 import generateAlias from '@utils/generate-alias';
 
-config();
-
-const { APP_HOST } = process.env;
+import { applicationHost } from '@config/index';
 
 const urls = db.get('urls');
 
@@ -100,7 +97,7 @@ export default {
           publicStatus: url.publicStatus,
           domain: url.domain,
           number_access: url.number_access,
-          shorteredUrl: `${APP_HOST}/${url.alias}`,
+          shorteredUrl: `${applicationHost}/${url.alias}`,
         };
       });
 
@@ -176,7 +173,7 @@ export default {
           publicStatus: url.publicStatus,
           number_access: url.number_access,
           domain: url.domain,
-          shorteredUrl: `${APP_HOST}/${url.alias}`,
+          shorteredUrl: `${applicationHost}/${url.alias}`,
         };
       });
 
@@ -311,7 +308,7 @@ export default {
         urlCreated: {
           alias,
           url,
-          shortenedUrl: `${APP_HOST}/${alias}`,
+          shortenedUrl: `${applicationHost}/${alias}`,
           domain,
           ['public_status']: publicStatus,
           createdAt: date,

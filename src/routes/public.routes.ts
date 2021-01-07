@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import urlControllers from '@controllers/url.controllers';
+import urlControllers from '@api/url.controllers';
 
 import publicSlowBruteForce from '@middlewares/rate-limiter/public-rate-limit';
 

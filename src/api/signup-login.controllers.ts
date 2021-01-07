@@ -1,19 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { config } from 'dotenv';
 import { promisify } from 'util';
 
-import { userLoginSchema, userSignupSchema } from '@utils/schemas';
+import { userLoginSchema, userSignupSchema } from '@schemas/schemas';
+
 import { db } from '@database/connection';
 import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
 import { signOptions, ageOfCookie } from '@utils/sign-verify-token-options';
 
-config();
+import { JWT_PRIVATE_KEY } from '@config/index';
 
 const users = db.get('users');
-const PRIVATE_KEY = process.env.JWT_PRIVATE_KEY!;
 
 export default {
   async login(req: Request, res: Response, next: NextFunction) {
@@ -47,9 +46,6 @@ export default {
         return;
       }
 
-      const payload = { userId: userFound._id };
-
-      // const token = await jwt.sign(payload, PRIVATE_KEY, signOptions);
       type FixSignArgumenst = (
         payload: any,
         secretOrPrivateKey: string,
@@ -57,10 +53,10 @@ export default {
       ) => Promise<string>;
 
       const jwtSignAsync = promisify(jwt.sign).bind(jwt) as FixSignArgumenst;
+      const payload = { userId: userFound._id };
+      const token = await jwtSignAsync(payload, JWT_PRIVATE_KEY, signOptions);
 
-      const token = await jwtSignAsync(payload, PRIVATE_KEY, signOptions);
-
-      res.cookie('token', `Bearer ${token}`, {
+      res.cookie('Authorization', `Bearer ${token}`, {
         maxAge: ageOfCookie,
         httpOnly: true,
         secure: false,
@@ -97,28 +93,18 @@ export default {
         return;
       }
 
-      bcrypt.hash(password, 12, async (err, hash) => {
-        if (err) {
-          throwErrorHandler(
-            500,
-            'Error interno de servidor ao salvar senha de usuário.',
-            next,
-          );
+      const hashedPassword = await bcrypt.hash(password, 12);
 
-          return;
-        }
+      const newUser = {
+        email,
+        username,
+        password: hashedPassword,
+      };
 
-        const newUser = {
-          email,
-          username,
-          password: hash,
-        };
+      await users.insert(newUser);
 
-        await users.insert(newUser);
-
-        res.status(201).json({
-          message: 'Usuário cadastrado com sucesso!',
-        });
+      res.status(201).json({
+        message: 'Usuário cadastrado com sucesso!',
       });
     } catch (error) {
       catchErrorFunction(error, next);
@@ -126,7 +112,7 @@ export default {
   },
 
   logout(req: Request, res: Response, next: NextFunction) {
-    res.clearCookie('token');
+    res.clearCookie('Authorization');
 
     res.status(205).json({ message: 'Logout relizado com sucesso!' });
   },

@@ -15,13 +15,15 @@ const rateLimiterStoreConfig = ({
   durationSeconds,
   blockDurationSeconds,
 }: Props) => {
-  return new RateLimiterRedis({
+  const rateLimiterInstance = new RateLimiterRedis({
     storeClient: client,
     keyPrefix: keyPrefix,
     points: maxWrongAttemps,
     duration: durationSeconds,
     blockDuration: blockDurationSeconds,
   });
+
+  return rateLimiterInstance;
 };
 
 export default rateLimiterStoreConfig;

@@ -1,26 +1,12 @@
 import monk from 'monk';
-import { config } from 'dotenv';
 
-config();
+import {
+  mongodbDatabaseConnectionUri,
+  applicationPort,
+  applicationEnviroment,
+} from '@config/index';
 
-const APP_PORT = process.env.APP_PORT || 3000;
-const {
-  DB_HOST,
-  DB_PORT,
-  DB_NAME,
-  PROD_DB_HOST,
-  PROD_DB_PORT,
-  PROD_DB_NAME,
-} = process.env;
-const developmentDatabase = `${DB_HOST}:${DB_PORT}/${DB_NAME}`;
-const productionDatabase = `${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}`;
-
-const connectionUri =
-  process.env.NODE_ENV === 'development'
-    ? developmentDatabase
-    : productionDatabase;
-
-const db = monk(connectionUri);
+const db = monk(mongodbDatabaseConnectionUri);
 
 const startDatabaseConnectionAndServer = (app: any): void => {
   db.then(() => {
@@ -28,15 +14,15 @@ const startDatabaseConnectionAndServer = (app: any): void => {
 
     console.log('\n============DATABASE============\n');
     console.log(
-      `*** Database connection successful.\n*** Database URI: ${developmentDatabase}`,
+      `*** Database connection successful.\n*** Database URI: ${mongodbDatabaseConnectionUri}`,
     );
 
-    app.listen(APP_PORT, () => {
+    app.listen(applicationPort, () => {
       console.log(
-        `\nServer running on http://localhost:${APP_PORT}\nENV: ${process.env.NODE_ENV}`,
+        `\nServer running on http://localhost:${applicationPort}\nENV: ${applicationEnviroment}`,
       );
 
-      if (process.env.NODE_ENV === 'production') {
+      if (applicationEnviroment === 'production') {
         console.log = () => {}; // para nao exibirmos nenhum log em producao
       }
     });

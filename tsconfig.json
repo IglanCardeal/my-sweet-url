@@ -17,12 +17,14 @@
     "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
+      "@api/*": ["src/api/*"],
+      "@config/*": ["src/config/*"],
       "@database/*": ["./src/database/*"],
       "@middlewares/*": ["./src/middlewares/*"],
       "@routes/*": ["./src/routes/*"],
-      "@controllers/*": ["./src/controllers/*"],
       "@utils/*": ["./src/utils/*"],
-      "@events/*": ["./src/events/*"]
+      "@events/*": ["./src/events/*"],
+      "@schemas/*": ["./src/schemas/*"],
     }
   },
   "include": ["./src/**/*.ts"],

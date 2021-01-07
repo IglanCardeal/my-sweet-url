@@ -1,5 +1,5 @@
 import { db } from '@database/connection';
-import { redisSetAsync } from '@database/redis-connection';
+import { redisSetAsync } from '@utils/promisify-redis-methods';
 
 const urls = db.get('urls');
 

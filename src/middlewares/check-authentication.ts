@@ -1,16 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { config } from 'dotenv';
 
 import catchErrorFunction from '@utils/catch-error-function';
 import { verifyOptions } from '@utils/sign-verify-token-options';
 
-config();
-
-const PUBLIC_KEY = process.env.JWT_PUBLIC_KEY!;
+import { JWT_PRIVATE_KEY } from '@config/index';
 
 export default (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies['token'];
+  const token = req.cookies['Authorization'];
 
   if (!token) {
     const error = {
@@ -38,26 +35,28 @@ export default (req: Request, res: Response, next: NextFunction) => {
   const extractedToken = format[1];
 
   try {
-    // const legitToken = jwt.verify(extractedToken, PUBLIC_KEY, verifyOptions);
+    jwt.verify(
+      extractedToken,
+      JWT_PRIVATE_KEY,
+      verifyOptions,
+      (err: any, decoded: any) => {
+        if (err) {
+          res.clearCookie('Authorization');
 
-    // console.log('Token legit?: ',legitToken);
-    jwt.verify(extractedToken, PUBLIC_KEY, (err: any, decoded: any) => {
-      if (err) {
-        res.clearCookie('token');
+          const error = {
+            statusCode: 401,
+            message:
+              'Token inválido! Realize o login para obter token válido e acessar esta rota.',
+          };
 
-        const error = {
-          statusCode: 401,
-          message:
-            'Token inválido! Realize o login para obter token válido e acessar esta rota.',
-        };
+          throw error;
+        }
 
-        throw error;
-      }
+        res.locals.userId = decoded.userId;
 
-      res.locals.userId = decoded.userId;
-
-      next();
-    });
+        next();
+      },
+    );
   } catch (error) {
     catchErrorFunction(error, next);
   }
