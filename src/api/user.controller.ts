@@ -2,21 +2,17 @@ import { Request, Response, NextFunction } from 'express';
 
 import { db } from '@database/mongodb/mongodb-connection';
 
-import { userUrlSchema } from '@schemas/schemas';
+import { userUrlSchema } from '@schemas/index';
 
-import catchErrorFunction from '@utils/catch-error-function';
-import throwErrorHandler from '@utils/throw-error-handler';
-import getDomain from '@utils/get-domain';
-import checkProtocol from '@utils/check-protocol';
-import generateAlias from '@utils/generate-alias';
-
+import { catchErrorFunction, throwErrorHandler } from '@utils/index';
+import { getDomain, checkProtocol, generateAlias } from '@utils/index';
 import {
   redisHmsetAsync,
   redisHdelAsync,
   redisGetAsync,
   redisSetAsync,
   redisExpireAsync,
-} from '@utils/promisify-redis-methods';
+} from '@utils/index';
 
 import { applicationHost } from '@config/index';
 

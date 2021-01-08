@@ -1,5 +1,5 @@
 import { db } from '@database/mongodb/mongodb-connection'
-import { redisSetAsync } from '@utils/promisify-redis-methods';
+import { redisSetAsync } from '@utils/index';
 
 const urls = db.get('urls');
 

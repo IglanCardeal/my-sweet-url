@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import rateLimiterMessager from '@utils/rate-limiter-message';
+import { rateLimiterMessager } from '@utils/index';
 import { rateLimiterStoreConfig } from '@database/redis/redis-connection';
 
 const maxAttemptsByIPperDay = 50;

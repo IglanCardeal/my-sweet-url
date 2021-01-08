@@ -2,27 +2,25 @@ import { Request, Response, NextFunction } from 'express';
 
 import path from 'path';
 
-import { db } from '@database/mongodb/mongodb-connection'
+import { db } from '@database/mongodb/mongodb-connection';
+
 import {
   redisGetAsync,
   redisSetAsync,
   redisExpireAsync,
   redisHmgetAsync,
   redisHmsetAsync,
-} from '@utils/promisify-redis-methods';
+} from '@utils/index';
 
 import {
   urlSchema,
   domainValidator,
   urlToFilter,
   aliasValidator,
-} from '@schemas/schemas';
-import catchErrorFunction from '@utils/catch-error-function';
-import throwErrorHandler from '@utils/throw-error-handler';
-import getDomain from '@utils/get-domain';
-import checkProtocol from '@utils/check-protocol';
+} from '@schemas/index';
 
-import generateAlias from '@utils/generate-alias';
+import { catchErrorFunction, throwErrorHandler } from '@utils/index';
+import { getDomain, checkProtocol, generateAlias } from '@utils/index';
 
 import { applicationHost } from '@config/index';
 

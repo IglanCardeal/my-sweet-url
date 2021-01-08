@@ -7,16 +7,16 @@ interface Props {
   retrySeconds: number;
 }
 
-export default async function rateLimiterMessager({
+export const rateLimiterMessager = ({
   res,
   message,
   reason,
   retrySeconds,
-}: Props) {
+}: Props) => {
   res.set('Retry-After', String(retrySeconds));
   res.status(429).json({
     messsage: message,
     reason,
     retrySeconds,
   });
-}
+};

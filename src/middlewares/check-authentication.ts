@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-import catchErrorFunction from '@utils/catch-error-function';
-import { verifyOptions } from '@utils/sign-verify-token-options';
+import { catchErrorFunction } from '@utils/index';
+import { verifyOptions } from '@utils/index';
 
 import { JWT_PUBLIC_KEY } from '@config/index';
 

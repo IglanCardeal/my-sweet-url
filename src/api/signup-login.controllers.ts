@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
+import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { promisify } from 'util';
 
-import { userLoginSchema, userSignupSchema } from '@schemas/schemas';
+import { userLoginSchema, userSignupSchema } from '@schemas/index';
 
 import { db } from '@database/mongodb/mongodb-connection';
-import catchErrorFunction from '@utils/catch-error-function';
-import throwErrorHandler from '@utils/throw-error-handler';
-import { signOptions, ageOfCookie } from '@utils/sign-verify-token-options';
+
+import { catchErrorFunction, throwErrorHandler } from '@utils/index';
+import { signOptions, ageOfCookie } from '@utils/index';
 
 import { JWT_PRIVATE_KEY } from '@config/index';
 
