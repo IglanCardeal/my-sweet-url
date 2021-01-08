@@ -5,13 +5,13 @@ interface HttpException {
   statusCode: number;
 }
 
-export default (
+export const errorHandler = (
   error: HttpException,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  console.log(error);
+  // console.log(error);
 
   if (error.statusCode) {
     res.status(error.statusCode).json({ message: error.message });
@@ -20,4 +20,11 @@ export default (
       message: '500 - Erro interno de servidor. Desculpe pelo o ocorrido :/',
     });
   }
+};
+
+export const notFoundHandler = async (req: Request, res: Response) => {
+  res.status(404).json({
+    message:
+      '404 - Recurso não encontrado. Verifique método e/ou url da chamada.',
+  });
 };

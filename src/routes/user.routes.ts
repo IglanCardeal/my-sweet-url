@@ -1,10 +1,13 @@
 import { Router } from 'express';
 
-import userControllers from '@api/user.controller';
+import userControllers from '@api/user';
 
-import checkAuthentication from '@middlewares/check-authentication';
-import userRateLimiter from '@middlewares/rate-limiter/user-rate-limit';
-import slowBruteForce from '@middlewares/rate-limiter/slow-brute-force';
+import checkAuthentication from '@middlewares/auth';
+
+import {
+  userRequestApiLimit,
+  slowBruteForce,
+} from '@middlewares/rate-limiters';
 
 const router = Router();
 
@@ -12,21 +15,21 @@ router.get(
   '/api/users/urls',
   slowBruteForce,
   checkAuthentication,
-  userRateLimiter,
+  userRequestApiLimit,
   userControllers.userShowUrls,
 );
 router.post(
   '/api/users/urls/create',
   slowBruteForce,
   checkAuthentication,
-  userRateLimiter,
+  userRequestApiLimit,
   userControllers.userToShortUrl,
 );
 router.patch(
   '/api/users/urls/edit',
   slowBruteForce,
   checkAuthentication,
-  userRateLimiter,
+  userRequestApiLimit,
   userControllers.userEditUrl,
 );
 

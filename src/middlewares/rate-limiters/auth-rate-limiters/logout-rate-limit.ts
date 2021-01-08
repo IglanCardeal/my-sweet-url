@@ -18,7 +18,7 @@ const limiterSlowBruteByIP = rateLimiterStoreConfig(
   rateLimitConfigSlowBruteByIP,
 );
 
-async function userLogoutApiLimit(
+export default async function userLogoutApiLimit(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -86,5 +86,3 @@ async function userLogoutApiLimit(
     next(error);
   }
 }
-
-export default userLogoutApiLimit;

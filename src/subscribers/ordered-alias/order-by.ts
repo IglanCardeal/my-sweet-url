@@ -1,4 +1,4 @@
-import { db } from '@database/mongodb/mongodb-connection'
+import { db } from '@database/mongodb/mongodb-connection';
 import { redisSetAsync } from '@utils/index';
 
 const urls = db.get('urls');
@@ -25,7 +25,10 @@ const orderBy = async ({ orderBy, sort }: Props) => {
   );
   const validSort = [1, -1].includes(sort);
 
-  if (!validOrderBy || !validSort) {
+  const invalidOrderBy = !validOrderBy;
+  const invalidSort = !validSort;
+
+  if (invalidOrderBy || invalidSort) {
     throw new Error(
       'Invalid parameter values! Check "orderBy" e "sort" values.',
     );

@@ -21,7 +21,7 @@ const limiterConsecutiveFailsByUsernameAndIP = rateLimiterStoreConfig(
   rateLimitConfigUsernameAndIP,
 );
 
-async function userLoginApiLimit(
+export default async function userLoginApiLimit(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -107,5 +107,3 @@ async function userLoginApiLimit(
     next(error);
   }
 }
-
-export default userLoginApiLimit;

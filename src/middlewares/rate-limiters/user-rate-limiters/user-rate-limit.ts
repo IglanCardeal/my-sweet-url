@@ -20,7 +20,7 @@ const maxRequestByUserTokenAndIP = rateLimiterStoreConfig(
   rateLimitConfigUserTokenAndIP,
 );
 
-async function userRequestApiLimit(
+export default async function userRequestApiLimit(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -93,5 +93,3 @@ async function userRequestApiLimit(
     next(error);
   }
 }
-
-export default userRequestApiLimit;

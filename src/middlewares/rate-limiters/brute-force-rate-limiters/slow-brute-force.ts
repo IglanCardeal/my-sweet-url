@@ -6,20 +6,20 @@ import { rateLimiterStoreConfig } from '@database/redis/redis-connection';
 const maxAttemptsByIPperDay = 50;
 const oneDay = 60 * 60 * 24;
 
-const rateLimitConfigPublicSlowBruteByIp = {
+const rateLimitConfigSlowBruteByIp = {
   maxWrongAttemps: maxAttemptsByIPperDay,
-  keyPrefix: 'public_slow_brute_force_fail_ip_per_day',
+  keyPrefix: 'slow_brute_force_fail_ip_per_day',
   durationSeconds: oneDay,
   blockDurationSeconds: oneDay,
 };
-const limiterPublicSlowBruteByIP = rateLimiterStoreConfig(
-  rateLimitConfigPublicSlowBruteByIp,
+const limiterSlowBruteByIP = rateLimiterStoreConfig(
+  rateLimitConfigSlowBruteByIp,
 );
 
-async function slowBruteForce(req: Request, res: Response, next: NextFunction) {
+export default async function slowBruteForce(req: Request, res: Response, next: NextFunction) {
   try {
     const originIpAddress = req.ip;
-    const resSlowByIP = await limiterPublicSlowBruteByIP.get(originIpAddress);
+    const resSlowByIP = await limiterSlowBruteByIP.get(originIpAddress);
 
     const blockedIp = Boolean(
       resSlowByIP !== null &&
@@ -35,12 +35,12 @@ async function slowBruteForce(req: Request, res: Response, next: NextFunction) {
 
     if (retrySeconds > 0) {
       console.log(
-        `O consumo máximo da API foi atingido (${maxAttemptsByIPperDay} acessos máximos). Tente novamente em ${retrySeconds} segundos.`,
+        `Numero máximo de requisições para a API foi atingido (limite de ${maxAttemptsByIPperDay} requisições). Tente novamente em ${retrySeconds} segundos.`,
       );
 
       const responseObject = {
         res,
-        message: `O consumo máximo da API foi atingido (${maxAttemptsByIPperDay} acessos máximos). Tente novamente em ${retrySeconds} segundos.`,
+        message: `Numero máximo de requisições para a API foi atingido (limite de ${maxAttemptsByIPperDay} requisições). Tente novamente em ${retrySeconds} segundos.`,
         retrySeconds,
         reason,
       };
@@ -51,7 +51,7 @@ async function slowBruteForce(req: Request, res: Response, next: NextFunction) {
     }
 
     try {
-      await limiterPublicSlowBruteByIP.consume(originIpAddress);
+      await limiterSlowBruteByIP.consume(originIpAddress);
 
       next();
     } catch (error) {
@@ -65,7 +65,7 @@ async function slowBruteForce(req: Request, res: Response, next: NextFunction) {
 
       const responseObject = {
         res,
-        message: `O consumo máximo da API foi atingido (${maxAttemptsByIPperDay} acessos máximos). Tente novamente em ${retrySeconds} segundos.`,
+        message: `Numero máximo de requisições para a API foi atingido (limite de ${maxAttemptsByIPperDay} requisições). Tente novamente em ${retrySeconds} segundos.`,
         retrySeconds,
         reason,
       };
@@ -80,5 +80,3 @@ async function slowBruteForce(req: Request, res: Response, next: NextFunction) {
     next(error);
   }
 }
-
-export default slowBruteForce;

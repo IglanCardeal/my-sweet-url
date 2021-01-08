@@ -1,12 +1,12 @@
 import { EventEmitter } from 'events';
 
-import allAlias from '@events/all-alias';
-import orderedAlias from '@events/ordered-alias';
+import allAlias from 'src/subscribers/alias';
+import orderedAlias from 'src/subscribers/ordered-alias';
 
 const aliasEventEmitter = new EventEmitter();
 
 const activeAliasEvents = () => {
-  const oneMinute = 1000 * 30; // atuliza o cache no determinado tempo
+  const oneMinute = 1000 * 30; // atualiza o cache no determinado tempo
 
   aliasEventEmitter.on('set_alias_cache', allAlias);
   aliasEventEmitter.on('set_ordered_alias_cache', orderedAlias);
@@ -29,4 +29,4 @@ const activeAliasEvents = () => {
   }, oneMinute);
 };
 
-export { activeAliasEvents, aliasEventEmitter };
+export default activeAliasEvents;

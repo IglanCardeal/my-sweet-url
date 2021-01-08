@@ -1,4 +1,4 @@
-import orderBy from '@events/ordered/order-by';
+import orderBy from './order-by';
 
 const orderedAlias = async () => {
   // 1 ordem crescente
