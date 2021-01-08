@@ -3,8 +3,6 @@ import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-import { userLoginSchema, userSignupSchema } from '@schemas/index';
-
 import { db } from '@database/mongodb/mongodb-connection';
 
 import { catchErrorFunction, throwErrorHandler } from '@utils/index';
@@ -21,8 +19,6 @@ export default {
     username = username.trim().toLowerCase();
 
     try {
-      await userLoginSchema.validate({ username, password });
-
       const userFound = await users.findOne({ username });
 
       if (!userFound) {
@@ -79,8 +75,6 @@ export default {
     password = password.trim();
 
     try {
-      await userSignupSchema.validate({ email, username, password });
-
       const userAlreadyExist = await users.findOne({ email });
 
       if (userAlreadyExist) {

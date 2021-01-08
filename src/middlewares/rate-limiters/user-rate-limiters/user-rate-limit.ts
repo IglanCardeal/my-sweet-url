@@ -25,7 +25,7 @@ export default async function userRequestApiLimit(
   res: Response,
   next: NextFunction,
 ) {
-  const userToken = req.cookies['token'];
+  const userToken = req.cookies['Authorization'];
   const originIpAddress = req.ip;
 
   const userTokenIp = getUserTokenIPkey(userToken, originIpAddress);

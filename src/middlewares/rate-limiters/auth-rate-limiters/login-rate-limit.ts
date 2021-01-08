@@ -69,17 +69,6 @@ export default async function userLoginApiLimit(
     try {
       await limiterConsecutiveFailsByUsernameAndIP.consume(usernameIPkey);
 
-      if (!username) {
-        const error = {
-          statusCode: 400,
-          message: 'Nome de usuário deve ser informado.',
-        };
-
-        next(error);
-
-        return;
-      }
-
       next();
     } catch (error) {
       if (error instanceof Error) {

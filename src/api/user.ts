@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 
 import { db } from '@database/mongodb/mongodb-connection';
 
-import { userUrlSchema } from '@schemas/index';
-
 import { catchErrorFunction, throwErrorHandler } from '@utils/index';
 import { getDomain, checkProtocol, generateAlias } from '@utils/index';
 import {
@@ -21,12 +19,8 @@ const urls = db.get('urls');
 
 export default {
   async userShowUrls(req: Request, res: Response, next: NextFunction) {
-    let orderBy = req.query.orderby?.toString().trim() || '';
+    const { userId, orderBy } = res.locals;
 
-    const { userId } = res.locals;
-    const orderByArray = ['alias', 'date', 'number_access', 'domain'];
-    const indexOfOrderBy = orderByArray.indexOf(orderBy);
-    const invalidOrderByValue = Boolean(indexOfOrderBy < 0);
     const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
     const paginateToFloor = Math.floor(paginate);
     const paginationLimit = 10;
@@ -37,8 +31,6 @@ export default {
       number_access: -1,
       domain: 1,
     };
-
-    if (invalidOrderByValue) orderBy = 'alias';
 
     try {
       const redisKeyUser = `user_${userId}_order-${orderBy}_page-${paginateToFloor}`;
@@ -52,6 +44,7 @@ export default {
           message: 'Todas as urls do usuário',
           userUrlsFormated: result,
         });
+
         return;
       }
 
@@ -99,20 +92,12 @@ export default {
   },
 
   async userToShortUrl(req: Request, res: Response, next: NextFunction) {
-    const { userId } = res.locals;
-    let { alias, url, publicStatus } = req.body;
-    const invalidPublicStatusType = typeof publicStatus !== 'boolean';
-
-    if (invalidPublicStatusType) publicStatus = false;
-    // if (!(typeof publicStatus === 'boolean')) publicStatus = false;
+    const { userId, publicStatus } = res.locals;
+    let { alias, url } = req.body;
 
     url = checkProtocol(url);
 
     try {
-      if (!alias) alias = 'undefined'; // criei apenas para passar no validator
-
-      await userUrlSchema.validate({ alias, url, publicStatus, userId });
-
       if (alias === 'undefined') {
         // gera alias aleatorio se nao informado
         alias = await generateAlias(5);
@@ -175,12 +160,6 @@ export default {
 
     url = checkProtocol(url);
 
-    if (publicStatus) {
-      throwErrorHandler(403, 'Somente urls privadas podem ser editadas.', next);
-
-      return;
-    }
-
     if (!userId) {
       // verificação de segurança
       throwErrorHandler(
@@ -193,31 +172,10 @@ export default {
     }
 
     try {
-      if (!alias) alias = 'undefined';
-
-      await userUrlSchema.validate({ alias, url, userId, publicStatus, id });
-
       if (alias === 'undefined') {
-        // gera alias aleatorio se não informado
+        // gera alias aleatório, se não informado
         alias = await generateAlias(5);
       }
-
-      // const [userFounded, urlsFounded, aliasExisting] = await Promise.all([
-      //   users.findOne({ _id: userId }),
-      //   urls.find({ userId, publicStatus: false, _id: id.toString() }),
-      //   urls.findOne({ alias }),
-      // ]);
-
-      // if (!userFounded) {
-      //   // verificação de segurança
-      //   throwErrorHandler(
-      //     404,
-      //     'Usuário não encontrado! Faça o login novamente.',
-      //     next,
-      //   );
-
-      //   return;
-      // }
 
       const [urlsFounded, aliasExisting] = await Promise.all([
         urls.find({ userId, publicStatus: false, _id: id.toString() }),

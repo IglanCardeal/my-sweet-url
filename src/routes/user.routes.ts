@@ -9,6 +9,12 @@ import {
   slowBruteForce,
 } from '@middlewares/rate-limiters';
 
+import {
+  userShowUrlsValidator,
+  userToShortUrlValidator,
+  userEditUrlValidator
+} from '@validators/user';
+
 const router = Router();
 
 router.get(
@@ -16,6 +22,7 @@ router.get(
   slowBruteForce,
   checkAuthentication,
   userRequestApiLimit,
+  userShowUrlsValidator,
   userControllers.userShowUrls,
 );
 router.post(
@@ -23,6 +30,7 @@ router.post(
   slowBruteForce,
   checkAuthentication,
   userRequestApiLimit,
+  userToShortUrlValidator,
   userControllers.userToShortUrl,
 );
 router.patch(
@@ -30,6 +38,7 @@ router.patch(
   slowBruteForce,
   checkAuthentication,
   userRequestApiLimit,
+  userEditUrlValidator,
   userControllers.userEditUrl,
 );
 

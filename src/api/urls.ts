@@ -12,13 +12,6 @@ import {
   redisHmsetAsync,
 } from '@utils/index';
 
-import {
-  urlSchema,
-  domainValidator,
-  urlToFilter,
-  aliasValidator,
-} from '@schemas/index';
-
 import { catchErrorFunction, throwErrorHandler } from '@utils/index';
 import { getDomain, checkProtocol, generateAlias } from '@utils/index';
 
@@ -120,24 +113,8 @@ export default {
     const paginate = Number(req.query.page) ? Number(req.query.page) * 10 : 0;
     const paginateToFloor = Math.floor(paginate);
     const paginationLimit = 10; // limite de 10 por causa da busca por domínio
-    const findByArray = ['alias', 'domain'];
-    const invalidFindByValue = findByArray.indexOf(findBy) < 0;
-
-    if (invalidFindByValue) {
-      throwErrorHandler(
-        403,
-        'Campo de busca inválido. Somente apelido (alias) ou dominio (domain) são aceitos no filtro.',
-        next,
-      );
-
-      return;
-    }
 
     try {
-      if (findBy === 'domain')
-        await domainValidator.validate({ domain: value });
-      else await urlToFilter.validate({ alias: value });
-
       const redisPublicKey = `public_filterby_${findBy}=${value}_page${paginateToFloor}`;
       const cachedPublicQuery = await redisGetAsync(redisPublicKey);
 
@@ -199,7 +176,6 @@ export default {
     const { alias } = req.params;
 
     try {
-      await aliasValidator.validate({ alias });
       // verifica se existe no cache para melhorar performance
       const urlFoundedOnCache = await redisHmgetAsync('cached_alias', alias);
 
@@ -255,7 +231,6 @@ export default {
 
   async publicToShortUrl(req: Request, res: Response, next: NextFunction) {
     let { alias, url } = req.body;
-
     // valores padrao para cadastro anonimo
     let publicStatus = true;
     let userId = '0';
@@ -263,10 +238,6 @@ export default {
     url = checkProtocol(url); // verifica se já vem com protocolo HTTP
 
     try {
-      if (!alias) alias = 'undefined'; // criei apenas para passar no validator
-
-      await urlSchema.validate({ alias, url, publicStatus, userId });
-
       if (alias === 'undefined') {
         alias = await generateAlias(7);
       } else {
