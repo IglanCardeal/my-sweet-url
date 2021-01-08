@@ -25,6 +25,7 @@
       "@utils/*": ["./src/utils/*"],
       "@subscribers/*": ["src/subscribers/*"],
       "@validators/*": ["src/validators/*"],
+      "@models/*": ["src/models/*"],
       "@schemas/*": ["./src/schemas/*"],
     }
   },

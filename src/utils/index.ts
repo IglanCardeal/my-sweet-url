@@ -18,6 +18,8 @@ import { throwErrorHandler, catchErrorFunction } from './errors-handlers';
 
 import { rateLimiterMessager } from './rate-limiter-message';
 
+import getAuthToken from './get-token';
+
 // alias
 export { checkProtocol, generateAlias, getDomain };
 
@@ -40,3 +42,5 @@ export { throwErrorHandler, catchErrorFunction };
 
 // rate limiter messager function
 export { rateLimiterMessager };
+
+export { getAuthToken };

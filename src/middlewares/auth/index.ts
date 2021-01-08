@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { catchErrorFunction } from '@utils/index';
-import { verifyOptions } from '@utils/index';
+import { verifyOptions, getAuthToken, catchErrorFunction } from '@utils/index';
 
 import { JWT_PUBLIC_KEY } from '@config/index';
 
 export default (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies['Authorization'];
+  const token = getAuthToken(req);
 
   if (!token) {
     const error = {

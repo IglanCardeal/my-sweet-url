@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { rateLimiterMessager } from '@utils/index';
+import { rateLimiterMessager, getAuthToken } from '@utils/index';
 import { rateLimiterStoreConfig } from '@database/redis/redis-connection';
 
 const getUserTokenIPkey = (userToken: string, ip: string) =>
@@ -25,7 +25,7 @@ export default async function userRequestApiLimit(
   res: Response,
   next: NextFunction,
 ) {
-  const userToken = req.cookies['Authorization'];
+  const userToken = getAuthToken(req);
   const originIpAddress = req.ip;
 
   const userTokenIp = getUserTokenIPkey(userToken, originIpAddress);

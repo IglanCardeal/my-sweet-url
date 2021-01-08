@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import path from 'path';
 
-import { db } from '@database/mongodb/mongodb-connection';
+import { UrlsRepository } from '@models/index';
 
 import {
   redisGetAsync,
@@ -12,16 +12,15 @@ import {
   redisHmsetAsync,
 } from '@utils/index';
 
-import { catchErrorFunction, throwErrorHandler } from '@utils/index';
-import { getDomain, checkProtocol, generateAlias } from '@utils/index';
+import {
+  catchErrorFunction,
+  throwErrorHandler,
+  getDomain,
+  checkProtocol,
+  generateAlias,
+} from '@utils/index';
 
 import { applicationHost } from '@config/index';
-
-const urls = db.get('urls');
-
-urls.createIndex('alias');
-urls.createIndex('date');
-urls.createIndex('number_access');
 
 export default {
   async publicShowUrls(req: Request, res: Response, next: NextFunction) {
@@ -59,7 +58,7 @@ export default {
         return;
       }
 
-      const publicUrlsArray = await urls.find(
+      const publicUrlsArray = await UrlsRepository.find(
         { publicStatus: true },
         {
           limit: paginationLimit,
@@ -129,7 +128,7 @@ export default {
         return;
       }
 
-      urlsFiltereds = await urls.find(
+      urlsFiltereds = await UrlsRepository.find(
         {
           [findBy]: value,
           publicStatus: true,
@@ -182,11 +181,11 @@ export default {
       if (urlFoundedOnCache[0]) {
         res.status(308).redirect(urlFoundedOnCache[0]);
 
-        const urlToUpdate = await urls.findOne({ alias });
+        const urlToUpdate = await UrlsRepository.findOne({ alias });
 
         const updatedNumberAccess = urlToUpdate.number_access + 1;
 
-        urls.findOneAndUpdate(
+        UrlsRepository.findOneAndUpdate(
           { alias },
           {
             $set: {
@@ -198,7 +197,7 @@ export default {
         return;
       }
 
-      const url = await urls.findOne({ alias });
+      const url = await UrlsRepository.findOne({ alias });
 
       if (!url?.url) {
         // se não achar o alias, retorna pagina 404
@@ -209,7 +208,7 @@ export default {
 
       const updatedNumberAccess = url.number_access + 1;
 
-      urls.findOneAndUpdate(
+      UrlsRepository.findOneAndUpdate(
         { alias },
         {
           $set: {
@@ -270,7 +269,7 @@ export default {
       // salva no cache
       await redisHmsetAsync(['cached_alias', alias, url]);
 
-      urls.insert(newUrl);
+      UrlsRepository.insert(newUrl);
 
       res.status(201).json({
         message: 'Nova URL adicionada com sucesso.',

@@ -3,14 +3,16 @@ import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-import { db } from '@database/mongodb/mongodb-connection';
+import {
+  catchErrorFunction,
+  throwErrorHandler,
+  signOptions,
+  ageOfCookie,
+} from '@utils/index';
 
-import { catchErrorFunction, throwErrorHandler } from '@utils/index';
-import { signOptions, ageOfCookie } from '@utils/index';
+import { UserRepository } from '@models/index';
 
 import { JWT_PRIVATE_KEY } from '@config/index';
-
-const users = db.get('users');
 
 export default {
   async login(req: Request, res: Response, next: NextFunction) {
@@ -19,7 +21,7 @@ export default {
     username = username.trim().toLowerCase();
 
     try {
-      const userFound = await users.findOne({ username });
+      const userFound = await UserRepository.findOne({ username });
 
       if (!userFound) {
         throwErrorHandler(404, 'Usuário não encontrado! Tente novamente', next);
@@ -75,7 +77,7 @@ export default {
     password = password.trim();
 
     try {
-      const userAlreadyExist = await users.findOne({ email });
+      const userAlreadyExist = await UserRepository.findOne({ email });
 
       if (userAlreadyExist) {
         throwErrorHandler(
@@ -95,7 +97,7 @@ export default {
         password: hashedPassword,
       };
 
-      await users.insert(newUser);
+      await UserRepository.insert(newUser);
 
       res.status(201).json({
         message: 'Usuário cadastrado com sucesso!',

@@ -14,7 +14,6 @@ import {
 
 import { applicationHost } from '@config/index';
 
-const users = db.get('users');
 const urls = db.get('urls');
 
 export default {

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { catchErrorFunction, throwErrorHandler } from '@utils/index';
 
-import { userUrlSchema, userSignupSchema } from '@schemas/index';
+import { userUrlSchema } from '@schemas/index';
 
 export const userShowUrlsValidator = async (
   req: Request,
@@ -68,22 +68,6 @@ export const userEditUrlValidator = async (
     if (!alias) alias = 'undefined';
 
     await userUrlSchema.validate({ alias, url, userId, publicStatus, id });
-
-    next();
-  } catch (error) {
-    catchErrorFunction(error, next);
-  }
-};
-
-export const sds = async (req: Request, res: Response, next: NextFunction) => {
-  let { email, username, password } = req.body;
-
-  email = email.trim();
-  username = username.trim().toLowerCase();
-  password = password.trim();
-
-  try {
-    await userSignupSchema.validate({ email, username, password });
 
     next();
   } catch (error) {
