@@ -1,14 +1,18 @@
-const dotenv =require('dotenv');
+const dotenv = require('dotenv');
+
+const mongodbDatabaseConnectionUri = require('./src/config/migrations-config/index');
+
 
 dotenv.config();
 
 const { DB_HOST, DB_PORT, DB_NAME } = process.env;
 const DB_URL = `${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 
+console.log(mongodbDatabaseConnectionUri, DB_URL);
+
 const config = {
   mongodb: {
-    // TODO Change (or review) the url to your MongoDB:
-    url: `mongodb://${DB_URL}`,
+    url: `mongodb://${mongodbDatabaseConnectionUri}`,
 
     options: {
       useNewUrlParser: true, // removes a deprecation warning when connecting
@@ -19,7 +23,7 @@ const config = {
   },
 
   // The migrations dir, can be an relative or absolute path. Only edit this when really necessary.
-  migrationsDir: "./src/database/migrations",
+  migrationsDir: "./src/database/mongodb/migrations",
 
   // The mongodb collection where the applied changes are stored. Only edit this when really necessary.
   changelogCollectionName: "changelog",

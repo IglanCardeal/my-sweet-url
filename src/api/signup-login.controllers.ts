@@ -5,7 +5,7 @@ import { promisify } from 'util';
 
 import { userLoginSchema, userSignupSchema } from '@schemas/schemas';
 
-import { db } from '@database/connection';
+import { db } from '@database/mongodb/mongodb-connection';
 import catchErrorFunction from '@utils/catch-error-function';
 import throwErrorHandler from '@utils/throw-error-handler';
 import { signOptions, ageOfCookie } from '@utils/sign-verify-token-options';

@@ -1,4 +1,4 @@
-import { db } from '@database/connection';
+import { db } from '@database/mongodb/mongodb-connection'
 import { redisSetAsync } from '@utils/promisify-redis-methods';
 
 const urls = db.get('urls');

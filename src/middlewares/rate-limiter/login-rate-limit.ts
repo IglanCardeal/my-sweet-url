@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
 import rateLimiterMessager from '@utils/rate-limiter-message';
-import rateLimiterStoreConfig from '@database/rate-limiter-store';
+
+import { rateLimiterStoreConfig } from '@database/redis/redis-connection';
 
 // retorna um par "username_127.0.0.1"
 const getUsernameIPkey = (username: string, ip: string) => `${username}_${ip}`;

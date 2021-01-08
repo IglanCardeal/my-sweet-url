@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 
-import { db } from '@database/connection';
+import { db } from '@database/mongodb/mongodb-connection';
 
 const urls = db.get('urls');
 

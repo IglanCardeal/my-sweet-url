@@ -1,6 +1,6 @@
 import { RateLimiterRedis } from 'rate-limiter-flexible';
 
-import { client } from '@database/redis-connection';
+import { client } from '../redis-connection';
 
 interface Props {
   maxWrongAttemps: number;

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { db } from '@database/connection';
+import { db } from '@database/mongodb/mongodb-connection';
 
 import { userUrlSchema } from '@schemas/schemas';
 
@@ -52,12 +52,10 @@ export default {
         // console.log('SERVINDO Urls usuario do Cache');
         const result = JSON.parse(cachedUserQuery);
 
-        res
-          .status(200)
-          .json({
-            message: 'Todas as urls do usuário',
-            userUrlsFormated: result,
-          });
+        res.status(200).json({
+          message: 'Todas as urls do usuário',
+          userUrlsFormated: result,
+        });
         return;
       }
 

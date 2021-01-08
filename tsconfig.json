@@ -28,5 +28,5 @@
     }
   },
   "include": ["./src/**/*.ts"],
-  "exclude": ["./src/**/*.spec.ts", "./src/database/migrations/*.js"]
+  "exclude": ["./src/**/*.spec.ts", "src/database/mongodb/migrations/*.js"]
 }

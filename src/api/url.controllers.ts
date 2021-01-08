@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import path from 'path';
 
-import { db } from '@database/connection';
+import { db } from '@database/mongodb/mongodb-connection'
 import {
   redisGetAsync,
   redisSetAsync,

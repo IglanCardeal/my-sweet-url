@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import catchErrorFunction from '@utils/catch-error-function';
 import { verifyOptions } from '@utils/sign-verify-token-options';
 
-import { JWT_PRIVATE_KEY } from '@config/index';
+import { JWT_PUBLIC_KEY } from '@config/index';
 
 export default (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies['Authorization'];
@@ -37,7 +37,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
   try {
     jwt.verify(
       extractedToken,
-      JWT_PRIVATE_KEY,
+      JWT_PUBLIC_KEY,
       verifyOptions,
       (err: any, decoded: any) => {
         if (err) {

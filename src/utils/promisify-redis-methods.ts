@@ -1,7 +1,6 @@
-import redis from 'redis';
 import util from 'util';
 
-import { client } from '@database/redis-connection';
+import { client } from '@database/redis/redis-connection';
 
 // tive que usar o paradigma POG (programação orientada a gambiarras)
 // para corrigir problemas de parâmetros do TS para o método hmget

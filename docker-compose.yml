@@ -16,7 +16,8 @@ services:
     restart: always
     ports:
       - ${DB_PORT}:27017
-
+    volumes:
+      - ~/Desenvolvimento-Web/docker-volumes/my-sweet-url/MongoDB:/data/db
   # app:
   #   container_name: my_sweet_container
   #   build: .

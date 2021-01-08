@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import rateLimiterMessager from '@utils/rate-limiter-message';
-import rateLimiterStoreConfig from '@database/rate-limiter-store';
+import { rateLimiterStoreConfig } from '@database/redis/redis-connection';
 
 const maxLogoutsByIPperMinute = 3;
 

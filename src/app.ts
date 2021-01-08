@@ -7,7 +7,7 @@ import publicRoutes from '@routes/public.routes';
 import userRoutes from '@routes/user.routes';
 import signupLoginRoutes from '@routes/signup-login.routes';
 
-import { startDatabaseConnectionAndServer } from '@database/connection';
+import { startDatabaseConnectionAndServer } from '@database/mongodb/mongodb-connection';
 
 import corsOptions from '@middlewares/cors-options';
 import errorHandler from '@middlewares/error-handler';
