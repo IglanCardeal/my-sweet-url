@@ -364,8 +364,8 @@ Sem problemas!
 
 #### Atlas
 
-Voçê pode inserir uma URI de algum provedor como o [Atlas](https://www.mongodb.com/cloud/atlas/lp/try2?utm_source=google&utm_campaign=gs_americas_brazil_search_brand_atlas_desktop&utm_term=mongodb&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=1718986516). Neste caso, vamos definir um URI no em `DB_HOST_EXTERNAL=`. Esta variável tem prioridade, logo se voçê definiu uma URI, ela será usada, senão deixea vazia.
-A URI a ser usada, no caso se voçê usar o Atlas, terá o formato semelhante a seguir:
+Você pode inserir uma URI de algum provedor como o [Atlas](https://www.mongodb.com/cloud/atlas/lp/try2?utm_source=google&utm_campaign=gs_americas_brazil_search_brand_atlas_desktop&utm_term=mongodb&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=1718986516). Neste caso, vamos definir um URI no em `DB_HOST_EXTERNAL=`. Esta variável tem prioridade, logo se você definiu uma URI, ela será usada, senão deixe-a vazia.
+A URI a ser usada, no caso se você usar o Atlas, terá o formato semelhante a seguir:
 
 ```bash
 DB_HOST_EXTERNAL=mongodb+srv://<username>:<password>@cluster0.zcr3z.mongodb.net/<dbname>?retryWrites=true&w=majority
@@ -385,7 +385,7 @@ Tendo Feito todas as configurações, execute `npm run dev` ou `yarn dev` para i
 
 <p id="docker"></p>
 
-#### Voçê usa Docker? :whale:
+#### você usa Docker? :whale:
 
 Uma solução alternativa é subir um container do Docker do MongoDB. Existe a [imagem oficial do mongo](https://hub.docker.com/_/mongo) que podemos usar para subir um container mongodb e usar o banco de dados.
 Na raíz do projeto temos um arquivo `docker-compose.yml` com as seguintes características:
