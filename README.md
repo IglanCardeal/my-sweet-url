@@ -1,6 +1,6 @@
 <div align="center">
 
-# ![url-icon](./src/public/favicon.ico) My Sweet URL
+# My Sweet URL
 
 ## Projeto de uma API Restful para encurtar URL's
 
@@ -10,7 +10,10 @@
 
 ### Status do Projeto
 
-🚧 <b>Em construção...</b> 🚧
+🚧 <b>Em reestruturação...</b> 🚧
+
+Desconsidere este README por enquanto, pois ele será refatorado futuramente de acordo com a reformulação deste projeto.
+Ainda não decidi quais pontos vou reescrever, então vou deixar o README original como referência.
 
 #### TODO
 
