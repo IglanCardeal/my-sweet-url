@@ -1,7 +1,7 @@
 {
-  "name": "my-sweet-url-api",
+  "name": "mercafacil-backend-api-test",
   "version": "1.0.0",
-  "description": "API Backend feita em Node.js encurtar URLS e fazer umas coisas a mais",
+  "description": "API Backend feita em Node.js para cadastro de contatos de clientes.",
   "main": "index.js",
   "keywords": [],
   "author": "Iglan Cardeal",
@@ -10,6 +10,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
+    "dev": "NODE_ENV=development ts-node-dev src/infra/server.ts | pino-pretty -c -l",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "yarn lint --fix",
     "test": "jest --passWithNoTests --silent",
@@ -53,5 +54,19 @@
     "ts-jest": "^26.5.4",
     "ts-node-dev": "^1.1.6",
     "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
+    "fastify": "^3.21.3",
+    "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
+    "mysql2": "^2.3.0",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "pino": "^6.13.2",
+    "pino-pretty": "^7.0.1",
+    "sequelize": "^6.6.5",
+    "uuid": "^8.3.2"
   }
 }

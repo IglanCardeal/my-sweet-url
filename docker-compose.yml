@@ -1,29 +1,42 @@
 version: '3'
 
 services:
-  redis:
-    container_name: my_sweet_redis
-    image: redis:alpine
-    restart: always
-    ports:
-      - '6379:6379'
-    expose:
-      - 6379
-
-  mongo:
-    container_name: my_sweet_mongo
-    image: mongo
-    restart: always
-    ports:
-      - ${DB_PORT}:27017
-    volumes:
-      - ~/Desenvolvimento-Web/docker-volumes/my-sweet-url/MongoDB:/data/db
-  # app:
-  #   container_name: my_sweet_container
-  #   build: .
+  # Container de Banco MongoDB
+  # mongo:
+  #   container_name: sky-backend-test
+  #   restart: always
   #   ports:
-  #     - ${APP_PORT}:${APP_PORT}
-  #   command: 'yarn start'
-  #   depends_on:
-  #     - mongo
-  #     - redis
+  #     - 27017:27017
+  #   image: mongo
+  #   volumes:
+  #     - ./docker-volumes/...
+
+  # Container de Banco MySQL
+  # mysql:
+  #   container_name: mercafacil-api-mysql
+  #   image: mysql
+  #   restart: always
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=admin
+  #     - MYSQL_DATABASE=admin
+  #     - MYSQL_USER=admin
+  #     - MYSQL_PASSWORD=admin
+  #     - MYSQL_ROOT_HOST=%
+  #   ports:
+  #     - '3306:3306'
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   volumes:
+  #     - ./docker-volumes/...
+
+  # Container de Banco Postgres
+  # postgresql:
+  #   container_name: mercafacil-api-postgres
+  #   image: postgres
+  #   restart: always
+  #   ports:
+  #     - '5432:5432'
+  #   environment:
+  #     POSTGRES_PASSWORD: 'admin'
+  #     POSTGRES_USER: 'admin'
+  #   volumes:
+  #     - ./docker-volumes/...
